@@ -19,17 +19,11 @@
     "clean": "rm -rf dist",
     "build": "tsup",
     "prepare": "pnpm build",
-    "lint": "eslint 'src/**/*.ts' --fix",
     "format": "prettier --write 'src/**/*.ts'"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.48.0",
-    "@typescript-eslint/parser": "^8.48.0",
     "commander": "^11.0.0",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
     "node-fetch": "^3.0.0",
     "prettier": "^3.6.2",
     "tsup": "^8.5.1",
