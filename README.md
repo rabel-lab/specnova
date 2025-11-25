@@ -30,13 +30,11 @@ All code generation, the actual TypeScript types & client files, comes from [`@h
 
 Everything before and after generation is where we arrive:
 
-- Fetching OpenAPI definitions from external sources
-- Multi-spec & multi-package orchestration
+- Post/Pre-processing hooks
+- Stable & Deterministic operation ID
+- Multi-package orchestration & Version history
+- Artifact locking
 - Type-safe change log generation (/w oasdiff)
-- Syncing and validating versions
-- Storing & managing patches
-- Managing regeneration logic
-- Extending or overriding generated files
 - Automating GitHub integration (workflows, CI triggers, release steps)
 - Stronger governance
 
