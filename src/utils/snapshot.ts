@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import { mkdirSync, writeFileSync } from 'fs';
+import { basename as pathBasename, join as pathJoin } from 'path';
 import YAML from 'yaml';
 import { parseOpenApiSpec } from '@/utils/parse';
 import { SNAPSHOTS_DIR } from '@/utils/const';
@@ -25,17 +25,17 @@ export function createSnapshot(source: OpenApiSource) {
 
   // # Write
   //- Determine base filename
-  const baseName = path.basename(pathname, extension);
-  fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true });
+  const baseName = pathBasename(pathname, extension);
+  mkdirSync(SNAPSHOTS_DIR, { recursive: true });
 
   const outFilename = `${baseName}.${apiVersion}${extension}`;
-  const outPath = path.join(SNAPSHOTS_DIR, outFilename);
+  const outPath = pathJoin(SNAPSHOTS_DIR, outFilename);
 
   //- Stringify
   const outText = extension === '.json' ? JSON.stringify(spec, null, 2) : YAML.stringify(spec);
 
   // # Write
-  fs.writeFileSync(outPath, outText, 'utf-8');
+  writeFileSync(outPath, outText, 'utf-8');
 
   console.log(`✅ Wrote ${outPath}`);
 
@@ -60,8 +60,8 @@ export async function getSnapshotPath(version = null) {
   }
 
   const { pathname, extension } = await fetchOpenApiSource(pkgOpenApiSource);
-  const baseName = path.basename(pathname, extension);
+  const baseName = pathBasename(pathname, extension);
 
   const outFilename = `${baseName}.${apiVersion}${extension}`;
-  return path.join(SNAPSHOTS_DIR, outFilename);
+  return pathJoin(SNAPSHOTS_DIR, outFilename);
 }

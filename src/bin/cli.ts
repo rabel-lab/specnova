@@ -1,9 +1,9 @@
 #!/usr/bin/env node
+import fs from 'fs';
 import { Command } from 'commander';
 import { ciCheck, ciGenerate, ciUpdate, syncPatch, syncVersion } from '@/index';
 
 const program = new Command();
-
 program.name('openapi-gen').description('OpenAPI SDK generator CLI').version('1.0.0');
 
 // --- Sync Commands ---
@@ -43,7 +43,6 @@ program
 
       // Modern GitHub Actions output
       if (process.env.GITHUB_OUTPUT) {
-        const fs = await import('fs');
         fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
       }
     } catch (err) {
@@ -61,7 +60,6 @@ program
 
       // Modern GitHub Actions output
       if (process.env.GITHUB_OUTPUT) {
-        const fs = await import('fs');
         fs.appendFileSync(process.env.GITHUB_OUTPUT, `openapi_version=${version}\n`);
       }
     } catch (err) {

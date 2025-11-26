@@ -1,4 +1,4 @@
-import path from 'path';
+import { resolve as path } from 'path';
 
-export const PKG_PATH = path.resolve(process.cwd(), 'package.json');
-export const SNAPSHOTS_DIR = path.resolve(process.cwd(), 'snapshots');
+export const PKG_PATH = path(process.cwd(), 'package.json');
+export const SNAPSHOTS_DIR = path(process.cwd(), 'snapshots');

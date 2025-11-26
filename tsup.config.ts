@@ -9,9 +9,13 @@ export default defineConfig([
   },
   {
     entry: ['src/bin/cli.ts'], // CLI
-    format: ['cjs'], // CommonJS for Node CLI
+    format: ['esm'], // CommonJS for Node CLI
     sourcemap: true,
     shims: true,
     clean: false,
+    external: [
+      'commander', // <-- mark commander external
+      'yaml',
+    ],
   },
 ]);

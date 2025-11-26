@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { PKG_PATH } from '@/utils/const';
 import { OpenApiPackageInfo, PackageJson } from '../types/type';
 
@@ -7,7 +7,7 @@ import { OpenApiPackageInfo, PackageJson } from '../types/type';
  * @returns {object} The package.json file.
  */
 export function getPackage(): PackageJson {
-  const text = fs.readFileSync(PKG_PATH, 'utf8');
+  const text = readFileSync(PKG_PATH, 'utf8');
   return JSON.parse(text);
 }
 
@@ -47,5 +47,5 @@ export function editPackage(values: Partial<OpenApiPackageInfo>) {
     pkg.version = pkg['openapi'].version;
   }
 
-  fs.writeFileSync(PKG_PATH, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+  writeFileSync(PKG_PATH, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
 }
