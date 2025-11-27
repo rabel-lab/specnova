@@ -1,7 +1,7 @@
-import { ParseResultElement } from '@swagger-api/apidom-core';
+import { Element } from '@swagger-api/apidom-core';
 
 export type OpenApiSource = {
-  parseResult: ParseResultElement;
+  parseResult: Element;
   source: string;
   extension: string;
 };

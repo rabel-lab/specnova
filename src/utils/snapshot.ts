@@ -1,11 +1,11 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import { basename as pathBasename, join as pathJoin } from 'path';
-import YAML from 'yaml';
 import { SNAPSHOTS_DIR } from '@/utils/const';
 import { getPackageOpenApi } from '@/utils/package';
 import { OpenApiSource } from '@/types/type';
 import { infoVisitor } from '@/core/visitors';
 import { parseSource } from '@/core';
+import { toJSON, toYAML } from '@swagger-api/apidom-core';
 
 /**
  * Write a snapshot file for a given OpenAPI spec content.
@@ -31,7 +31,7 @@ export function createSnapshot(openApiSource: OpenApiSource) {
   const outPath = pathJoin(SNAPSHOTS_DIR, outFilename);
 
   //- Stringify
-  const outText = extension === '.json' ? JSON.stringify(info, null, 2) : YAML.stringify(info);
+  const outText = extension === '.json' ? toJSON(parseResult) : toYAML(parseResult);
 
   // # Write
   writeFileSync(outPath, outText, 'utf-8');

@@ -1,2 +1,5 @@
 /dist
 /node_modules
+
+# Ignore Snapshots generations In this project
+/snapshots

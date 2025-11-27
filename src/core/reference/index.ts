@@ -17,7 +17,6 @@ import OpenAPI3_1DereferenceStrategy from '@swagger-api/apidom-reference/derefer
 import ApiDOMDereferenceStrategy from '@swagger-api/apidom-reference/dereference/strategies/apidom';
 
 import { OpenApiSource, SNAPSHOTS_DIR } from '@/utils';
-import { isOpenApi3_0Element } from '@swagger-api/apidom-ns-openapi-3-0';
 
 //-> Resolve Component
 //? https://github.com/swagger-api/apidom/tree/main/packages/apidom-reference#resolve-component
@@ -100,7 +99,11 @@ const populatedParse = emptyParse;
  */
 export async function parseSource(source: string): Promise<OpenApiSource> {
   console.log('🔨 Extracting OpenAPI spec from:', source);
-  const parseResult = await populatedParse(source);
+  const parsed = await populatedParse(source);
+
+  if (parsed.errors.length > 0 || !parsed.result) {
+    throw new Error('❌ Failed to parse spec');
+  }
 
   const pathname =
     source.startsWith('http://') || source.startsWith('https://')
@@ -110,7 +113,7 @@ export async function parseSource(source: string): Promise<OpenApiSource> {
   const extension = pathExtname(pathname).toLowerCase();
 
   return {
-    parseResult,
+    parseResult: parsed.result,
     source,
     extension,
   };

@@ -15,7 +15,6 @@ export default defineConfig([
     clean: false,
     external: [
       'commander', // <-- mark commander external
-      'yaml',
     ],
   },
 ]);

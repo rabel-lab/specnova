@@ -20,7 +20,6 @@ export const isOpenApi2: PredicateFunc<SwaggerElement> = (el): el is SwaggerElem
 
 //-> apidom-ns-openapi-3-0
 export const isOpenApi3_0: PredicateFunc<OpenApi3_0Element> = (el): el is OpenApi3_0Element => {
-  console.log('isOpenApi3_0 via IsElement', isOpenApi3_0Element(el));
   return isOpenApi3_0Element(el);
 };
 
