@@ -10,6 +10,11 @@ export type OpenapiGenPluginConfig = {
    * @default false
    */
   syncVersion?: boolean;
+  /*
+   * Merge inputs.
+   * @default false
+   */
+  mergeInputs?: boolean;
   /**
    * The parser configuration.
    * @default {}

@@ -7,6 +7,7 @@ export const defaultOpenapiGenConfig: OpenapiGenPlugin['Config'] = {
   dependencies: ['@hey-api/typescript'],
   config: {
     syncVersion: false,
+    mergeInputs: false,
     parser: {
       operationId: undefined,
       sort: undefined,
