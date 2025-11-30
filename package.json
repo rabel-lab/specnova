@@ -22,15 +22,13 @@
     "clean": "rm -rf dist",
     "build": "tsup",
     "prepare": "pnpm build",
-    "format": "prettier --write 'src/**/*.ts'",
-    "cn": "tsx src/commands/heyapi-config.ts"
+    "format": "prettier --write 'src/**/*.ts'"
   },
   "devDependencies": {
     "@types/node": "^20.19.25",
     "commander": "^11.1.0",
     "prettier": "^3.7.3",
     "tsup": "^8.5.1",
-    "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
   "license": "MIT",
