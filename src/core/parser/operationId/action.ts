@@ -3,7 +3,7 @@ import {
   refractorPluginNormalizeOperationIds,
   OpenApi3_1Element,
 } from '@swagger-api/apidom-ns-openapi-3-1';
-import { parseSource } from '../reference';
+import { parseSource } from '@/core/reference';
 
 type NormalizeFunc = (operationId: string, path: string, method: string) => string;
 type SkipNormalizeFunc = (path: string, method: string) => boolean;
@@ -100,7 +100,7 @@ const toCase = (caseStyle: NormalizeOptions['caseStyle'], tokens: string[]): str
  */
 const isPathParam = (segment: string) => /^\{.*\}$/.test(segment);
 
-export function createOperationIdNormalizer(options?: Partial<NormalizeOptions>): NormalizeFunc {
+export function createOperationIdParser(options?: Partial<NormalizeOptions>): NormalizeFunc {
   const config: NormalizeOptions = {
     ...defaultConfig,
     ...options,
@@ -170,18 +170,3 @@ export function createOperationIdNormalizer(options?: Partial<NormalizeOptions>)
     return `${base}${paramSuffix}`;
   };
 }
-
-const link = 'https://www.torn.com/swagger/openapi.json';
-const apiDOM = await parseSource(link);
-
-const openApiElement = OpenApi3_1Element.refract(apiDOM.parseResult, {
-  plugins: [
-    refractorPluginNormalizeOperationIds({
-      operationIdNormalizer: createOperationIdNormalizer(),
-    }),
-  ],
-});
-
-const test = toValue(openApiElement);
-
-console.log(test.paths);
