@@ -15,15 +15,10 @@ export class ParserCommander implements CommandExecutor {
   }
   push(...handlers: CommandParserHandler<Element>[]) {
     for (const h of handlers) {
-      switch (h.name) {
-        case 'operationId':
-          this.handlers.operationId.push(h);
-          break;
-        case 'sort':
-          this.handlers.sort.push(h);
-          break;
-        default:
-          throw new Error('ParserCommander: unknown command');
+      if (this.handlers[h.name]) {
+        this.handlers[h.name].push(h);
+      } else {
+        throw new Error('ParserCommander: unknown command');
       }
     }
   }

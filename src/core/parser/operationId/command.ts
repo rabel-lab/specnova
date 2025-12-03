@@ -11,7 +11,7 @@ import {
 } from '@swagger-api/apidom-ns-openapi-3-1';
 
 const operationIdParsers: CommandParserHandler[] = [
-  createParserHandler(isOpenApi2, (element, options) => {
+  createParserHandler('operationId', isOpenApi2, (element, options) => {
     const openApiElement = SwaggerElement.refract(element, {
       plugins: [
         refractorPluginNormalizeOperationIds({
@@ -21,7 +21,7 @@ const operationIdParsers: CommandParserHandler[] = [
     }) as SwaggerElement;
     return openApiElement;
   }),
-  createParserHandler(isOpenApi3x, (element, options) => {
+  createParserHandler('operationId', isOpenApi3x, (element, options) => {
     const openApiElement = OpenApi3_1Element.refract(element, {
       plugins: [
         refractorPluginNormalizeOperationIds({

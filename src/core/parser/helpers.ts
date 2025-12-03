@@ -1,4 +1,4 @@
-import { CommandParserHandler } from '@/core/parser/base';
+import { CommandParserHandler, ParserCommandName } from '@/core/parser/base';
 import { ResolvedConfig } from '@/core/parser/operationId/action';
 import { PredicateFunc } from '@/core/predicate';
 
@@ -11,11 +11,12 @@ import { Element } from '@swagger-api/apidom-core';
  * @returns - VisitorHandler<E, T>
  */
 export function createParserHandler<E extends Element>(
+  name: ParserCommandName,
   predicate: PredicateFunc<E>,
   handler: (element: E, options?: Partial<ResolvedConfig>) => E,
 ): CommandParserHandler<E> {
   return {
-    name: 'operationId',
+    name,
     predicate,
     handler: (element: E, options?: Partial<ResolvedConfig>) => {
       // element is Element, but predicate ensures it's E
