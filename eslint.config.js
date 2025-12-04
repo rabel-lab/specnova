@@ -4,10 +4,11 @@ import tsPlugin from '@typescript-eslint/eslint-plugin';
 import simpleSort from 'eslint-plugin-simple-import-sort';
 import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 export default defineConfig({
   files: ['src/**/*.ts', 'src/**/*.tsx'],
-  ignores: ['node_modules', 'dist', 'build', 'snapshots'],
+  ignores: ['node_modules', 'dist', 'build', 'snapshots', 'src/playground.dev.ts'],
   languageOptions: {
     parser: tsParser,
     parserOptions: {
@@ -18,9 +19,10 @@ export default defineConfig({
     '@typescript-eslint': tsPlugin,
     'simple-import-sort': simpleSort,
     prettier: prettierPlugin,
+    'unused-imports': unusedImports,
   },
   rules: {
-    ...prettierConfig.rules.recommended,
+    // imports
     'no-restricted-imports': [
       'error',
       {
@@ -39,6 +41,18 @@ export default defineConfig({
       },
     ],
     'simple-import-sort/exports': 'error',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+      },
+    ],
+    // prettier
     'prettier/prettier': 'error',
+    ...prettierConfig.rules.recommended,
   },
 });

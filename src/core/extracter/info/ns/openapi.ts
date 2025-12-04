@@ -1,4 +1,3 @@
-import { infoExtracter } from '@/core/extracter';
 import InfoExtracter from '@/core/extracter/info/extracter';
 import { isOpenApi2, isOpenApi3x } from '@/core/predicate';
 

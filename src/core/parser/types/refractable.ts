@@ -1,10 +1,8 @@
 import { ParserCommandHandler, ParserCommandName, ParserCommandOptions } from '@/core/parser/base';
-import { defaultParserOperationIdConfig } from '@/core/parser/operationId/config';
 import { PredicateFunc } from '@/core/predicate';
 import { defaultOpenapiGenConfig } from '@/plugins';
 
 import { Element } from '@swagger-api/apidom-core';
-import { Parser } from '@swagger-api/apidom-reference/dereference/strategies/apidom';
 
 export type Refractable = {
   refract: typeof Element.refract;
@@ -51,7 +49,7 @@ export class RefractablePlugin {
       plugin(option ?? RefractablePlugin.defaultOption);
     this.Element = isRefractable(refractor) ? refractor : Element;
   }
-  static createHandler<E extends Element, O>(
+  static createHandler<E extends Element>(
     name: ParserCommandName,
     predicate: PredicateFunc<E>,
     refractable: RefractablePlugin,
