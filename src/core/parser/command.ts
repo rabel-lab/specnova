@@ -1,23 +1,39 @@
-import {
-  CommandExecutor,
-  CommandParserHandler,
-  ParserHandlersShape,
-  ParserOptions,
-} from '@/core/parser/base';
+import { ResolvedOpenapiGenConfig } from '@/commands/config';
+import { PredicateFunc } from '@/core/predicate';
 
 import { Element } from '@swagger-api/apidom-core';
 
-export class ParserCommander implements CommandExecutor {
-  private handlers: ParserHandlersShape = {
+export type ParserCommandName = 'operationId' | 'sort';
+
+export type ParserCommandOptions = Partial<ResolvedOpenapiGenConfig>;
+type ParserCommandHandlerFunc<E extends Element, O = any> = (element: E, options?: O) => E;
+
+export interface ParserCommandHandler<PE extends Element = any, O = any> {
+  name: ParserCommandName;
+  predicate: PredicateFunc<PE>;
+  handler: ParserCommandHandlerFunc<PE, O>;
+}
+
+interface ParserCommandHandlers {
+  operationId: ParserCommandHandler<Element>[];
+  sort: ParserCommandHandler<Element>[];
+}
+
+type ParserCommanderImpl = {
+  [Name in ParserCommandName]: ParserCommandHandlerFunc<Element>;
+};
+
+export class ParserCommander implements ParserCommanderImpl {
+  private handlers: ParserCommandHandlers = {
     operationId: [],
     sort: [],
   };
-  constructor(handlers?: ParserHandlersShape) {
+  constructor(handlers?: ParserCommandHandlers) {
     if (handlers) {
       this.handlers = handlers;
     }
   }
-  push(...handlers: CommandParserHandler<Element>[]) {
+  push(...handlers: ParserCommandHandler<Element>[]) {
     for (const h of handlers) {
       if (h.name in this.handlers) {
         this.handlers[h.name].push(h);
@@ -26,7 +42,7 @@ export class ParserCommander implements CommandExecutor {
       }
     }
   }
-  operationId<T extends Element>(element: T, options?: ParserOptions): T {
+  operationId<T extends Element>(element: T, options?: ParserCommandOptions): T {
     for (const h of this.handlers.operationId) {
       if (h.predicate(element)) {
         return h.handler(element, options) as T;
@@ -34,7 +50,7 @@ export class ParserCommander implements CommandExecutor {
     }
     throw new Error('ParserCommander: no handler found');
   }
-  sort<T extends Element>(element: T, options?: ParserOptions): T {
+  sort<T extends Element>(element: T, options?: ParserCommandOptions): T {
     for (const h of this.handlers.sort) {
       if (h.predicate(element)) {
         return h.handler(element, options) as T;

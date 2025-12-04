@@ -1,37 +1,10 @@
-import { CommandParserHandler } from '@/core/parser/base';
-import { createOperationIdParser } from '@/core/parser/operationId/action';
-import { refractParser } from '@/core/parser/refract';
+import { ParserCommandHandler } from '@/core/parser/command';
+import { refractorPluginOperationIdParser } from '@/core/parser/operationId/ns/combined';
+import { refractableParser } from '@/core/parser/types/refractable';
 import { isOpenApi2, isOpenApi3x } from '@/core/predicate';
 
-import {
-  OpenApi3_1Element,
-  refractorPluginNormalizeOperationIds,
-} from '@swagger-api/apidom-ns-openapi-3-1';
-
-const operationIdParsers: CommandParserHandler[] = [
-  refractParser(
-    'operationId',
-    isOpenApi2,
-    (options) => [
-      refractorPluginNormalizeOperationIds({
-        operationIdNormalizer: createOperationIdParser(
-          options?.openapiGenConfig?.parser?.operationId,
-        ),
-      }),
-    ],
-    OpenApi3_1Element,
-  ),
-  refractParser(
-    'operationId',
-    isOpenApi3x,
-    (options) => [
-      refractorPluginNormalizeOperationIds({
-        operationIdNormalizer: createOperationIdParser(
-          options?.openapiGenConfig?.parser?.operationId,
-        ),
-      }),
-    ],
-    OpenApi3_1Element,
-  ),
+const operationIdCommand: ParserCommandHandler[] = [
+  refractableParser('operationId', isOpenApi2, refractorPluginOperationIdParser),
+  refractableParser('operationId', isOpenApi3x, refractorPluginOperationIdParser),
 ];
-export default operationIdParsers;
+export default operationIdCommand;
