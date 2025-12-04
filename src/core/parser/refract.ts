@@ -3,7 +3,6 @@ import { ResolvedConfig } from '@/core/parser/operationId/action';
 import { PredicateFunc } from '@/core/predicate';
 
 import { Element } from '@swagger-api/apidom-core';
-import { OpenApi3_1Element } from '@swagger-api/apidom-ns-openapi-3-1';
 
 type Refractable = {
   refract: typeof Element.refract;
@@ -33,7 +32,7 @@ type RefractablePlugin = (toolbox?: any) => {
  * @param refractor - Refractable - default Element
  * @returns - VisitorHandler<E, T>
  */
-export function refractParseHandler<E extends Element>(
+export function refractParser<E extends Element>(
   name: ParserCommandName,
   predicate: PredicateFunc<E>,
   plugins: (options?: Partial<ResolvedConfig>) => RefractablePlugin[],
