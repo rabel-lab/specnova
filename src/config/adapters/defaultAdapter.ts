@@ -23,10 +23,18 @@ export class DefaultAdapter extends FileAdapter {
     super(options);
   }
   async transform(externalConfig: Required<OpenapiGenConfig>) {
-    const resolvedConfig = await loadConfig<Partial<OpenapiGenConfig>>({
+    const resolvedConfig = await loadConfig<ConfigOptions>({
       configFile: this.filePath,
       packageJson: true,
     }).then((res) => res.config ?? {});
-    return mergeWithDefaults(externalConfig, resolvedConfig);
+    //-> Check adapter
+    let modifiedExternalConfig = externalConfig;
+    if (resolvedConfig.adapter !== undefined && typeof resolvedConfig.adapter.name !== this.name) {
+      //-> load that adapter on top of default
+      let adapterResult = await resolvedConfig.adapter.transform(externalConfig);
+      modifiedExternalConfig = mergeWithDefaults(modifiedExternalConfig, adapterResult);
+    }
+    //-> apply default config
+    return mergeWithDefaults(modifiedExternalConfig, resolvedConfig.config ?? {});
   }
 }
