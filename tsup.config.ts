@@ -24,11 +24,11 @@ export default defineConfig([
   },
   // Dev-only build
   {
-    entry: ['src/playground.dev.ts', 'openapi-ts.config.js', 'specnova.config.ts'],
+    entry: ['src/**.config.ts'],
     format: ['esm'],
     sourcemap: true,
     clean: false,
     outDir: 'dist/dev',
-    target: 'esnext',
+    target: 'es2022',
   },
 ]);

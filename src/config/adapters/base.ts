@@ -7,7 +7,6 @@ export type BaseAdapterOptions = {
 };
 
 export type BaseAdapterOptionsWithFile = BaseAdapterOptions & {
-  filePath: string;
   processor: (...args: any[]) => any;
 };
 
@@ -25,12 +24,10 @@ export class BaseAdapter<T extends ResolvedOpenapiGenConfig = ResolvedOpenapiGen
 export class FileAdapter<
   T extends ResolvedOpenapiGenConfig = ResolvedOpenapiGenConfig,
 > extends BaseAdapter<T> {
-  protected filePath: string | null = null;
   protected processor: (...args: any[]) => any = () => {};
   constructor(options?: BaseAdapterOptionsWithFile) {
     super(options);
     if (!options) return;
-    this.filePath = options.filePath;
     this.processor = options.processor;
   }
   async transform(externalConfig: Required<T>): Promise<Required<T>> {

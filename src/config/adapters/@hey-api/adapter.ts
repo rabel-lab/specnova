@@ -1,5 +1,6 @@
 import { HeyApiPlugin, heyApiPluginName } from '@/config/adapters/@hey-api/type';
 import { BaseAdapterOptionsWithFile, FileAdapter } from '@/config/adapters/base';
+import { Config } from '@/config/base';
 import { OpenapiGenConfig, ResolvedOpenapiGenConfig } from '@/config/type';
 import { mergeWithDefaults } from '@/config/utils';
 
@@ -26,13 +27,19 @@ export class HeyApiAdapater extends FileAdapter {
         pluginConfig = p.config;
       }
     });
+    console.log('Hey API Config', pluginConfig);
     return pluginConfig;
   }
   async transform(externalConfig: ResolvedOpenapiGenConfig): Promise<ResolvedOpenapiGenConfig> {
+    console.log('Hey API called');
     const resolvedConfig = await this.processor({
+      cwd: Config.getConfigRootDir(),
       configFile: this.filePath,
       packageJson: true,
-    }).then((res) => this.findConfig(res.config));
+    }).then((res) => {
+      console.log('heyapi load result', res);
+      return this.findConfig(res.config);
+    });
     return mergeWithDefaults(externalConfig, resolvedConfig);
   }
 }

@@ -5,6 +5,6 @@ import type { DefinePlugin } from '@hey-api/openapi-ts';
 export const heyApiPluginName = '@openapiGen/core' as const;
 export type HeyApiUserConfig = {
   name: typeof heyApiPluginName;
-} & OpenapiGenConfig;
+} & Partial<OpenapiGenConfig>;
 
 export type HeyApiPlugin = DefinePlugin<HeyApiUserConfig>;

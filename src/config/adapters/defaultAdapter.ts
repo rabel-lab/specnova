@@ -1,5 +1,5 @@
 import { BaseAdapter, BaseAdapterOptionsWithFile, FileAdapter } from '@/config/adapters/base';
-import { defaultOpenapiGenConfig } from '@/config/default';
+import { Config } from '@/config/base';
 import { OpenapiGenConfig } from '@/config/type';
 import { mergeWithDefaults } from '@/config/utils';
 
@@ -17,24 +17,28 @@ export function defineConfig(ConfigOptions: ConfigOptions): ConfigOptions {
 
 export class DefaultAdapter extends FileAdapter {
   name: string = defaultAdapterName;
-  filePath: string = defaultOpenapiGenConfig.configFile;
   processor: typeof loadConfig<OpenapiGenConfig> = loadConfig;
   constructor(options?: BaseAdapterOptionsWithFile) {
     super(options);
   }
   async transform(externalConfig: Required<OpenapiGenConfig>) {
     const resolvedConfig = await loadConfig<ConfigOptions>({
-      configFile: this.filePath,
+      cwd: Config.getConfigRootDir(),
+      configFile: externalConfig.configFile,
       packageJson: true,
-    }).then((res) => res.config ?? {});
+    });
     //-> Check adapter
     let modifiedExternalConfig = externalConfig;
-    if (resolvedConfig.adapter !== undefined && typeof resolvedConfig.adapter.name !== this.name) {
+    if (
+      resolvedConfig.config.adapter !== undefined &&
+      typeof resolvedConfig.config.adapter.name !== this.name
+    ) {
       //-> load that adapter on top of default
-      let adapterResult = await resolvedConfig.adapter.transform(externalConfig);
+      let adapterResult = await resolvedConfig.config.adapter.transform(externalConfig);
       modifiedExternalConfig = mergeWithDefaults(modifiedExternalConfig, adapterResult);
     }
     //-> apply default config
-    return mergeWithDefaults(modifiedExternalConfig, resolvedConfig.config ?? {});
+    console.log('resolved', resolvedConfig);
+    return mergeWithDefaults(modifiedExternalConfig, resolvedConfig.config.config ?? {});
   }
 }

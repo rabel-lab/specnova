@@ -5,10 +5,8 @@
 /snapshots
 
 # Ignore dev files
-src/*.dev.ts
+src/*.config.*
 
-# Ignore hey-api config
-openapi-ts.config.**
-specnova.config.**
-
-
+# .env
+.env
+.env.**

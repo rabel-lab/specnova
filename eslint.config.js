@@ -8,7 +8,7 @@ import unusedImports from 'eslint-plugin-unused-imports';
 
 export default defineConfig({
   files: ['src/**/*.ts', 'src/**/*.tsx'],
-  ignores: ['node_modules', 'dist', 'build', 'snapshots', 'src/playground.dev.ts'],
+  ignores: ['node_modules', 'dist', 'build', 'snapshots', 'src/playground.config.ts'],
   languageOptions: {
     parser: tsParser,
     parserOptions: {
