@@ -1,9 +1,9 @@
 import { parseSource } from '@/core';
 import { infoExtracter } from '@/core/extracter';
-import { editPackage, getPackageOpenApi } from '@/utils/package';
+import { NpmPackage } from '@/npm/base';
 
 export async function syncPatch() {
-  const { source: pkgOpenApiSource } = await getPackageOpenApi();
+  const { source: pkgOpenApiSource } = NpmPackage.getPackage().specnova;
   const openapiSource = await parseSource(pkgOpenApiSource);
   const { version } = infoExtracter.extract(openapiSource.parseResult);
   console.log(`🔀 Syncing patch for ${version}`);
@@ -11,10 +11,11 @@ export async function syncPatch() {
 }
 
 export async function syncVersion() {
-  const { version: pkgOpenApiVersion, source: pkgOpenApiSource } = await getPackageOpenApi();
+  const pkg = new NpmPackage();
+  const { version: pkgOpenApiVersion, source: pkgOpenApiSource } = NpmPackage.getPackage().specnova;
   const openapiSource = await parseSource(pkgOpenApiSource);
   const { version } = infoExtracter.extract(openapiSource.parseResult);
   console.log(`🔀 Syncing version for ${pkgOpenApiVersion} → ${version}`);
-  editPackage({ version: version });
+  pkg.editPackage({ version });
   console.log(`🔧 Synced version to ${version}`);
 }

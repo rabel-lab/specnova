@@ -1,11 +1,11 @@
 import { parseSource } from '@/core';
 import { infoExtracter } from '@/core/extracter';
-import { editPackage, getPackageOpenApi } from '@/utils/package';
+import { NpmPackage } from '@/npm/base';
 
 import { execSync } from 'child_process';
 
 export async function ciCheck() {
-  const { version: pkgOpenApiVersion, source: pkgOpenApiSource } = await getPackageOpenApi();
+  const { version: pkgOpenApiVersion, source: pkgOpenApiSource } = NpmPackage.getPackage().specnova;
   const { parseResult } = await parseSource(pkgOpenApiSource);
   const externalVersion = infoExtracter.extract(parseResult).version;
   if (pkgOpenApiVersion === externalVersion) {
@@ -17,10 +17,11 @@ export async function ciCheck() {
 }
 
 export async function ciUpdate() {
-  const { source: pkgOpenApiSource } = await getPackageOpenApi();
+  const pkg = new NpmPackage();
+  const { source: pkgOpenApiSource } = NpmPackage.getPackage().specnova;
   const openApiSource = await parseSource(pkgOpenApiSource);
   const version = infoExtracter.extract(openApiSource.parseResult).version;
-  editPackage({ version });
+  pkg.editPackage({ version });
   return version;
 }
 

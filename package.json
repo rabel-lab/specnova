@@ -94,5 +94,9 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "specnova": {
+    "source": "https://raw.githubusercontent.com/davidkpiano/openapi-test/refs/heads/master/examples/swapi.json",
+    "version": "1.0.0"
   }
 }

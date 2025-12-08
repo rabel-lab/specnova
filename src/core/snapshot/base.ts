@@ -12,6 +12,7 @@ import {
   SnapshotConfig,
   SnapshotFileExtension,
 } from '@/core/snapshot/config';
+import { NpmPackage } from '@/npm/base';
 import { OpenApiSource } from '@/types';
 
 import { mkdir, writeFile } from 'fs/promises';
@@ -19,9 +20,10 @@ import { join as pathJoin } from 'path';
 
 export class Snapshot {
   //= initialize
+  private packageHandler: NpmPackage = new NpmPackage();
   private readonly config: Required<OpenapiGenConfig> = resolvedConfig;
   private readonly snapshotConfig: Required<SnapshotConfig>;
-  private readonly sourceUrl: string;
+  private sourceUrl: string = '';
 
   //= Load & compute
   private openapiSource: OpenApiSource | null = null;
@@ -35,12 +37,11 @@ export class Snapshot {
   } | null = null;
 
   //# Constructor
-  constructor(source: string, config?: OpenapiGenConfig) {
+  constructor(config?: OpenapiGenConfig) {
     //-> Apply config to default config
     this.config = mergeWithDefaults(defaultOpenapiGenConfig, config ?? this.config);
     //-> Apply snapshot config to default snapshot config
     this.snapshotConfig = mergeWithDefaults(defaultSnapshotConfig, this.config.snapshot);
-    this.sourceUrl = source;
   }
 
   //# Load & compute in order of dependency
@@ -145,12 +146,20 @@ export class Snapshot {
    * Load the OpenAPI source and compute the snapshot path.
    * @returns - this
    */
-  async load(): Promise<this> {
+  async load(source: string): Promise<this> {
+    this.sourceUrl = source;
     await this.ensureOpenApiSource();
     this.ensureComputed();
     return this;
   }
-
+  /**
+   * Load the main spec version from package.json
+   * @returns - this
+   */
+  async loadMain(): Promise<this> {
+    const { source } = await this.packageHandler.getPackageOpenApi();
+    return this.load(source);
+  }
   /**
    * Save the OpenAPI source to the snapshot path.
    * @returns - true if saved, false if failed
@@ -210,5 +219,17 @@ export class Snapshot {
     return Promise.all([this.saveSource(), this.saveNormalized()]).then(([source, normalized]) => {
       return { source, normalized };
     });
+  }
+  /**
+   * Set as the main spec version in package.json
+   * @returns - true if saved, false if failed
+   */
+  async setMain() {
+    const { openapiInfo } = this.ensureComputed();
+    this.packageHandler.editPackage({
+      source: this.sourceUrl,
+      version: openapiInfo.version,
+    });
+    return true;
   }
 }
