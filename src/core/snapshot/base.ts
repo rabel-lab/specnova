@@ -33,15 +33,14 @@ export class Snapshot {
     this.snapshotConfig = mergeWithDefaults(defaultSnapshotConfig, this.config.snapshot);
   }
 
-  //# Load & compute in order of dependency
-  //-> 1. lazily compute and cache parsed OpenAPI source
+  //-> Lazily compute and cache parsed OpenAPI source
   public async getOpenApiSource() {
     if (this.openapiSource) return this.openapiSource;
     this.openapiSource = await parseSource(this.sourceUrl);
     return this.openapiSource;
   }
 
-  //-> Ensure getters
+  //-> Ensure data
   private async ensureOpenApiSource(): Promise<OpenApiSource> {
     const openapiSource = await this.getOpenApiSource();
     if (!openapiSource) throw new Error('Snapshot: no OpenAPI source found');
@@ -53,7 +52,9 @@ export class Snapshot {
   }
 
   /*
-   * Load the OpenAPI source and compute the snapshot path.
+   * Load the OpenAPI source;
+   * if meta is found, load the meta;
+   * otherwise, compute the snapshot path and create a new meta.
    * @returns - this
    */
   async load(source: string): Promise<this> {
@@ -66,13 +67,24 @@ export class Snapshot {
     }
     return this;
   }
-
   /**
    * Load the main spec version from package.json
    * @returns - this
    */
   async loadMain(): Promise<this> {
     const { source } = await this.packageHandler.getPackageOpenApi();
+    return this.load(source);
+  }
+  /**
+   * Load a specific spec version snapshot folder.
+   * @param version - The spec version.
+   * @returns - this
+   */
+  async loadVersion(version: string): Promise<this> {
+    // find
+    const indexMeta = SnapshotMeta.find(version, this.snapshotConfig);
+    const source = pathJoin(indexMeta.path, indexMeta.files.names.source);
+    // load based on reuslt
     return this.load(source);
   }
 

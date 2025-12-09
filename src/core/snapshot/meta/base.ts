@@ -82,6 +82,19 @@ export class SnapshotMeta extends SnapshotMetaImpl {
     }
   }
 
+  static find(version: string, config: Required<SnapshotConfig>): SnapshotMeta {
+    const path = buildMetaPath(config, version);
+    const metaFile = buildMetaFile();
+    const pathTo = `${path}/${metaFile.file}`;
+    const text = readFileSync(pathTo);
+    try {
+      const meta = JSON.parse(text.toString()) as SnapshotMetaData;
+      return new SnapshotMeta({ meta });
+    } catch {
+      throw new Error('Snapshot: failed to load meta');
+    }
+  }
+
   static pull(info: Info, config: Required<SnapshotConfig>): SnapshotMeta {
     const path = buildMetaPath(config, info.version);
     const metaFile = buildMetaFile();
