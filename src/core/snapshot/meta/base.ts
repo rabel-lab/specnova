@@ -4,8 +4,11 @@ import { buildMetaFile, buildMetaPath, buildMetaSourceFiles } from '@/core/snaps
 import { compareSha256, digestString, Sha256String } from '@/core/snapshot/meta/lib/compare';
 import { OpenApiSource } from '@/utils';
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
+import { mkdir, rename, rm, writeFile } from 'fs/promises';
 import { join as pathJoin } from 'path';
+
+const TEMP_FOLDER = '.tmp-write';
 
 export type SnapshotMetaFiles = {
   names: {
@@ -21,7 +24,7 @@ export type SnapshoMetaExtension = {
   source: SnapshotFileExtension;
   normalized: SnapshotFileExtension;
 };
-export type SnapshotMetaSignatures = {
+export type SnapshotMetaHashes = {
   source: Promise<Sha256String> | null;
   normalized: Promise<Sha256String> | null;
   meta: Promise<Sha256String> | null;
@@ -32,39 +35,107 @@ type SnapshotMetaData = {
   path: string;
   config: Required<SnapshotConfig>;
   files: SnapshotMetaFiles;
-  sha256: SnapshotMetaSignatures;
+  sha256: SnapshotMetaHashes;
+};
+
+type SnapshotMetaDigestors = {
+  [key in keyof SnapshotMetaHashes]?: string;
+};
+
+type SnapshotMetaDocuments = {
+  [key in keyof SnapshotMetaHashes]?: {
+    text: string;
+    digest: Promise<Sha256String>;
+  };
 };
 
 class SnapshotMetaImpl {
-  info: Info;
-  path: string;
-  config: Required<SnapshotConfig>;
-  files: SnapshotMetaFiles;
-  sha256: SnapshotMetaSignatures;
+  private data: SnapshotMetaData;
+  protected softData: SnapshotMetaData;
+  protected documents: SnapshotMetaDocuments = {};
+
+  private lock: boolean = false;
   constructor(data: SnapshotMetaData) {
-    this.info = data.info;
-    this.path = data.path;
-    this.config = data.config;
-    this.files = data.files;
-    this.sha256 = data.sha256;
+    this.data = data;
+    this.softData = data;
+  }
+
+  private apply() {
+    this.softData = this.data;
+  }
+
+  private clear() {
+    this.softData = this.data;
+    this.documents = {};
+    this.lock = false;
+  }
+
+  private startCommit() {
+    this.lock = true;
+  }
+
+  private async endCommit() {
+    //-> write all documents & save if all successful
+    const documentEntries = Object.entries(this.documents);
+    const tempFolder = pathJoin(this.softData.path, TEMP_FOLDER);
+    const destFolder = this.softData.path;
+    await mkdir(tempFolder, { recursive: true });
+    try {
+      //# Write all files into temp folder
+      await Promise.all(
+        documentEntries.map(([key, value]) => {
+          const { text } = value;
+          return writeFile(pathJoin(tempFolder, key), text);
+        }),
+      );
+      //# Move them only if ALL writes succeeded
+      await Promise.all(
+        documentEntries.map(([key]) => {
+          return rename(pathJoin(tempFolder, key), pathJoin(destFolder, key));
+        }),
+      );
+      //-> if successful, apply & clear
+      console.log(`✅ Applied changes to ${this.softData.path}`);
+      this.apply();
+      this.clear();
+    } catch (e) {
+      //# Cleanup
+      await rm(tempFolder, { recursive: true, force: true });
+      this.lock = false;
+      throw e;
+    }
+    //# Cleanup
+    await rm(tempFolder, { recursive: true, force: true });
+    this.lock = false;
+  }
+
+  protected undo() {
+    this.softData = this.data;
+    this.documents = {};
+  }
+
+  protected async submit() {
+    this.startCommit();
+    await this.endCommit();
+  }
+
+  isLocked() {
+    return this.lock;
+  }
+
+  get() {
+    return this.data;
   }
 }
 
-type SnapshotMetaConstructor_Clone = {
-  meta: SnapshotMetaData;
-};
-
-type SnapshotMetaConstructor_New = {
-  openapiSource: OpenApiSource;
-  config: Required<SnapshotConfig>;
-};
-
-type SnapshotMetaConstructor = SnapshotMetaConstructor_Clone | SnapshotMetaConstructor_New;
-
 export class SnapshotMeta extends SnapshotMetaImpl {
-  constructor(args: SnapshotMetaConstructor_Clone);
-  constructor(args: SnapshotMetaConstructor_New);
-  constructor(args: SnapshotMetaConstructor) {
+  constructor(args: { meta: SnapshotMetaData });
+  constructor(args: { openapiSource: OpenApiSource; config: Required<SnapshotConfig> });
+  constructor(
+    args:
+      | { meta: SnapshotMetaData }
+      | { openapiSource: OpenApiSource; config: Required<SnapshotConfig> },
+  ) {
     if ('meta' in args) {
       super(args.meta);
       return;
@@ -81,10 +152,12 @@ export class SnapshotMeta extends SnapshotMetaImpl {
           meta: Promise.resolve(''),
         },
       });
+    } else {
+      throw new Error('Snapshot: invalid meta constructor');
     }
   }
 
-  static find(version: string, config: Required<SnapshotConfig>): SnapshotMeta {
+  static pull(version: string, config: Required<SnapshotConfig>): SnapshotMeta {
     const path = buildMetaPath(config, version);
     const metaFile = buildMetaFile();
     const pathTo = pathJoin(path, metaFile.file);
@@ -96,54 +169,19 @@ export class SnapshotMeta extends SnapshotMetaImpl {
       throw new Error('Snapshot: failed to load meta');
     }
   }
-
-  static pull(info: Info, config: Required<SnapshotConfig>): SnapshotMeta {
-    const path = buildMetaPath(config, info.version);
-    const metaFile = buildMetaFile();
-    const pathTo = pathJoin(path, metaFile.file);
-    const text = readFileSync(pathTo);
-    try {
-      const pulledMeta = JSON.parse(text.toString()) as SnapshotMetaData;
-      //... clone
-      return new SnapshotMeta({ meta: pulledMeta });
-    } catch {
-      throw new Error('Snapshot: failed to load meta');
-    }
-  }
-
   //-> Public
   /**
-   * Save the meta to the snapshot path.
-   * @returns - true if saved, false if failed
-   */
-  async push() {
-    const metaFile = buildMetaFile();
-    const pathTo = pathJoin(this.path, metaFile.file);
-    const text = JSON.stringify(this, null, 2);
-    try {
-      writeFileSync(pathTo, text);
-      this.digest({
-        meta: text,
-      });
-      return true;
-    } catch {
-      throw new Error('Snapshot: failed to save meta');
-    }
-  }
-
-  /**
-   * Lock a file to the meta via sha256 digest.
+   * Digest a document via sha256 digest.
    * @param target - Specific target to sync.
    * @returns - true if saved, false if failed
    * @default - sync all
    */
-  async digest(digester: {
-    [key in keyof SnapshotMetaSignatures]?: string;
-  }) {
-    //-> hash all
-    Object.entries(digester).map(async ([key, value]) => {
-      const digest = digestString(value);
-      this.sha256[key as keyof SnapshotMetaSignatures] = digest;
+  async digest(digester: SnapshotMetaDigestors) {
+    Object.entries(digester).map(async ([key, text]) => {
+      this.documents[key as keyof SnapshotMetaHashes] = {
+        text,
+        digest: digestString(text),
+      };
     });
   }
   /**
@@ -153,8 +191,8 @@ export class SnapshotMeta extends SnapshotMetaImpl {
    */
   async compare(other: SnapshotMeta): Promise<boolean> {
     //# Check if same as other
-    const sha256Compares = Object.entries(this.sha256).map(([indexKey, indexValue]) => {
-      const otherValue = other.sha256[indexKey as keyof SnapshotMetaSignatures];
+    const sha256Compares = Object.entries(this.softData.sha256).map(([indexKey, indexValue]) => {
+      const otherValue = other.softData.sha256[indexKey as keyof SnapshotMetaHashes];
       const identical = Boolean(indexValue) === Boolean(otherValue);
       if (identical && indexValue && otherValue) {
         //Is: Identical && not null
@@ -167,11 +205,22 @@ export class SnapshotMeta extends SnapshotMetaImpl {
     });
     const matches = [
       //# Version & path
-      this.path === other.path,
-      this.info.version === other.info.version,
+      this.softData.path === other.softData.path,
+      this.softData.info.version === other.softData.info.version,
       //# sha256
       await Promise.race(sha256Compares),
     ];
     return matches.every((match) => match === true);
+  }
+  /**
+   * Save the meta to the snapshot path.
+   * @returns - true if saved, false if failed
+   */
+  async commit() {
+    const text = JSON.stringify(this.softData, null, 2);
+    this.digest({
+      meta: text,
+    });
+    this.submit();
   }
 }

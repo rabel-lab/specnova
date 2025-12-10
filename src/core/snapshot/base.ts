@@ -10,7 +10,6 @@ import { SnapshotMeta } from '@/core/snapshot/meta/base';
 import { NpmPackage } from '@/npm/base';
 import { OpenApiSource } from '@/types';
 
-import { mkdir, writeFile } from 'fs/promises';
 import { join as pathJoin } from 'path';
 
 export class Snapshot {
@@ -46,7 +45,7 @@ export class Snapshot {
     if (!openapiSource) throw new Error('Snapshot: no OpenAPI source found');
     return openapiSource;
   }
-  private async ensureMeta(): Promise<SnapshotMeta> {
+  private ensureMeta(): SnapshotMeta {
     if (!this.meta) throw new Error('Snapshot: no meta found');
     //!TODO: Validate meta
     return this.meta;
@@ -65,7 +64,7 @@ export class Snapshot {
     if (openapiSource.isExternal) {
       this.meta = new SnapshotMeta({ openapiSource, config: this.snapshotConfig });
     } else {
-      this.meta = SnapshotMeta.pull(openapiSource.info, this.snapshotConfig);
+      this.meta = SnapshotMeta.pull(openapiSource.info.version, this.snapshotConfig);
     }
     return this;
   }
@@ -83,29 +82,22 @@ export class Snapshot {
    * @returns - this
    */
   async loadVersion(version: string): Promise<this> {
-    // find
-    const indexMeta = SnapshotMeta.find(version, this.snapshotConfig);
-    const source = pathJoin(indexMeta.path, indexMeta.files.names.source);
-    // load based on reuslt
+    const { path, files } = SnapshotMeta.pull(version, this.snapshotConfig).get();
+    const source = pathJoin(path, files.names.source);
     return this.load(source);
   }
-
   /**
    * Save the OpenAPI source to the snapshot path.
    * @returns - true if saved, false if failed
    */
   async saveSource(): Promise<boolean> {
     const openapiSource = await this.ensureOpenApiSource();
-    const { path, files } = await this.ensureMeta();
-    //# Get source file location
-    const fullSourcePath = pathJoin(path, files.names.source);
+    const meta = this.ensureMeta();
+    const { files } = meta.get();
     //# Write source
     const sourceOutText = converter.fromApiDom(openapiSource.parseResult, files.extensions.source);
     try {
-      await mkdir(path, { recursive: true }); // Create directory
-      writeFile(fullSourcePath, sourceOutText); // Write source
-      console.log(`✅ Saved source to ${fullSourcePath}`);
-      this.meta?.digest({
+      meta.digest({
         source: sourceOutText,
       });
       return true;
@@ -126,17 +118,14 @@ export class Snapshot {
     }
     //# Get normalized file location
     const openapiSource = await this.ensureOpenApiSource();
-    const { path, files } = await this.ensureMeta();
-    const fullNormalizedPath = pathJoin(path, files.names.normalized);
+    const meta = this.ensureMeta();
+    const { files } = meta.get();
     //# Apply normalization
     const normalizedElement = parserCommander.byConfig(openapiSource.parseResult, this.config);
     //# Write normalized
     const normalizedOutText = converter.fromApiDom(normalizedElement, files.extensions.normalized);
     try {
-      await mkdir(path, { recursive: true }); // Create directory
-      writeFile(fullNormalizedPath, normalizedOutText);
-      console.log(`✅ Saved normalized to ${fullNormalizedPath}`);
-      this.meta?.digest({
+      meta.digest({
         source: normalizedOutText,
       });
       return true;
@@ -155,11 +144,34 @@ export class Snapshot {
     });
   }
   /**
+   * Commit
+   * @returns - true if saved, false if failed
+   */
+  async commit() {
+    const meta = this.ensureMeta();
+    return meta.commit();
+  }
+  /**
+   * Save all & commit
+   * @returns - true if saved, false if failed
+   * @default - sync all
+   */
+  async saveAllAndCommit() {
+    const result = await Promise.all([this.saveSource(), this.saveNormalized()]).then(
+      ([source, normalized]) => {
+        return { source, normalized };
+      },
+    );
+    if (result.source && result.normalized) {
+      return this.commit();
+    }
+  }
+  /**
    * Set as the main spec version in package.json
    * @returns - true if saved, false if failed
    */
   async setMain() {
-    const { info, path, files } = await this.ensureMeta();
+    const { info, path, files } = this.ensureMeta().get();
     const fullNormalizedPath = pathJoin(path, files.names.normalized);
     this.packageHandler.editPackage({
       source: fullNormalizedPath,
