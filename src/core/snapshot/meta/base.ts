@@ -21,7 +21,7 @@ export type SnapshotMetaFiles = {
 };
 
 export type SnapshotMetaHashes = {
-  [key in SnapshotFileSlots]: Promise<Sha256String> | null;
+  [key in Exclude<SnapshotFileSlots, 'meta'>]?: Promise<Sha256String> | Sha256String;
 };
 
 type SnapshotMetaData = {
@@ -39,7 +39,6 @@ type SnapshotMetaDigestors = {
 type SnapshotMetaDocuments = {
   [key in SnapshotFileSlots]?: {
     text: string;
-    digest: Promise<Sha256String>;
   };
 };
 
@@ -64,12 +63,77 @@ class SnapshotMetaImpl {
     this.lock = false;
   }
 
-  private startCommit() {
+  /**
+   * Ensure meta is unlocked.
+   * @throws - if locked
+   */
+  protected ensureUnlocked() {
+    if (this.lock) {
+      throw new Error('Snapshot: meta is not locked');
+    }
+  }
+
+  /**
+   * Ensure meta is locked.
+   * @throws - if unlocked
+   */
+  protected ensureLocked() {
+    if (!this.lock) {
+      throw new Error('Snapshot: meta is locked');
+    }
+  }
+
+  /**
+   * Digest a document via sha256 digest.
+   * @param target - Specific target to sync.
+   * @returns - true if saved, false if failed
+   * @default - sync all
+   */
+  async addDocument(digester: SnapshotMetaDigestors) {
+    this.ensureUnlocked();
+    for (const key in digester) {
+      switch (key) {
+        case 'source':
+        case 'normalized':
+          if (!digester[key]) continue;
+          this.documents[key as keyof SnapshotMetaHashes] = {
+            text: digester[key],
+          };
+          this.softData.sha256[key] = digestString(digester[key]);
+          break;
+        case 'meta':
+          if (!digester[key]) continue;
+          this.documents.meta = {
+            text: digester[key],
+          };
+          break;
+        default:
+          throw new Error('Snapshot: invalid digester key');
+      }
+    }
+  }
+
+  private async prepareMetaSubmit() {
+    //# Await Meta hashes
+    for (const key in this.softData.sha256) {
+      if (!this.softData.sha256[key as keyof SnapshotMetaHashes]) continue;
+      this.softData.sha256[key as keyof SnapshotMetaHashes] =
+        await this.softData.sha256[key as keyof SnapshotMetaHashes];
+    }
+    //# Add Meta document
+    const text = converter.fromJson(this.softData, true);
+    await this.addDocument({
+      meta: text,
+    });
+  }
+
+  private startSubmit() {
     this.lock = true;
   }
 
-  private async endCommit() {
-    //-> write all documents & save if all successful
+  private async endSubmit() {
+    //# Prepare data;
+    this.ensureLocked();
     const documentEntries = Object.entries(this.documents);
     const tempFolder = pathJoin(this.softData.path, TEMP_FOLDER);
     const destFolder = this.softData.path;
@@ -93,7 +157,7 @@ class SnapshotMetaImpl {
           );
         }),
       );
-      //-> if successful, apply & clear
+      //# if successful, apply & clear
       console.log(`✅ Applied changes to ${this.softData.path}`);
       this.apply();
       this.clear();
@@ -108,18 +172,10 @@ class SnapshotMetaImpl {
     this.lock = false;
   }
 
-  protected undo() {
-    this.softData = this.data;
-    this.documents = {};
-  }
-
   protected async submit() {
-    this.startCommit();
-    await this.endCommit();
-  }
-
-  isLocked() {
-    return this.lock;
+    await this.prepareMetaSubmit();
+    this.startSubmit();
+    await this.endSubmit();
   }
 
   get() {
@@ -148,14 +204,12 @@ export class SnapshotMeta extends SnapshotMetaImpl {
         sha256: {
           source: Promise.resolve(''),
           normalized: Promise.resolve(''),
-          meta: Promise.resolve(''),
         },
       });
     } else {
       throw new Error('Snapshot: invalid meta constructor');
     }
   }
-
   static pull(version: string, config: Required<SnapshotConfig>): SnapshotMeta {
     const path = buildMetaPath(config, version);
     const metaFile = buildMetaFile();
@@ -168,28 +222,12 @@ export class SnapshotMeta extends SnapshotMetaImpl {
       throw new Error('Snapshot: failed to load meta');
     }
   }
-  //-> Public
-  /**
-   * Digest a document via sha256 digest.
-   * @param target - Specific target to sync.
-   * @returns - true if saved, false if failed
-   * @default - sync all
-   */
-  async digest(digester: SnapshotMetaDigestors) {
-    Object.entries(digester).map(async ([key, text]) => {
-      this.documents[key as keyof SnapshotMetaHashes] = {
-        text,
-        digest: digestString(text),
-      };
-    });
-  }
   /**
    * Compare the meta to another meta.
    * @param other - The other meta.
    * @returns - true if identical, false if not
    */
   async compare(other: SnapshotMeta): Promise<boolean> {
-    //# Check if same as other
     const sha256Compares = Object.entries(this.softData.sha256).map(([indexKey, indexValue]) => {
       const otherValue = other.softData.sha256[indexKey as keyof SnapshotMetaHashes];
       const identical = Boolean(indexValue) === Boolean(otherValue);
@@ -216,10 +254,6 @@ export class SnapshotMeta extends SnapshotMetaImpl {
    * @returns - true if saved, false if failed
    */
   async commit() {
-    const text = converter.fromJson(this.softData, true);
-    this.digest({
-      meta: text,
-    });
     this.submit();
   }
 }

@@ -94,7 +94,7 @@ export class Snapshot {
     //# Write source
     const sourceOutText = converter.fromApiDom(openapiSource.parseResult, files.extensions.source);
     try {
-      meta.digest({
+      meta.addDocument({
         source: sourceOutText,
       });
       return true;
@@ -122,7 +122,7 @@ export class Snapshot {
     //# Write normalized
     const normalizedOutText = converter.fromApiDom(normalizedElement, files.extensions.normalized);
     try {
-      meta.digest({
+      meta.addDocument({
         normalized: normalizedOutText,
       });
       return true;

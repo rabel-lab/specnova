@@ -30,7 +30,7 @@ export async function digestString(text: string): Promise<Sha256String> {
  *            Reject -> Failed
  */
 export async function compareSha256(
-  digests: [Promise<Sha256String>, Promise<Sha256String>],
+  digests: [Promise<Sha256String> | Sha256String, Promise<Sha256String> | Sha256String],
 ): Promise<boolean> {
   try {
     const [hash1, hash2] = await Promise.race(digests);

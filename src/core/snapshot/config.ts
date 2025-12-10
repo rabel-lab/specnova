@@ -30,7 +30,7 @@ type SnapshotFolderDetailed = {
 /**
  * Snapshot files
  **/
-const SnapshotFileSlots = {
+export const SnapshotFileSlots = {
   source: 'source',
   normalized: 'normalized',
   meta: 'meta',
