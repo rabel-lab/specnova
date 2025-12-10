@@ -1,4 +1,5 @@
 import resolvedConfig from '@/config';
+import converter from '@/core/converter';
 
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve as path } from 'path';
@@ -23,7 +24,7 @@ export class NpmPackage {
 
   static getPackage(): PackageJson {
     const text = readFileSync(NpmPackage.PKG_PATH, 'utf8');
-    return JSON.parse(text) as PackageJson;
+    return converter.fromText<PackageJson>(text, 'json');
   }
 
   constructor() {
@@ -41,7 +42,7 @@ export class NpmPackage {
     if (config.syncVersion) {
       pkg.version = pkg['specnova'].version;
     }
-    writeFileSync(NpmPackage.PKG_PATH, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+    writeFileSync(NpmPackage.PKG_PATH, converter.fromJson(pkg, true), 'utf8');
     this.packageJson = pkg;
   }
 

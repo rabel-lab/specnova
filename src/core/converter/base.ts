@@ -18,4 +18,17 @@ export class Converter {
   fromApiDom<T extends Element = Element>(element: T, extension: ConverterExtension): string {
     return this.getApiDomConverter(extension)(element);
   }
+  fromJson<T extends Object>(json: T, readable: boolean = false): string {
+    return JSON.stringify(json, null, readable ? '\n' : 0);
+  }
+  fromText<T extends Object>(text: string, extension: ConverterExtension): T {
+    let o: T;
+    switch (extension) {
+      case 'json':
+      default:
+        o = JSON.parse(text) as T;
+        break;
+    }
+    return o;
+  }
 }

@@ -1,3 +1,4 @@
+import converter from '@/core/converter';
 import { Info } from '@/core/extracter/info/type';
 import { SnapshotConfig, SnapshotFileExtension, SnapshotFileSlots } from '@/core/snapshot/config';
 import { buildMetaFile, buildMetaPath, buildMetaSourceFiles } from '@/core/snapshot/meta/lib/build';
@@ -161,7 +162,7 @@ export class SnapshotMeta extends SnapshotMetaImpl {
     const pathTo = pathJoin(path, metaFile.file);
     const text = readFileSync(pathTo);
     try {
-      const meta = JSON.parse(text.toString()) as SnapshotMetaData;
+      const meta = converter.fromText<SnapshotMetaData>(text.toString(), 'json');
       return new SnapshotMeta({ meta });
     } catch {
       throw new Error('Snapshot: failed to load meta');
@@ -215,7 +216,7 @@ export class SnapshotMeta extends SnapshotMetaImpl {
    * @returns - true if saved, false if failed
    */
   async commit() {
-    const text = JSON.stringify(this.softData, null, 2);
+    const text = converter.fromJson(this.softData, true);
     this.digest({
       meta: text,
     });
