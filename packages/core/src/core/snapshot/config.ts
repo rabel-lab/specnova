@@ -1,6 +1,6 @@
 import { Resolved } from '@/config/type';
 
-const SNAPSHOTS_DIR = 'snapshots';
+const SNAPSHOTS_DIR = '.snapshots';
 const SOURCE_FILENAME = 'source';
 const NORMALIZED_FILENAME = 'normalized';
 const META_FILENAME = 'meta';

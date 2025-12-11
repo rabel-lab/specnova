@@ -4,7 +4,7 @@ import { Info } from '@/core/extracter/info/type';
 import { SnapshotFileExtension, SnapshotFileSlots } from '@/core/snapshot/config';
 import { buildMetaFile, buildMetaPath, buildMetaSourceFiles } from '@/core/snapshot/meta/lib/build';
 import { compareSha256, digestString, Sha256String } from '@/core/snapshot/meta/lib/compare';
-import { OpenApiSource } from '@/utils';
+import { OpenApiSource } from '@/types';
 
 import { readFileSync } from 'fs';
 import { mkdir, rename, rm, writeFile } from 'fs/promises';

@@ -1,7 +1,7 @@
 import { ResolvedOpenapiGenConfig } from '@/config/type';
 import { SnapshotFileExtension } from '@/core/snapshot/config';
 import { SnapshotMetaFiles } from '@/core/snapshot/meta/base';
-import { OpenApiSource } from '@/utils';
+import { OpenApiSource } from '@/types';
 
 const META_EXT = 'json' satisfies SnapshotFileExtension;
 const META_FILE = `meta.${META_EXT}`;

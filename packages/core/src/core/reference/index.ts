@@ -1,7 +1,7 @@
 import resolvedConfig from '@/config';
 import { infoExtracter } from '@/core/extracter';
 import { isSnapshotFileExtensionName } from '@/core/snapshot/config';
-import { OpenApiSource } from '@/utils';
+import { OpenApiSource } from '@/types';
 
 import { extname as pathExtname, resolve as path } from 'path';
 
