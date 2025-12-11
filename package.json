@@ -1,97 +1,12 @@
 {
+  "private": true,
   "type": "module",
-  "name": "@rabel-labs/openapi-sdk-core",
-  "version": "1.0.0",
+  "name": "specnova",
+  "version": "0.2.0",
   "description": "Core library for generating TypeScript SDKs from OpenAPI specs, managing patches, versions, and automation scripts.",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist/lib",
-    "dist/bin"
-  ],
-  "specnova": {
-    "source": "/Users/june/Desktop/GitHub/openapi-gen-sdk-core/snapshots/1.0.0/normalized.json",
-    "version": "1.0.0"
-  },
-  "bin": {
-    "openapi-gen": "dist/cli.js"
-  },
-  "scripts": {
-    "ci:ck": "openapi-gen ci-check",
-    "ci:up": "openapi-gen ci-update",
-    "build": "tsup",
-    "prepare": "husky",
-    "format": "prettier --write 'src/**/*.ts'",
-    "eslint": "eslint --fix 'src/**/*.ts'",
-    "clean": "rm -rf dist",
-    "play": "pnpm build && node dist/dev/playground.config.js"
-  },
-  "devDependencies": {
-    "@types/node": "^20.19.25",
-    "@typescript-eslint/eslint-plugin": "^8.48.1",
-    "@typescript-eslint/parser": "^8.48.1",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-unused-imports": "^4.3.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.7.3",
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
-  },
   "license": "MIT",
   "engines": {
     "node": ">=22"
   },
-  "dependencies": {
-    "@hey-api/openapi-ts": "^0.88.0",
-    "@swagger-api/apidom-ast": "1.0.0-rc.4",
-    "@swagger-api/apidom-core": "1.0.0-rc.4",
-    "@swagger-api/apidom-error": "1.0.0-rc.4",
-    "@swagger-api/apidom-json-path": "1.0.0-rc.4",
-    "@swagger-api/apidom-json-pointer": "1.0.0-rc.4",
-    "@swagger-api/apidom-json-pointer-relative": "1.0.0-rc.4",
-    "@swagger-api/apidom-ls": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-api-design-systems": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-arazzo-1": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-asyncapi-2": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-json-schema-2019-09": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-json-schema-2020-12": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-json-schema-draft-4": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-json-schema-draft-6": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-json-schema-draft-7": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-openapi-2": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-openapi-3-0": "1.0.0-rc.4",
-    "@swagger-api/apidom-ns-openapi-3-1": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-api-design-systems-json": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-api-design-systems-yaml": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-arazzo-json-1": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-arazzo-yaml-1": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-asyncapi-json-2": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-asyncapi-yaml-2": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-json": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-json-schema-json-2020-12": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-json-schema-yaml-2020-12": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-openapi-json-2": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-openapi-json-3-0": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-openapi-json-3-1": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-openapi-yaml-2": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-openapi-yaml-3-0": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-openapi-yaml-3-1": "1.0.0-rc.4",
-    "@swagger-api/apidom-parser-adapter-yaml-1-2": "1.0.0-rc.4",
-    "@swagger-api/apidom-reference": "1.0.0-rc.4",
-    "c12": "^3.3.2",
-    "commander": "^11.1.0"
-  },
-  "lint-staged": {
-    "src/**/*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
-    ]
-  }
+  "packageManager": "pnpm@10.19.0"
 }

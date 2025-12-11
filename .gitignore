@@ -1,12 +1,16 @@
-/dist
-/node_modules
-
-# Ignore Snapshots generations In this project
-/snapshots
+dist
+node_modules
+.turbo
+.snapshots
 
 # Ignore dev files
-src/*.config.*
+*.dev.config.*
 
 # .env
 .env
 .env.**
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

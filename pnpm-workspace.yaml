@@ -1,3 +1,5 @@
 overrides:
   apidom-ast: link:../../../Library/pnpm/global/5/node_modules/@swagger-api/apidom-ast
   apidom-core: link:../../../Library/pnpm/global/5/node_modules/@swagger-api/apidom-core
+packages:
+  - 'packages/*'
