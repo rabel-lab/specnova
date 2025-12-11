@@ -1,7 +1,7 @@
-import { Resolved } from '@/config/type';
+import { ResolvedOpenapiGenConfig } from '@/config/type';
 import converter from '@/core/converter';
 import { Info } from '@/core/extracter/info/type';
-import { SnapshotConfig, SnapshotFileExtension, SnapshotFileSlots } from '@/core/snapshot/config';
+import { SnapshotFileExtension, SnapshotFileSlots } from '@/core/snapshot/config';
 import { buildMetaFile, buildMetaPath, buildMetaSourceFiles } from '@/core/snapshot/meta/lib/build';
 import { compareSha256, digestString, Sha256String } from '@/core/snapshot/meta/lib/compare';
 import { OpenApiSource } from '@/utils';
@@ -29,7 +29,7 @@ export type SnapshotMetaHashes = {
 type SnapshotMetaData = {
   info: Info;
   path: string;
-  config: Resolved<SnapshotConfig>;
+  config: ResolvedOpenapiGenConfig;
   files: SnapshotMetaFiles;
   sha256: SnapshotMetaHashes;
 };
@@ -187,11 +187,11 @@ class SnapshotMetaImpl {
 
 export class SnapshotMeta extends SnapshotMetaImpl {
   constructor(args: { meta: SnapshotMetaData });
-  constructor(args: { openapiSource: OpenApiSource; config: Resolved<SnapshotConfig> });
+  constructor(args: { openapiSource: OpenApiSource; config: ResolvedOpenapiGenConfig });
   constructor(
     args:
       | { meta: SnapshotMetaData }
-      | { openapiSource: OpenApiSource; config: Resolved<SnapshotConfig> },
+      | { openapiSource: OpenApiSource; config: ResolvedOpenapiGenConfig },
   ) {
     if ('meta' in args) {
       super(args.meta);
@@ -212,7 +212,7 @@ export class SnapshotMeta extends SnapshotMetaImpl {
       throw new Error('Snapshot: invalid meta constructor');
     }
   }
-  static pull(version: string, config: Resolved<SnapshotConfig>): SnapshotMeta {
+  static pull(version: string, config: ResolvedOpenapiGenConfig): SnapshotMeta {
     const path = buildMetaPath(config, version);
     const metaFile = buildMetaFile();
     const pathTo = pathJoin(path, metaFile.file);

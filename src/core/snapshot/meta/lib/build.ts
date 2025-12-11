@@ -1,12 +1,13 @@
-import { Resolved } from '@/config/type';
-import { SnapshotConfig, SnapshotFileExtension } from '@/core/snapshot/config';
+import { ResolvedOpenapiGenConfig } from '@/config/type';
+import { SnapshotFileExtension } from '@/core/snapshot/config';
 import { SnapshotMetaFiles } from '@/core/snapshot/meta/base';
 import { OpenApiSource } from '@/utils';
 
 const META_EXT = 'json' satisfies SnapshotFileExtension;
 const META_FILE = `meta.${META_EXT}`;
 
-export function buildMetaPath(snapshotConfig: Resolved<SnapshotConfig>, version: string): string {
+export function buildMetaPath(config: ResolvedOpenapiGenConfig, version: string): string {
+  const snapshotConfig = config.snapshot;
   const rootDir =
     typeof snapshotConfig.folder === 'string' ? snapshotConfig.folder : snapshotConfig.folder.root;
   return `${rootDir}/${version}`;
@@ -22,11 +23,12 @@ export function buildMetaFile(): { file: string; extension: SnapshotFileExtensio
 }
 
 export function buildMetaSourceFiles(
-  config: Resolved<SnapshotConfig>,
+  config: ResolvedOpenapiGenConfig,
   openapiSource: OpenApiSource,
 ): SnapshotMetaFiles {
+  const snapshotConfig = config.snapshot;
   let sourceExtension: SnapshotFileExtension;
-  switch (config.extensions.source) {
+  switch (snapshotConfig.extensions.source) {
     case 'json':
       sourceExtension = 'json';
       break;
@@ -38,7 +40,7 @@ export function buildMetaSourceFiles(
       sourceExtension = openapiSource!.extension;
   }
   let normalizedExtension: SnapshotFileExtension;
-  switch (config.extensions.normalized) {
+  switch (snapshotConfig.extensions.normalized) {
     case 'yaml':
       normalizedExtension = 'yaml';
       break;
@@ -57,9 +59,9 @@ export function buildMetaSourceFiles(
   } satisfies SnapshotMetaFiles['extensions'];
   //-> Set names
   const names = {
-    source: `${config.files.source}.${extensions.source}`,
-    normalized: `${config.files.normalized}.${extensions.normalized}`,
-    meta: `${config.files.meta}.${extensions.meta}`,
+    source: `${snapshotConfig.files.source}.${extensions.source}`,
+    normalized: `${snapshotConfig.files.normalized}.${extensions.normalized}`,
+    meta: `${snapshotConfig.files.meta}.${extensions.meta}`,
   } satisfies SnapshotMetaFiles['names'];
 
   return {

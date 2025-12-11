@@ -1,11 +1,9 @@
 import resolvedConfig from '@/config';
-import { defaultOpenapiGenConfig } from '@/config/default';
-import { OpenapiGenConfig, Resolved, ResolvedOpenapiGenConfig } from '@/config/type';
+import { OpenapiGenConfig, ResolvedOpenapiGenConfig } from '@/config/type';
 import { hasNormalize, mergeWithDefaults } from '@/config/utils';
 import converter from '@/core/converter';
 import parserCommander from '@/core/parser';
 import { parseSource } from '@/core/reference';
-import { defaultSnapshotConfig, SnapshotConfig } from '@/core/snapshot/config';
 import { SnapshotMeta } from '@/core/snapshot/meta/base';
 import { NpmPackage } from '@/npm/base';
 import { OpenApiSource } from '@/types';
@@ -16,7 +14,6 @@ export class Snapshot {
   //= initialize
   private packageHandler: NpmPackage = new NpmPackage();
   private readonly config: ResolvedOpenapiGenConfig = resolvedConfig;
-  private readonly snapshotConfig: Resolved<SnapshotConfig>;
   private sourceUrl: string = '';
 
   //= OpenAPI source
@@ -27,9 +24,7 @@ export class Snapshot {
   //# Constructor
   constructor(config?: OpenapiGenConfig) {
     //-> Apply config to default config
-    this.config = mergeWithDefaults(defaultOpenapiGenConfig, config);
-    //-> Apply snapshot config to default snapshot config
-    this.snapshotConfig = mergeWithDefaults(defaultSnapshotConfig, config?.snapshot);
+    this.config = mergeWithDefaults(this.config, config);
   }
   //-> Lazily compute and cache parsed OpenAPI source
   public async getOpenApiSource() {
@@ -57,13 +52,13 @@ export class Snapshot {
   async load(source: string): Promise<this> {
     this.sourceUrl = source;
     const openapiSource = await this.ensureOpenApiSource();
-    const hasMeta = this.meta ? true : false;
+    const hasMeta = !!this.meta;
     // Ccompute the snapshot path and create a new meta.
     let newMeta: SnapshotMeta;
     if (openapiSource.isExternal) {
-      newMeta = new SnapshotMeta({ openapiSource, config: this.snapshotConfig });
+      newMeta = new SnapshotMeta({ openapiSource, config: this.config });
     } else {
-      newMeta = SnapshotMeta.pull(openapiSource.info.version, this.snapshotConfig);
+      newMeta = SnapshotMeta.pull(openapiSource.info.version, this.config);
     }
     // If already hase a meta
     if (!hasMeta) {
@@ -88,7 +83,7 @@ export class Snapshot {
    * @returns - this
    */
   async loadVersion(version: string): Promise<this> {
-    const newMeta = await SnapshotMeta.pull(version, this.snapshotConfig);
+    const newMeta = SnapshotMeta.pull(version, this.config);
     const { path, files } = newMeta.get();
     const source = pathJoin(path, files.names.source);
     this.meta = newMeta;
