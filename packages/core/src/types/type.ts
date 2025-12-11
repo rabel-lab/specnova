@@ -10,15 +10,3 @@ export type OpenApiSource = {
   extension: SnapshotFileExtension;
   isExternal: boolean;
 };
-
-export type OpenApiPackageInfo = {
-  source: string;
-  version: string;
-  syncVersion?: boolean;
-};
-
-export type PackageJson = {
-  version: string;
-  openapi: OpenApiPackageInfo;
-  [key: string]: string | number | boolean | Object;
-};
