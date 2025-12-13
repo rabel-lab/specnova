@@ -15,7 +15,7 @@ function isHeyApiPlugin(plugin: unknown): plugin is HeyApiPlugin['Config'] {
 export class HeyApiAdapater extends FileAdapter {
   name: string = heyApiPluginName;
   filePath: string = 'openapi-ts.config';
-  processor: typeof loadConfig<UserConfig> = loadConfig;
+  loader: typeof loadConfig<UserConfig> = loadConfig;
   constructor(options?: BaseAdapterOptionsWithFile) {
     super(options);
   }
@@ -30,7 +30,7 @@ export class HeyApiAdapater extends FileAdapter {
     return pluginConfig;
   }
   async transform(externalConfig: ResolvedSpecnovaConfig): Promise<ResolvedSpecnovaConfig> {
-    const resolvedConfig = await this.processor({
+    const resolvedConfig = await this.loader({
       cwd: UserConfig.getConfigRootDir(),
       configFile: this.filePath,
       packageJson: true,

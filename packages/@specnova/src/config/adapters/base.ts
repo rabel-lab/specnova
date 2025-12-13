@@ -24,11 +24,11 @@ export class BaseAdapter<T extends ResolvedSpecnovaConfig = ResolvedSpecnovaConf
 export class FileAdapter<
   T extends ResolvedSpecnovaConfig = ResolvedSpecnovaConfig,
 > extends BaseAdapter<T> {
-  protected processor: (...args: any[]) => any = () => {};
+  protected loader: (...args: any[]) => any = () => {};
   constructor(options?: BaseAdapterOptionsWithFile) {
     super(options);
     if (!options) return;
-    this.processor = options.processor;
+    this.loader = options.processor;
   }
   async transform(externalConfig: T): Promise<T> {
     return externalConfig;

@@ -1,6 +1,5 @@
-import { UserConfigOptions } from '@/config/base';
+import { loadConfig, UserInputConfig } from 'c12';
 
-import { loadConfig } from 'c12';
-
-export type UserConfigLoader = typeof loadConfig<UserConfigOptions>;
-export const UserConfigLoader = loadConfig<UserConfigOptions>;
+export function createLoader<T extends UserInputConfig>() {
+  return loadConfig<T>;
+}
