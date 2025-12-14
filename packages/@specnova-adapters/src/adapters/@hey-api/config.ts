@@ -1,8 +1,8 @@
 import { handler } from '@/adapters/@hey-api/plugin';
 import { HeyApiPlugin, heyApiPluginName } from '@/adapters/@hey-api/type';
-import { defaultSpecnovaGenConfig } from '@/config/default';
 
 import { definePluginConfig } from '@hey-api/openapi-ts';
+import { defaultSpecnovaGenConfig } from '@specnova/core';
 
 const defaultHeyApiConfig: HeyApiPlugin['Config'] = {
   name: heyApiPluginName,

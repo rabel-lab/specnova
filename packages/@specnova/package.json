@@ -18,6 +18,10 @@
     ".": {
       "import": "./dist/lib/index.js",
       "require": "./dist/lib/index.cjs"
+    },
+    "./adapters": {
+      "import": "./dist/lib/config/adapters/index.js",
+      "require": "./dist/lib/config/adapters/index.cjs"
     }
   },
   "specnova": {

@@ -7,15 +7,6 @@
     "build": "tsup",
     "dev": "tsup --watch"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    "./hey-api": {
-      "import": "./dist/ahey-api/index.esm.js",
-      "require": "./dist/ahey-api/index.cjs.js"
-    }
-  },
   "devDependencies": {
     "@specnova/core": "workspace:*",
     "@specnova/eslint-config": "workspace:*",
