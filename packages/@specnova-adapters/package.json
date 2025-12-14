@@ -7,6 +7,12 @@
     "build": "tsup",
     "dev": "tsup --watch"
   },
+  "exports": {
+    ".": {
+      "import": "./dist/adapters/index.js",
+      "require": "./dist/adapters/index.cjs"
+    }
+  },
   "devDependencies": {
     "@specnova/core": "workspace:*",
     "@specnova/eslint-config": "workspace:*",

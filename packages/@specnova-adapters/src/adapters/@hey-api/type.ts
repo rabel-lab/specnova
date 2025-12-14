@@ -1,5 +1,5 @@
 import type { DefinePlugin } from '@hey-api/openapi-ts';
-import { SpecnovaConfig } from '@specnova/core';
+import { SpecnovaConfig } from '@specnova/core/config';
 
 export const heyApiPluginName = '@specnova' as const;
 export type HeyApiUserConfig = {
