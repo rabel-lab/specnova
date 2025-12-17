@@ -39,4 +39,9 @@ export class DefaultAdapter extends FileAdapter {
     );
     return finalConfig;
   }
+  /** Generate SDK */
+  // Do nothing since the default adapter does not generate SDK
+  async generate() {
+    throw new Error('Adapter: generate is not implemented');
+  }
 }

@@ -8,9 +8,12 @@ export type BaseAdapterOptions = {
 
 export type BaseAdapterOptionsWithFile = BaseAdapterOptions & {
   loader: (...args: any[]) => any;
+  generator: (...args: any[]) => any;
 };
 
 export class BaseAdapter<T extends ResolvedSpecnovaConfig = ResolvedSpecnovaConfig> {
+  protected loader: (...args: any[]) => any = () => {};
+  protected generator: (...args: any[]) => any = () => {};
   public name: string | null = null;
   constructor(options?: BaseAdapterOptions) {
     if (!options) return;
@@ -19,18 +22,24 @@ export class BaseAdapter<T extends ResolvedSpecnovaConfig = ResolvedSpecnovaConf
   async transform(externalConfig: T): Promise<T> {
     return externalConfig;
   }
+  async generate(): Promise<void> {
+    throw new Error('Adapter: generate is not implemented');
+  }
 }
 
 export class FileAdapter<
   T extends ResolvedSpecnovaConfig = ResolvedSpecnovaConfig,
 > extends BaseAdapter<T> {
-  protected loader: (...args: any[]) => any = () => {};
   constructor(options?: BaseAdapterOptionsWithFile) {
     super(options);
     if (!options) return;
     this.loader = options.loader;
+    this.generator = options.generator;
   }
   async transform(externalConfig: T): Promise<T> {
     return externalConfig;
+  }
+  async generate(): Promise<void> {
+    throw new Error('Adapter: generate is not implemented');
   }
 }

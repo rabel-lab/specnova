@@ -31,6 +31,11 @@ export class UserConfig {
     this.adapter = options?.adapter ?? new DefaultAdapter();
     this.resolved = mergeWithDefaults(defaultSpecnovaGenConfig, options?.config ?? {});
   }
+  /** Ensure is loaded */
+  private ensureLoaded() {
+    if (!this.isLoaded) throw new Error('Config: config is not loaded');
+    return this.isLoaded;
+  }
   /**
    * Load config from adapters.
    * @returns - SpecnovaGenConfig
@@ -59,7 +64,15 @@ export class UserConfig {
    * @returns - SpecnovaGenConfig
    */
   async getConfig(): Promise<ResolvedSpecnovaConfig> {
-    if (!this.isLoaded) throw new Error('Config: config is not loaded');
+    this.ensureLoaded();
     return await Promise.resolve(this.resolved);
+  }
+  /**
+   * Use adapters to generate SDK.
+   * @Throws - Error
+   */
+  async generate() {
+    this.ensureLoaded();
+    return await this.adapter.generate();
   }
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import installFetch from '@/bin/installers/fetch';
+import installGenerate from '@/bin/installers/generate';
 import installLookup from '@/bin/installers/lookup';
 import installPull from '@/bin/installers/pull';
 import { NpmPackage } from '@/npm';
@@ -14,5 +15,6 @@ program.name('specnova').description('SpecNova CLI').version(NpmPackage.getPacka
 installFetch(program);
 installPull(program);
 installLookup(program);
+installGenerate(program);
 
 program.parse(process.argv);
