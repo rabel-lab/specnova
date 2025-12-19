@@ -5,6 +5,8 @@ import { loadEnvConfig } from '@/config/env';
 import { ResolvedSpecnovaConfig, SpecnovaConfig } from '@/config/type';
 import { mergeWithDefaults } from '@/config/utils';
 
+import { join as pathJoin } from 'path';
+
 type Adapter = BaseAdapter;
 
 export type UserConfigOptions = {
@@ -14,19 +16,21 @@ export type UserConfigOptions = {
 
 export class UserConfig {
   private isLoaded = false;
-  private adapter: Adapter;
+  public readonly adapter: Adapter;
   private resolved: Promise<ResolvedSpecnovaConfig> | ResolvedSpecnovaConfig;
 
   //-> Static Helpers
-  static getConfigRootDir(subPath?: string): string {
+  static getConfigPath(subPath?: string): string {
     const path = subPath ? subPath : process.env.SPECNOVA_CONFIG_PATH;
-    return `${process.cwd()}${path ? `/${path}` : ''}`;
+    return pathJoin(process.cwd(), path ? path : '');
   }
-
+  static getConfigFile(): string {
+    return process.env.SPECNOVA_CONFIG_FILE ?? 'specnova.config';
+  }
+  //-> Load .Env
   private static async loadEnvConfig() {
     await loadEnvConfig();
   }
-
   constructor(options?: UserConfigOptions) {
     this.adapter = options?.adapter ?? new DefaultAdapter();
     this.resolved = mergeWithDefaults(defaultSpecnovaGenConfig, options?.config ?? {});

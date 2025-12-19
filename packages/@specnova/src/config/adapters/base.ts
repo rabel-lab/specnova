@@ -1,45 +1,40 @@
 // Adapter interface for external tool configs
 
+import { UserConfig } from '@/config/base';
+import { createLoader } from '@/config/loader';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 
-export type BaseAdapterOptions = {
-  name: string;
-};
+import { UserInputConfig } from 'c12';
 
-export type BaseAdapterOptionsWithFile = BaseAdapterOptions & {
-  loader: (...args: any[]) => any;
-  generator: (...args: any[]) => any;
-};
+type FilePathFunc = (config: ResolvedSpecnovaConfig) => string;
 
-export class BaseAdapter<T extends ResolvedSpecnovaConfig = ResolvedSpecnovaConfig> {
-  protected loader: (...args: any[]) => any = () => {};
-  protected generator: (...args: any[]) => any = () => {};
-  public name: string | null = null;
-  constructor(options?: BaseAdapterOptions) {
-    if (!options) return;
-    this.name = options.name;
-  }
-  async transform(externalConfig: T): Promise<T> {
-    return externalConfig;
-  }
-  async generate(): Promise<void> {
-    throw new Error('Adapter: generate is not implemented');
-  }
+function isFilePathFunc(filePath: string | FilePathFunc): filePath is FilePathFunc {
+  return typeof filePath === 'function';
 }
 
-export class FileAdapter<
-  T extends ResolvedSpecnovaConfig = ResolvedSpecnovaConfig,
-> extends BaseAdapter<T> {
-  constructor(options?: BaseAdapterOptionsWithFile) {
-    super(options);
-    if (!options) return;
-    this.loader = options.loader;
-    this.generator = options.generator;
+export abstract class BaseAdapter {
+  public abstract readonly name: string;
+  abstract transform(externalConfig: ResolvedSpecnovaConfig): Promise<ResolvedSpecnovaConfig>;
+  abstract generate(): Promise<void>;
+  constructor() {}
+}
+
+export abstract class FileAdapter<L extends UserInputConfig = UserInputConfig> extends BaseAdapter {
+  protected abstract filePath: string | FilePathFunc;
+  private loader = createLoader<L>();
+  constructor() {
+    super();
   }
-  async transform(externalConfig: T): Promise<T> {
-    return externalConfig;
+  private getConfigFile(externalConfig: ResolvedSpecnovaConfig): string {
+    return isFilePathFunc(this.filePath) ? this.filePath(externalConfig) : this.filePath;
   }
-  async generate(): Promise<void> {
-    throw new Error('Adapter: generate is not implemented');
+  protected async load(externalConfig: ResolvedSpecnovaConfig): Promise<L> {
+    const configFile = this.getConfigFile(externalConfig);
+    const loaderResult = await this.loader({
+      cwd: UserConfig.getConfigPath(),
+      configFile: configFile,
+      packageJson: true,
+    });
+    return loaderResult.config;
   }
 }

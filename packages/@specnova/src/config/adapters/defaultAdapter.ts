@@ -1,6 +1,5 @@
-import { BaseAdapterOptionsWithFile, FileAdapter } from '@/config/adapters/base';
+import { FileAdapter } from '@/config/adapters/base';
 import { UserConfig, UserConfigOptions } from '@/config/base';
-import { createLoader } from '@/config/loader';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import { mergeWithDefaults } from '@/config/utils';
 
@@ -10,37 +9,31 @@ export function defineConfig(ConfigOptions: UserConfigOptions): UserConfigOption
   return ConfigOptions;
 }
 
-export class DefaultAdapter extends FileAdapter {
-  name: string = defaultAdapterName;
-  loader = createLoader<UserConfigOptions>();
-  constructor(options?: BaseAdapterOptionsWithFile) {
-    super(options);
+export class DefaultAdapter extends FileAdapter<UserConfig> {
+  name = defaultAdapterName;
+  filePath = (config: ResolvedSpecnovaConfig) => config.configFile;
+  constructor() {
+    super();
   }
   async transform(externalConfig: ResolvedSpecnovaConfig) {
-    const resolvedConfig = await this.loader({
-      cwd: UserConfig.getConfigRootDir(),
-      configFile: externalConfig.configFile,
-      packageJson: true,
-    });
+    const loadedConfig = await this.load(externalConfig);
     //-> Check adapter
     let modifiedExternalConfig = externalConfig;
-    if (
-      resolvedConfig.config.adapter !== undefined &&
-      typeof resolvedConfig.config.adapter.name !== this.name
-    ) {
+    if (loadedConfig.adapter !== undefined && typeof loadedConfig.adapter.name !== this.name) {
+      console.log('adapter', loadedConfig.adapter.name);
       //-> load that adapter on top of default
-      let adapterResult = await resolvedConfig.config.adapter.transform(externalConfig);
+      let adapterResult = await loadedConfig.adapter.transform(externalConfig);
       modifiedExternalConfig = mergeWithDefaults(modifiedExternalConfig, adapterResult);
     }
+    //-> Check if config is present
+    let currentConfig;
+    if (loadedConfig?.getConfig) {
+      currentConfig = await loadedConfig.getConfig();
+    }
     //-> apply default config
-    const finalConfig = mergeWithDefaults(
-      modifiedExternalConfig,
-      resolvedConfig.config.config ?? {},
-    );
+    const finalConfig = mergeWithDefaults(modifiedExternalConfig, currentConfig);
     return finalConfig;
   }
-  /** Generate SDK */
-  // Do nothing since the default adapter does not generate SDK
   async generate() {
     throw new Error('Adapter: generate is not implemented');
   }

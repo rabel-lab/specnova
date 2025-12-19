@@ -1,20 +1,19 @@
 import { HeyApiPlugin, heyApiPluginName } from '@/adapters/@hey-api/type';
 
-import { BaseAdapterOptionsWithFile, FileAdapter } from '@rabel-lab/specnova/adapters';
+import { FileAdapter } from '@rabel-lab/specnova/adapters';
 import type { ResolvedSpecnovaConfig, SpecnovaConfig } from '@rabel-lab/specnova/config';
-import { createLoader, mergeWithDefaults, UserConfig } from '@rabel-lab/specnova/config';
+import { mergeWithDefaults } from '@rabel-lab/specnova/config';
 function isHeyApiPlugin(plugin: unknown): plugin is HeyApiPlugin['Config'] {
   return typeof plugin === 'object' && plugin !== null && (plugin as any).name === heyApiPluginName;
 }
 
 import { UserConfig as HeyApiUserConfig } from '@hey-api/openapi-ts';
 
-export class HeyApiAdapater extends FileAdapter {
-  name: string = heyApiPluginName;
+export class HeyApiAdapater extends FileAdapter<HeyApiUserConfig> {
+  name = heyApiPluginName;
   filePath: string = 'openapi-ts.config';
-  loader = createLoader<HeyApiUserConfig>();
-  constructor(options?: BaseAdapterOptionsWithFile) {
-    super(options);
+  constructor() {
+    super();
   }
   private findConfig(config: HeyApiUserConfig): Partial<SpecnovaConfig> {
     const { plugins } = config;
@@ -27,13 +26,10 @@ export class HeyApiAdapater extends FileAdapter {
     return pluginConfig;
   }
   async transform(externalConfig: ResolvedSpecnovaConfig): Promise<ResolvedSpecnovaConfig> {
-    const resolvedConfig = await this.loader({
-      cwd: UserConfig.getConfigRootDir(),
-      configFile: this.filePath,
-      packageJson: true,
-    }).then((res) => {
-      return this.findConfig(res.config);
-    });
+    const resolvedConfig = this.findConfig(await this.load(externalConfig));
     return mergeWithDefaults(externalConfig, resolvedConfig);
+  }
+  async generate() {
+    throw new Error('Adapter: generate is not implemented');
   }
 }
