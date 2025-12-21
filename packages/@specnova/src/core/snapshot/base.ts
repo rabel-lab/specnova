@@ -1,6 +1,6 @@
-import { getResolvedConfig } from '@/config/resolved';
-import { ResolvedSpecnovaConfig, SpecnovaConfig } from '@/config/type';
-import { hasNormalize, mergeWithDefaults } from '@/config/utils';
+import { UserConfig, UserConfigOptions } from '@/config';
+import { ResolvedSpecnovaConfig } from '@/config/type';
+import { hasNormalize } from '@/config/utils';
 import converter from '@/core/converter';
 import parserCommander from '@/core/parser';
 import { parseSource } from '@/core/reference';
@@ -13,8 +13,7 @@ import { join as pathJoin } from 'path';
 export class Snapshot {
   //= initialize
   private packageHandler: NpmPackage = new NpmPackage();
-  private userConfig: ResolvedSpecnovaConfig | null = null;
-  private readonly baseConfig: SpecnovaConfig = {};
+  private userConfig: Promise<UserConfig> | UserConfig;
   private sourceUrl: string = '';
 
   //= OpenAPI source
@@ -25,18 +24,14 @@ export class Snapshot {
   //= Config
   private async getFullConfig(): Promise<ResolvedSpecnovaConfig> {
     //= Appy user config to base config
-    if (!this.userConfig) {
-      this.userConfig = await getResolvedConfig();
-    }
-    return mergeWithDefaults(this.userConfig, this.baseConfig);
+    const userConfig = await Promise.resolve(this.userConfig);
+    return userConfig.getConfig();
   }
 
   //# Constructor
-  constructor(config?: SpecnovaConfig) {
+  constructor(options?: UserConfigOptions) {
     //= Apply config
-    if (config) {
-      this.baseConfig = config;
-    }
+    this.userConfig = new UserConfig(options).load();
   }
   //-> Lazily compute and cache parsed OpenAPI source
   public async getSpecnovaSource() {
