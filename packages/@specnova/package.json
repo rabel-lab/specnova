@@ -35,13 +35,14 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
+    "dev": "tsup --watch & pnpm typesafe-i18n",
     "ci:ck": "openapi-gen ci-check",
     "ci:up": "openapi-gen ci-update",
     "format": "prettier --write 'src/**/*.ts'",
     "lint": "eslint --fix 'src/**/*.ts'",
     "clean": "rm -rf dist",
-    "play": "pnpm build && node dist/dev/playground.dev.config.js"
+    "play": "pnpm build && node dist/dev/playground.dev.config.js",
+    "typesafe-i18n": "typesafe-i18n"
   },
   "devDependencies": {
     "@internal/specnova-eslint-config": "workspace:*",
@@ -73,6 +74,7 @@
     "@swagger-api/apidom-reference": "1.0.0-rc.4",
     "c12": "^3.3.2",
     "commander": "^11.1.0",
+    "typesafe-i18n": "^5.26.2",
     "zod": "^4.2.1"
   },
   "packageManager": "pnpm@10.19.0"
