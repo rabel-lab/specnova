@@ -1,9 +1,9 @@
-import { zodWithTransformativeCheck } from '@/types/utils';
+import { zodWithTransformativeCheckSchema } from '@/types/utils';
 
 import semverTool from 'semver';
 import z from 'zod';
 
-export const semver = zodWithTransformativeCheck(
+export const semver = zodWithTransformativeCheckSchema(
   z.string(),
   [
     (val) => {

@@ -1,16 +1,16 @@
 import { Resolved } from '@/config/type';
 import {
   defaultParserOperationIdConfig,
-  parserOperationIdConfig,
+  parserOperationIdConfigSchema,
 } from '@/core/parser/operationId/config';
 
 import z from 'zod';
 
-export const parserConfig = z.object({
-  operationId: z.optional(parserOperationIdConfig),
+export const parserConfigSchema = z.object({
+  operationId: z.optional(parserOperationIdConfigSchema),
   sort: z.optional(z.null()),
 });
-export type ParserConfig = z.infer<typeof parserConfig>;
+export type ParserConfig = z.infer<typeof parserConfigSchema>;
 
 export const defaultParserConfig: Resolved<ParserConfig> = {
   operationId: defaultParserOperationIdConfig,

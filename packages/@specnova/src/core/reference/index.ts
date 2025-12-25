@@ -1,7 +1,7 @@
 import { getResolvedSpecnovaConfig } from '@/config/resolved';
 import { infoExtracter } from '@/core/extracter';
 import { SpecnovaSource } from '@/types';
-import { strictSnapshotFile } from '@/types/files';
+import { strictSnapshotFileEnum } from '@/types/files';
 
 import { extname as pathExtname, resolve as path } from 'path';
 
@@ -138,7 +138,7 @@ export async function parseSource(source: string): Promise<SpecnovaSource> {
   //# Compute
   const isExternal = source.startsWith('http://') || source.startsWith('https://');
   const pathname = isExternal ? new URL(source).pathname : source;
-  const extension = strictSnapshotFile.safeParse(
+  const extension = strictSnapshotFileEnum.safeParse(
     pathExtname(pathname).toLowerCase().split('.').pop(),
   );
 

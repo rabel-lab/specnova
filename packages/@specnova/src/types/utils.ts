@@ -22,7 +22,7 @@ type TransformCheckFunc<T extends ZodType> = (
 
 type TransformValidatorFunc<T extends ZodType> = (value: TransformFuncArgs<T>[0]) => boolean;
 
-export const zodWithTransformativeCheck = <T extends ZodType>(
+export const zodWithTransformativeCheckSchema = <T extends ZodType>(
   schema: T,
   transformers: TransformCheckFunc<T>[],
   validator?: TransformValidatorFunc<T>,

@@ -1,4 +1,4 @@
-import { zodWithTransformativeCheck } from '@/types/utils';
+import { zodWithTransformativeCheckSchema } from '@/types/utils';
 
 import { resolve } from 'path';
 import { z } from 'zod';
@@ -26,7 +26,7 @@ function resolveSafeFile(file: string) {
   return fileName;
 }
 
-export const relativePathSchema = zodWithTransformativeCheck(z.string(), [
+export const relativePathSchema = zodWithTransformativeCheckSchema(z.string(), [
   (val) => {
     return { success: true, result: val.trim() };
   },
@@ -47,13 +47,13 @@ export type RelativePath = z.infer<typeof relativePathSchema>;
 
 const baseFile = z.string().check(z.refine((val) => SAFE_FILE_REGEX.test(val), 'Invalid file'));
 
-export const configFileExtensionSchema = z.enum(['config'] as const);
-export const configFileSchema = zodWithTransformativeCheck(baseFile, [
+export const configFileExtensionEnum = z.enum(['config'] as const);
+export const configFileSchema = zodWithTransformativeCheckSchema(baseFile, [
   (val) => {
     return { success: true, result: val.trim() };
   },
   (val) => {
-    const pass = configFileExtensionSchema.safeParse(val.split('.').pop() ?? '').success;
+    const pass = configFileExtensionEnum.safeParse(val.split('.').pop() ?? '').success;
     // Resolve path and check if file is safe
     const result = pass ? resolveSafeFile(val) : null;
     if (result) {
@@ -65,16 +65,16 @@ export const configFileSchema = zodWithTransformativeCheck(baseFile, [
 ]);
 
 export type ConfigFile = z.infer<typeof configFileSchema>;
-export type ConfigFileExtension = z.infer<typeof configFileExtensionSchema>;
+export type ConfigFileExtension = z.infer<typeof configFileExtensionEnum>;
 
-export const snapshotFileExtension = z.enum(['yaml', 'yml', 'json', 'infer'] as const);
-export const strictSnapshotFile = snapshotFileExtension.exclude(['infer']);
-export const snapshotFileSchema = zodWithTransformativeCheck(baseFile, [
+export const snapshotFileExtensionEnum = z.enum(['yaml', 'yml', 'json', 'infer'] as const);
+export const strictSnapshotFileEnum = snapshotFileExtensionEnum.exclude(['infer']);
+export const snapshotFileSchema = zodWithTransformativeCheckSchema(baseFile, [
   (val) => {
     return { success: true, result: val.trim() };
   },
   (val) => {
-    const pass = strictSnapshotFile.safeParse(val.split('.').pop() ?? '').success;
+    const pass = strictSnapshotFileEnum.safeParse(val.split('.').pop() ?? '').success;
     // Resolve path and check if file is safe
     const result = pass ? resolveSafeFile(val) : null;
     if (result) {
@@ -86,5 +86,5 @@ export const snapshotFileSchema = zodWithTransformativeCheck(baseFile, [
 ]);
 
 export type SnapshotFile = z.infer<typeof snapshotFileSchema>;
-export type StrictSnapshotFile = z.infer<typeof strictSnapshotFile>;
-export type SnapshotFileExtension = z.infer<typeof snapshotFileExtension>;
+export type StrictSnapshotFile = z.infer<typeof strictSnapshotFileEnum>;
+export type SnapshotFileExtension = z.infer<typeof snapshotFileExtensionEnum>;

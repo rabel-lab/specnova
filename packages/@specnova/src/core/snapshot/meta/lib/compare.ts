@@ -2,15 +2,15 @@ import crypto from 'crypto';
 import { createReadStream } from 'fs';
 import z from 'zod';
 
-export const sha256String = z.hash('sha256');
-export type Sha256String = z.infer<typeof sha256String>;
+export const sha256StringSchema = z.hash('sha256');
+export type Sha256String = z.infer<typeof sha256StringSchema>;
 
 export async function digestFile(filePath: string): Promise<Sha256String> {
   return new Promise((resolve, reject) => {
     const hash = crypto.createHash('sha256');
     const stream = createReadStream(filePath);
     stream.on('data', (chunk) => hash.update(chunk));
-    stream.on('end', () => resolve(sha256String.parse(hash.digest('hex'))));
+    stream.on('end', () => resolve(sha256StringSchema.parse(hash.digest('hex'))));
     stream.on('error', reject);
   });
 }
@@ -19,7 +19,7 @@ export async function digestString(text: string): Promise<Sha256String> {
   try {
     const hash = crypto.createHash('sha256');
     hash.update(text);
-    return Promise.resolve(sha256String.parse(hash.digest('hex')));
+    return Promise.resolve(sha256StringSchema.parse(hash.digest('hex')));
   } catch (e) {
     return Promise.reject(e);
   }
@@ -38,12 +38,12 @@ export async function compareSha256(
   try {
     //# Load digest
     const [digest] = await Promise.race([rawDigests]);
-    const parsedDigest = sha256String.safeParse(digest);
+    const parsedDigest = sha256StringSchema.safeParse(digest);
     if (!parsedDigest.success) {
       return Promise.reject();
     }
     //# Load file to digest
-    const fileDigest = sha256String.safeParse(await digestFile(filePath));
+    const fileDigest = sha256StringSchema.safeParse(await digestFile(filePath));
     if (!fileDigest.success) {
       return Promise.reject();
     }

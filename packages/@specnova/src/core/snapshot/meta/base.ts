@@ -1,13 +1,17 @@
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import converter from '@/core/converter';
-import { snapshotConfig, SnapshotFileSlots, snapshotFileSlots } from '@/core/snapshot/config';
+import {
+  snapshotConfigSchema,
+  SnapshotFileSlots,
+  snapshotFileSlotsEnum,
+} from '@/core/snapshot/config';
 import {
   buildMetaFile,
   buildMetaOrigin,
   buildMetaPath,
   buildMetaSourceFiles,
 } from '@/core/snapshot/meta/lib/build';
-import { compareSha256, digestString, sha256String } from '@/core/snapshot/meta/lib/compare';
+import { compareSha256, digestString, sha256StringSchema } from '@/core/snapshot/meta/lib/compare';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
 import { Semver, semver } from '@/types/semver';
@@ -24,8 +28,8 @@ export const snapshotMetaDataSchema = z.object({
   info: z.any(),
   path: z.string(),
   files: z.object({
-    names: snapshotConfig.shape.names,
-    extensions: snapshotConfig.shape.extensions,
+    names: snapshotConfigSchema.shape.names,
+    extensions: snapshotConfigSchema.shape.extensions,
   }),
   origin: z.object({
     source: z.url(),
@@ -33,8 +37,8 @@ export const snapshotMetaDataSchema = z.object({
     updatedAt: z.date(),
   }),
   sha256: z.partialRecord(
-    snapshotFileSlots.exclude(['meta']),
-    z.union([sha256String, z.promise(sha256String)]),
+    snapshotFileSlotsEnum.exclude(['meta']),
+    z.union([sha256StringSchema, z.promise(sha256StringSchema)]),
   ),
 });
 

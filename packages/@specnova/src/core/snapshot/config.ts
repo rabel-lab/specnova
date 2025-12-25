@@ -1,5 +1,5 @@
 import { Resolved } from '@/config/type';
-import { snapshotFileExtension } from '@/types/files';
+import { snapshotFileExtensionEnum } from '@/types/files';
 
 import z from 'zod';
 
@@ -11,10 +11,10 @@ const META_FILENAME = 'meta';
 /**
  * Snapshot files
  **/
-export const snapshotFileSlots = z.enum(['source', 'normalized', 'meta'] as const);
-export type SnapshotFileSlots = z.infer<typeof snapshotFileSlots>;
+export const snapshotFileSlotsEnum = z.enum(['source', 'normalized', 'meta'] as const);
+export type SnapshotFileSlots = z.infer<typeof snapshotFileSlotsEnum>;
 
-export const snapshotConfig = z.object({
+export const snapshotConfigSchema = z.object({
   /**
    * Enable snapshot.
    * @default true
@@ -31,7 +31,7 @@ export const snapshotConfig = z.object({
    * Snapshot files.
    * @default {...}
    */
-  names: z.record(snapshotFileSlots, z.string()).default({
+  names: z.record(snapshotFileSlotsEnum, z.string()).default({
     source: SOURCE_FILENAME,
     normalized: NORMALIZED_FILENAME,
     meta: META_FILENAME,
@@ -42,9 +42,9 @@ export const snapshotConfig = z.object({
    */
   extensions: z
     .object({
-      source: snapshotFileExtension,
-      normalized: snapshotFileExtension,
-      meta: snapshotFileExtension.extract(['json']),
+      source: snapshotFileExtensionEnum,
+      normalized: snapshotFileExtensionEnum,
+      meta: snapshotFileExtensionEnum.extract(['json']),
     })
     .strict()
     .default({
@@ -54,7 +54,7 @@ export const snapshotConfig = z.object({
     }),
 });
 
-export type SnapshotConfig = z.infer<typeof snapshotConfig>;
+export type SnapshotConfig = z.infer<typeof snapshotConfigSchema>;
 
 export const defaultSnapshotConfig: Resolved<SnapshotConfig> = {
   enabled: true,

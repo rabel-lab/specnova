@@ -4,7 +4,7 @@ import z from 'zod';
 
 export type IgnoreFunc = (path: string, method: string) => boolean;
 
-export const parserOperationIdConfig = z.object({
+export const parserOperationIdConfigSchema = z.object({
   /**
    * Word to use as root path ( '/'  => 'root' )
    * @default 'root'
@@ -33,7 +33,7 @@ export const parserOperationIdConfig = z.object({
    */
   ignore: z.union([z.boolean(), z.function()]).optional(),
 });
-export type ParserOperationIdConfig = z.infer<typeof parserOperationIdConfig>;
+export type ParserOperationIdConfig = z.infer<typeof parserOperationIdConfigSchema>;
 
 export const defaultParserOperationIdConfig: Resolved<ParserOperationIdConfig> = {
   rootWord: 'root',
