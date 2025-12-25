@@ -36,7 +36,7 @@ export class Snapshot {
   private async getFullConfig(): Promise<ResolvedSpecnovaConfig> {
     //= Appy user config to base config
     const userConfig = await Promise.resolve(this.userConfig);
-    return userConfig.getConfig();
+    return userConfig.getSpecnovaConfig();
   }
   //-> User config
   private async getUserConfig(): Promise<UserConfig> {

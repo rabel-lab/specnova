@@ -13,7 +13,7 @@ export class UserConfig {
   private isLoaded = false;
   public readonly adapter: BaseAdapter;
   private env: Env | null = null;
-  private resolved: ResolvedSpecnovaConfig;
+  private resolvedSpecnovaConfig: ResolvedSpecnovaConfig;
 
   //# Static getters
   public static async getEnv(): Promise<Env> {
@@ -40,7 +40,7 @@ export class UserConfig {
   //# Constructor
   constructor() {
     this.adapter = new StarterAdapter();
-    this.resolved = defaultSpecnovaGenConfig;
+    this.resolvedSpecnovaConfig = defaultSpecnovaGenConfig;
   }
 
   //# Functions
@@ -58,8 +58,8 @@ export class UserConfig {
     if (!adapter) {
       return;
     }
-    const transformer = await adapter.transform(await Promise.resolve(this.resolved));
-    this.resolved = transformer;
+    const transformer = await adapter.transform(await Promise.resolve(this.resolvedSpecnovaConfig));
+    this.resolvedSpecnovaConfig = transformer;
   }
   /**
    * Load config from adapters.
@@ -76,9 +76,9 @@ export class UserConfig {
    * Get resolved config.
    * @returns - SpecnovaGenConfig
    */
-  async getConfig(): Promise<ResolvedSpecnovaConfig> {
+  async getSpecnovaConfig(): Promise<ResolvedSpecnovaConfig> {
     this.ensureLoaded();
-    return await Promise.resolve(this.resolved);
+    return await Promise.resolve(this.resolvedSpecnovaConfig);
   }
   /**
    * Use adapters to generate SDK.

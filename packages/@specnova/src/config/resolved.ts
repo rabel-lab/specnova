@@ -11,10 +11,10 @@ export async function getUserConfig() {
   return userConfig;
 }
 
-export async function getResolvedConfig() {
+export async function getResolvedSpecnovaConfig() {
   const userConfig = await getUserConfig();
   if (!resolvedConfig) {
-    resolvedConfig = await userConfig.getConfig();
+    resolvedConfig = await userConfig.getSpecnovaConfig();
   }
   return resolvedConfig;
 }

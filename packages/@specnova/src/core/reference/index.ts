@@ -1,4 +1,4 @@
-import { getResolvedConfig } from '@/config/resolved';
+import { getResolvedSpecnovaConfig } from '@/config/resolved';
 import { infoExtracter } from '@/core/extracter';
 import { SpecnovaSource } from '@/types';
 import { strictSnapshotFile } from '@/types/files';
@@ -103,7 +103,7 @@ function applyDereference(options: ApiDOMReferenceOptions) {
 let memoizedParser: typeof emptyParse | null = null;
 async function buildParse(): Promise<typeof emptyParse> {
   if (memoizedParser) return memoizedParser;
-  const resolvedConfig = await getResolvedConfig();
+  const resolvedConfig = await getResolvedSpecnovaConfig();
   const rootDir =
     typeof resolvedConfig.snapshot.folder === 'string' ? resolvedConfig.snapshot.folder : '';
   const localRootDir = path(process.cwd(), rootDir);

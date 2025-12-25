@@ -31,8 +31,8 @@ export class StarterAdapter extends FileAdapter<UserConfig> {
     }
     //-> Check if config is present
     let currentConfig;
-    if (loadedConfig?.getConfig) {
-      currentConfig = await loadedConfig.getConfig();
+    if (loadedConfig?.getSpecnovaConfig) {
+      currentConfig = await loadedConfig.getSpecnovaConfig();
     }
     //-> apply default config
     const finalConfig = mergeWithDefaults(modifiedExternalConfig, currentConfig);
