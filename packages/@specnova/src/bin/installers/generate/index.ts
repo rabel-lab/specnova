@@ -1,10 +1,10 @@
 import { defineCliInstaller } from '@/bin/installers/base';
-import { UserConfig } from '@/config';
+import { getUserConfig } from '@/config/resolved';
 export default defineCliInstaller({
   name: 'generate',
   description: 'Generate the SDK based on the adapter.',
   async action() {
-    const config = await new UserConfig().load();
+    const config = await getUserConfig();
     await config.generate();
   },
 });

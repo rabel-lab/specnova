@@ -1,4 +1,5 @@
 import { UserConfig } from '@/config';
+import { getUserConfig } from '@/config/resolved';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import { hasNormalize } from '@/config/utils';
 import converter from '@/core/converter';
@@ -14,7 +15,7 @@ import { join as pathJoin } from 'path';
 
 export class Snapshot {
   //# initialize
-  private userConfig: Promise<UserConfig> = new UserConfig().load();
+  private userConfig: Promise<UserConfig> = getUserConfig();
   private packageHandler: NpmPackage = new NpmPackage();
   private sourceUrl: string = '';
 
