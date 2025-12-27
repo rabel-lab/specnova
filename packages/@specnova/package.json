@@ -75,8 +75,13 @@
     "@swagger-api/apidom-parser-adapter-openapi-yaml-3-1": "1.0.0-rc.4",
     "@swagger-api/apidom-parser-adapter-yaml-1-2": "1.0.0-rc.4",
     "@swagger-api/apidom-reference": "1.0.0-rc.4",
+    "boxen": "^8.0.1",
     "c12": "^3.3.2",
+    "chalk": "^5.6.2",
+    "cli-spinners": "^3.3.0",
     "commander": "^11.1.0",
+    "inquirer": "^13.1.0",
+    "node-emoji": "^2.2.0",
     "semver": "^7.7.3",
     "typesafe-i18n": "^5.26.2",
     "zod": "^4.2.1"
