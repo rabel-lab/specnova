@@ -3,12 +3,13 @@
 import type { Formatters, Locales } from '@/i18n/i18n-types';
 import type { FormattersInitializer } from 'typesafe-i18n';
 
-import zodFormatter from '@/i18n/formatters/zod';
+import { getZodPrettifiedError } from '@/i18n/formatters/zod';
+
+export type FormatterFunc = (value: unknown) => unknown;
 
 export const initFormatters: FormattersInitializer<Locales, Formatters> = (locale: Locales) => {
   const formatters: Formatters = {
-    ...zodFormatter,
+    zodPrettifiedError: (value) => getZodPrettifiedError(value),
   };
-
   return formatters;
 };

@@ -3,7 +3,11 @@ import type { BaseTranslation } from '@/i18n/i18n-types';
 
 const en = {
   errors: {
+    typesafe_i18n: {
+      'invalid-formatter-param': '{{i18n_inv_param}}',
+    },
     zod: {
+      fromError: '{0|zodPrettifiedError}',
       codes: {
         custom: 'Custom error',
         invalid_type: 'Invalid type',

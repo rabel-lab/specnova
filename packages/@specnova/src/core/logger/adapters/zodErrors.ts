@@ -1,15 +1,12 @@
-import { LoggerErrorAdapter } from '@/core/logger/writer';
-import { ZodIssueBase, zodIssueSchema } from '@/i18n/formatters/zod';
+import { LoggerErrorAdapter } from '@/core/logger/base';
+import { isZodError, ZodError } from '@/i18n/formatters/zod';
+import L from '@/i18n/i18n-node';
 
-import { prettifyError } from 'zod/v4/core';
-
-export default class ZodErrorAdapter extends LoggerErrorAdapter<ZodIssueBase> {
-  public predicate(error: ZodIssueBase) {
-    const res = zodIssueSchema.safeParse(error);
-    return res.success;
+export default class ZodErrorAdapter extends LoggerErrorAdapter<ZodError> {
+  public predicate(error: ZodError) {
+    return isZodError(error);
   }
-  public write(error: ZodIssueBase): string {
-    const prettified = prettifyError(error);
-    return `{0|zodErrorCode} {0|zodErrorPath} \n ${prettified}`;
+  public write(error: ZodError): string {
+    return L.en.errors.zod.fromError(error);
   }
 }

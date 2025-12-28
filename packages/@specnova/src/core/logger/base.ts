@@ -7,21 +7,21 @@ const writerLevel = {
   error: find(':x:'),
 } as const;
 
-export abstract class LoggerErrorAdapter<TE extends any> {
+export abstract class LoggerErrorAdapter<TE extends Error> {
   public abstract predicate(error: TE): boolean;
   public abstract write(error: TE): string;
 }
 
 export class Logger {
   // private specnovaConfig = getResolvedSpecnovaConfig();
-  private errorAdapters: LoggerErrorAdapter<any>[] = [];
+  private errorAdapters: LoggerErrorAdapter<Error>[] = [];
 
   constructor() {}
   async info(message: string) {
     console.log(message);
   }
 
-  async registerErrorAdapter(...errorAdapter: LoggerErrorAdapter<any>[]) {
+  async registerErrorAdapter(...errorAdapter: LoggerErrorAdapter<Error>[]) {
     this.errorAdapters.push(...errorAdapter);
   }
 
@@ -35,7 +35,8 @@ export class Logger {
     console.log(writerLevel.success, message);
   }
   async error(error: Error) {
-    let adapterResult: string | null = null;
+    let adapterResult: string = error.message;
+    //-> apply adapters if needed
     for (const key in this.errorAdapters) {
       const adapter = this.errorAdapters[key];
       if (adapter.predicate(error)) {
@@ -43,12 +44,6 @@ export class Logger {
         break;
       }
     }
-    //-> return adapter result
-    if (adapterResult) {
-      return adapterResult;
-    } else {
-      //-> cast default error
-      return error.message;
-    }
+    console.log(adapterResult);
   }
 }
