@@ -1,6 +1,7 @@
 import { defaultSpecnovaGenConfig } from '@/config/default';
 import { SpecnovaConfig } from '@/config/type';
 import { hasNormalize, mergeWithDefaults } from '@/config/utils';
+import logger from '@/core/logger';
 import { ParserConfig } from '@/core/parser/config';
 import { PredicateFunc } from '@/core/predicate';
 
@@ -64,7 +65,7 @@ export class ParserCommander implements ParserCommanderImpl {
   byConfig<T extends Element>(element: T, config?: SpecnovaConfig): T {
     const mergedConfig = mergeWithDefaults(defaultSpecnovaGenConfig, config);
     if (!mergedConfig.normalized || !hasNormalize(mergedConfig)) {
-      console.log('✅ No normalization settings found');
+      logger.success('No normalization settings found');
       return element;
     } else {
       const key = Object.keys(mergedConfig.normalized);

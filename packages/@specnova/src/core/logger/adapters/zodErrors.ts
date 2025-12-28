@@ -7,6 +7,7 @@ export default class ZodErrorAdapter extends LoggerErrorAdapter<ZodError> {
     return isZodError(error);
   }
   public write(error: ZodError): string {
-    return L.en.errors.zod.fromError(error);
+    const prettyfied = L.en.errors.zod.fromError(error);
+    return `${L.en.errors.zod.label()} - \n ${prettyfied}`;
   }
 }

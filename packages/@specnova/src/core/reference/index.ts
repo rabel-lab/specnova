@@ -1,5 +1,6 @@
 import { getResolvedSpecnovaConfig } from '@/config/resolved';
 import { infoExtracter } from '@/core/extracter';
+import logger from '@/core/logger';
 import { SpecnovaSource } from '@/types';
 import { strictSnapshotFileEnum } from '@/types/files';
 
@@ -122,17 +123,19 @@ async function buildParse(): Promise<typeof emptyParse> {
  */
 export async function parseSource(source: string): Promise<SpecnovaSource> {
   const parser = await buildParse();
-  console.log('🔨 Extracting OpenAPI spec from:', source);
+  logger.config('Extracting OpenAPI spec from:', source);
   //# Parse
   let parsed: ParseResultElement | null;
   try {
     parsed = await parser(source);
   } catch (error) {
+    //!TODO - Handle errors better
     console.error('❌ Failed to parse spec source', error);
     throw error;
   }
 
   if (parsed.errors.length > 0 || !parsed.result) {
+    //!TODO - Handle errors better
     throw new Error('❌ Failed to parse spec');
   }
   //# Compute
@@ -144,12 +147,14 @@ export async function parseSource(source: string): Promise<SpecnovaSource> {
 
   //# Validate
   if (!extension.success) {
+    //!TODO - Handle errors better
     throw new Error(`❌ Snapshot: invalid file extension, ${extension}`);
   }
   if (!parsed.result) {
+    //!TODO - Handle errors better
     throw new Error('❌ Failed to parse spec');
   } else {
-    console.log('✅ Parsed spec');
+    logger.success('Parsed spec');
   }
   //# Extract info
   const info = infoExtracter.extract(parsed.result);

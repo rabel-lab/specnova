@@ -7,6 +7,7 @@ const en = {
       'invalid-formatter-param': '{{i18n_inv_param}}',
     },
     zod: {
+      label: 'Zod Validation',
       fromError: '{0|zodPrettifiedError}',
       codes: {
         custom: 'Custom error',

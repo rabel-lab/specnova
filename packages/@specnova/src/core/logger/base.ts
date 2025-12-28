@@ -1,10 +1,10 @@
 import { find } from 'node-emoji';
 
 const writerLevel = {
-  seed: find(':seedling:'),
-  config: find(':wrench:'),
-  success: find(':sparkles:'),
-  error: find(':x:'),
+  seed: find(':seedling:')?.emoji,
+  config: find(':wrench:')?.emoji,
+  success: find(':sparkles:')?.emoji,
+  error: find(':x:')?.emoji,
 } as const;
 
 export abstract class LoggerErrorAdapter<TE extends Error> {
@@ -28,8 +28,8 @@ export class Logger {
   async seed(message: string) {
     console.log(writerLevel.seed, message);
   }
-  async config(message: string) {
-    console.log(writerLevel.config, message);
+  async config(...args: string[]) {
+    console.log(writerLevel.config, ...args);
   }
   async success(message: string) {
     console.log(writerLevel.success, message);
@@ -44,6 +44,6 @@ export class Logger {
         break;
       }
     }
-    console.log(adapterResult);
+    console.log(writerLevel.error, adapterResult);
   }
 }

@@ -1,5 +1,6 @@
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import converter from '@/core/converter';
+import logger from '@/core/logger';
 import {
   snapshotConfigSchema,
   SnapshotFileSlots,
@@ -173,7 +174,7 @@ class SnapshotMetaImpl {
         }),
       );
       //# if successful, apply & clear
-      console.log(`✅ Applied changes to ${this.editData.path}`);
+      logger.success(`Applied changes to ${this.editData.path}`);
       this.apply();
       this.clear();
     } catch (e) {

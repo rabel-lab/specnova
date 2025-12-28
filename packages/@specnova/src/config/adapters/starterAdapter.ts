@@ -24,7 +24,6 @@ export class StarterAdapter extends FileAdapter<UserConfig> {
     //-> Check adapter
     let modifiedExternalConfig = externalConfig;
     if (loadedConfig.adapter !== undefined && typeof loadedConfig.adapter.name !== this.name) {
-      console.log('adapter', loadedConfig.adapter.name);
       //-> load that adapter on top of default
       let adapterResult = await loadedConfig.adapter.transform(externalConfig);
       modifiedExternalConfig = mergeWithDefaults(modifiedExternalConfig, adapterResult);

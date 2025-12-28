@@ -22,6 +22,10 @@ type RootTranslation = {
 		}
 		zod: {
 			/**
+			 * Z​o​d​ ​V​a​l​i​d​a​t​i​o​n
+			 */
+			label: string
+			/**
 			 * {​0​|​z​o​d​P​r​e​t​t​i​f​i​e​d​E​r​r​o​r​}
 			 * @param {unknown} 0
 			 */
@@ -85,6 +89,10 @@ export type TranslationFunctions = {
 			'invalid-formatter-param': (arg0: number | string | boolean) => LocalizedString
 		}
 		zod: {
+			/**
+			 * Zod Validation
+			 */
+			label: () => LocalizedString
 			/**
 			 * {0|zodPrettifiedError}
 			 */

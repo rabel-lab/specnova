@@ -3,6 +3,7 @@ import { getUserConfig } from '@/config/resolved';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import { hasNormalize } from '@/config/utils';
 import converter from '@/core/converter';
+import logger from '@/core/logger';
 import parserCommander from '@/core/parser';
 import { parseSource } from '@/core/reference';
 import { SnapshotMeta } from '@/core/snapshot/meta/base';
@@ -169,7 +170,7 @@ export class Snapshot {
     const config = await this.getFullConfig();
     //# Check if normalization is needed
     if (!hasNormalize(config)) {
-      console.log('✅ No normalization settings found');
+      logger.success('No normalization settings found');
       return true;
     }
     //# Get normalized file location

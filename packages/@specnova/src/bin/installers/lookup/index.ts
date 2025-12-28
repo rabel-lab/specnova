@@ -1,5 +1,6 @@
 import { defineCliInstaller } from '@/bin/installers/base';
 import { Snapshot } from '@/core';
+import logger from '@/core/logger';
 
 export default defineCliInstaller({
   name: 'lookup',
@@ -11,10 +12,10 @@ export default defineCliInstaller({
     const sourceVersion = sourceSnapshot.info.version;
 
     if (branchVersion === sourceVersion) {
-      console.log('✅ Local patch is up to date.');
+      logger.success('Local patch is up to date.');
       return false;
     }
-    console.log(`🚨 Update available: ${branchVersion} → ${sourceVersion}`);
+    console.warn(`Update available: ${branchVersion} → ${sourceVersion}`);
     return true;
   },
 });
