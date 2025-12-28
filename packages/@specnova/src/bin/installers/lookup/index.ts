@@ -15,7 +15,7 @@ export default defineCliInstaller({
       logger.success('Local patch is up to date.');
       return false;
     }
-    console.warn(`Update available: ${branchVersion} → ${sourceVersion}`);
+    logger.warn(`Update available: ${branchVersion} → ${sourceVersion}`);
     return true;
   },
 });

@@ -5,6 +5,7 @@ const writerLevel = {
   config: find(':wrench:')?.emoji,
   success: find(':sparkles:')?.emoji,
   error: find(':x:')?.emoji,
+  warn: find(':rotating_light:')?.emoji,
 } as const;
 
 export abstract class LoggerErrorAdapter<TE extends Error> {
@@ -33,6 +34,9 @@ export class Logger {
   }
   async success(message: string) {
     console.log(writerLevel.success, message);
+  }
+  async warn(message: string) {
+    console.log(writerLevel.warn, message);
   }
   async error(error: Error) {
     let adapterResult: string = error.message;
