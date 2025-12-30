@@ -1,3 +1,8 @@
+import SpecnovaErrorImpl from '@/errors/base';
+import { SpecnovaError } from '@/errors/SpecnovaUnimplimentedError';
+import { SpecnovaZodError } from '@/errors/ZodError';
+
+import chalk from 'chalk';
 import { find } from 'node-emoji';
 
 const writerLevel = {
@@ -8,24 +13,19 @@ const writerLevel = {
   warn: find(':rotating_light:')?.emoji,
 } as const;
 
-export abstract class LoggerErrorAdapter<TE extends Error> {
-  public abstract predicate(error: TE): boolean;
-  public abstract write(error: TE): string;
+type LoggerErrorCaster = new (error: unknown) => SpecnovaErrorImpl<any>;
+
+abstract class LoggerCaster<C extends LoggerErrorCaster> {
+  protected abstract caster: C;
+  public abstract try(error: unknown): C;
 }
 
 export class Logger {
-  // private specnovaConfig = getResolvedSpecnovaConfig();
-  private errorAdapters: LoggerErrorAdapter<Error>[] = [];
+  private errorAdapters = [SpecnovaError, SpecnovaZodError];
 
-  constructor() {}
   async info(message: string) {
     console.log(message);
   }
-
-  async registerErrorAdapter(...errorAdapter: LoggerErrorAdapter<Error>[]) {
-    this.errorAdapters.push(...errorAdapter);
-  }
-
   async seed(message: string) {
     console.log(writerLevel.seed, message);
   }
@@ -39,15 +39,26 @@ export class Logger {
     console.log(writerLevel.warn, message);
   }
   async error(error: Error) {
-    let adapterResult: string = error.message;
-    //-> apply adapters if needed
+    console.log(error);
+    let adapterResult;
+    SpecnovaError.predicate(error);
+    //-> apply specnova error if needed
     for (const key in this.errorAdapters) {
-      const adapter = this.errorAdapters[key];
-      if (adapter.predicate(error)) {
-        adapterResult = adapter.write(error);
-        break;
+      const caster = this.errorAdapters[key];
+      if (caster.predicate(error)) {
+        adapterResult = new caster(error);
       }
     }
-    console.log(writerLevel.error, adapterResult);
+    //-> Fallback to default adapter
+    if (!adapterResult) {
+      adapterResult = new SpecnovaError(error);
+    }
+
+    const message = [
+      chalk.red(adapterResult.header),
+      adapterResult.message,
+      chalk.dim(adapterResult.stack),
+    ];
+    console.error(message.join('\n'));
   }
 }

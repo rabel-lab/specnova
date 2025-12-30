@@ -1,4 +1,4 @@
-import ZodErrorAdapter from '@/core/logger/adapters/zodErrors';
+import ZodLoggerAdapter from '@/core/logger/adapters/zodErrors';
 
-const adapters = [new ZodErrorAdapter()];
+const adapters = [new ZodLoggerAdapter()];
 export default adapters;

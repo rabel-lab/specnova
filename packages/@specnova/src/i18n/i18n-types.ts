@@ -13,140 +13,81 @@ export type Translation = RootTranslation
 export type Translations = RootTranslation
 
 type RootTranslation = {
+	errorsUtils: {
+		/**
+		 * [​{​n​a​m​e​}​]​{​t​y​p​e​|​c​a​p​i​t​a​l​i​z​e​}​:
+		 * @param {string} name
+		 * @param {string} type
+		 */
+		header: RequiredParams<'name' | 'type|capitalize'>
+	}
 	errors: {
+		'default': {
+			/**
+			 * {​0​|​e​r​r​o​r​}
+			 * @param {unknown} 0
+			 */
+			fromError: RequiredParams<'0|error'>
+		}
 		typesafe_i18n: {
 			/**
-			 * {​{​i​1​8​n​_​i​n​v​_​p​a​r​a​m​}​}
+			 * {​{​{​i​1​8​n​_​i​n​v​_​p​a​r​a​m​}​}​}
 			 */
 			'invalid-formatter-param': string
 		}
-		zod: {
+		config: {
 			/**
-			 * Z​o​d​ ​V​a​l​i​d​a​t​i​o​n
+			 * I​n​v​a​l​i​d​ ​a​d​a​p​t​e​r
 			 */
-			label: string
+			'invalid-adapter': string
+		}
+		zod: {
 			/**
 			 * {​0​|​z​o​d​P​r​e​t​t​i​f​i​e​d​E​r​r​o​r​}
 			 * @param {unknown} 0
 			 */
 			fromError: RequiredParams<'0|zodPrettifiedError'>
-			codes: {
-				/**
-				 * C​u​s​t​o​m​ ​e​r​r​o​r
-				 */
-				custom: string
-				/**
-				 * I​n​v​a​l​i​d​ ​t​y​p​e
-				 */
-				invalid_type: string
-				/**
-				 * S​i​z​e​ ​i​s​ ​t​o​o​ ​b​i​g
-				 */
-				too_big: string
-				/**
-				 * S​i​z​e​ ​i​s​ ​t​o​o​ ​s​m​a​l​l
-				 */
-				too_small: string
-				/**
-				 * I​n​v​a​l​i​d​ ​f​o​r​m​a​t
-				 */
-				invalid_format: string
-				/**
-				 * N​o​t​ ​a​ ​m​u​l​t​i​p​l​e​ ​o​f
-				 */
-				not_multiple_of: string
-				/**
-				 * K​e​y​s​ ​a​r​e​ ​n​o​t​ ​r​e​c​o​g​n​i​z​e​d
-				 */
-				unrecognized_keys: string
-				/**
-				 * I​n​v​a​l​i​d​ ​u​n​i​o​n
-				 */
-				invalid_union: string
-				/**
-				 * I​n​v​a​l​i​d​ ​k​e​y
-				 */
-				invalid_key: string
-				/**
-				 * I​n​v​a​l​i​d​ ​e​l​e​m​e​n​t
-				 */
-				invalid_element: string
-				/**
-				 * I​n​v​a​l​i​d​ ​v​a​l​u​e
-				 */
-				invalid_value: string
-			}
 		}
 	}
 }
 
 export type TranslationFunctions = {
+	errorsUtils: {
+		/**
+		 * [{name}]{type|capitalize}:
+		 */
+		header: (arg: { name: string, type: string }) => LocalizedString
+	}
 	errors: {
+		'default': {
+			/**
+			 * {0|error}
+			 */
+			fromError: (arg0: unknown) => LocalizedString
+		}
 		typesafe_i18n: {
 			/**
-			 * {{i18n_inv_param}}
+			 * {{{i18n_inv_param}}}
 			 */
 			'invalid-formatter-param': (arg0: number | string | boolean) => LocalizedString
 		}
-		zod: {
+		config: {
 			/**
-			 * Zod Validation
+			 * Invalid adapter
 			 */
-			label: () => LocalizedString
+			'invalid-adapter': () => LocalizedString
+		}
+		zod: {
 			/**
 			 * {0|zodPrettifiedError}
 			 */
 			fromError: (arg0: unknown) => LocalizedString
-			codes: {
-				/**
-				 * Custom error
-				 */
-				custom: () => LocalizedString
-				/**
-				 * Invalid type
-				 */
-				invalid_type: () => LocalizedString
-				/**
-				 * Size is too big
-				 */
-				too_big: () => LocalizedString
-				/**
-				 * Size is too small
-				 */
-				too_small: () => LocalizedString
-				/**
-				 * Invalid format
-				 */
-				invalid_format: () => LocalizedString
-				/**
-				 * Not a multiple of
-				 */
-				not_multiple_of: () => LocalizedString
-				/**
-				 * Keys are not recognized
-				 */
-				unrecognized_keys: () => LocalizedString
-				/**
-				 * Invalid union
-				 */
-				invalid_union: () => LocalizedString
-				/**
-				 * Invalid key
-				 */
-				invalid_key: () => LocalizedString
-				/**
-				 * Invalid element
-				 */
-				invalid_element: () => LocalizedString
-				/**
-				 * Invalid value
-				 */
-				invalid_value: () => LocalizedString
-			}
 		}
 	}
 }
 
 export type Formatters = {
+	capitalize: (value: string) => unknown
+	error: (value: unknown) => unknown
 	zodPrettifiedError: (value: unknown) => unknown
 }

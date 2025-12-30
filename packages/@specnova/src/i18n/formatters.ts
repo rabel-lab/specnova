@@ -2,14 +2,18 @@
 /* eslint-disable */
 import type { Formatters, Locales } from '@/i18n/i18n-types';
 import type { FormattersInitializer } from 'typesafe-i18n';
+import error from '@/i18n/formatters/error';
+import zodPrettifiedError from '@/i18n/formatters/zod';
+import capitalize from '@/i18n/formatters/capitalize';
 
-import { getZodPrettifiedError } from '@/i18n/formatters/zod';
+type FormattersKey = keyof Formatters;
+export type FormatterFunc<K extends FormattersKey> = Formatters[K];
 
-export type FormatterFunc = (value: unknown) => unknown;
-
-export const initFormatters: FormattersInitializer<Locales, Formatters> = (locale: Locales) => {
+export const initFormatters: FormattersInitializer<Locales, Formatters> = () => {
   const formatters: Formatters = {
-    zodPrettifiedError: (value) => getZodPrettifiedError(value),
+    zodPrettifiedError,
+    error,
+    capitalize,
   };
   return formatters;
 };
