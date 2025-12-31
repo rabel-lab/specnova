@@ -58,11 +58,11 @@ export class Snapshot {
   //-> Ensure data
   private async ensureSpecnovaSource(): Promise<SpecnovaSource> {
     const specnovaSource = await this.getSpecnovaSource();
-    if (!specnovaSource) throw new Error('Snapshot: no OpenAPI source found');
+    if (!specnovaSource) throw new SpecnovaSnapshotError((l) => l.source.notFound());
     return specnovaSource;
   }
   private ensureMeta(): SnapshotMeta {
-    if (!this.meta) throw new Error('Snapshot: no meta found');
+    if (!this.meta) throw new SpecnovaSnapshotError((l) => l.meta.notFound());
     return this.meta;
   }
   /**
@@ -82,7 +82,7 @@ export class Snapshot {
       newMeta = new SnapshotMeta({ specnovaSource, config });
     } else {
       // Must be loaded using meta file
-      throw new Error('Snapshot: specnova source must be loaded from a meta file');
+      throw new SpecnovaSnapshotError((l) => l.source.internalFailedToLoad());
     }
     // set the new meta
     this.meta = newMeta;
@@ -132,7 +132,7 @@ export class Snapshot {
   async loadVersion(rawVersion: Semver): Promise<this> {
     const parsedVersion = semver.parse(rawVersion);
     const config = await this.getFullConfig();
-    const newMeta = SnapshotMeta.pull(parsedVersion, config);
+    const newMeta = SnapshotMeta.fromVersion(parsedVersion, config);
     const { path, files } = newMeta.get();
     const source = pathJoin(path, files.names.source);
     this.meta = newMeta;

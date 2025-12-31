@@ -3,6 +3,7 @@ import { StarterAdapter } from '@/config/adapters/starterAdapter';
 import { defaultSpecnovaGenConfig } from '@/config/default';
 import { Env, loadSafeEnvConfig } from '@/config/env';
 import { ResolvedSpecnovaConfig, SpecnovaConfig } from '@/config/type';
+import { SpecnovaConfigError } from '@/errors/ConfigError';
 
 export type UserConfigOptions = {
   adapter?: BaseAdapter;
@@ -46,7 +47,7 @@ export class UserConfig {
   //# Functions
   /** Ensure is loaded */
   private ensureLoaded() {
-    if (!this.isLoaded || !this.env) throw new Error('Config: config is not loaded');
+    if (!this.isLoaded || !this.env) throw new SpecnovaConfigError((l) => l.notLoaded());
     return this.isLoaded;
   }
   /**

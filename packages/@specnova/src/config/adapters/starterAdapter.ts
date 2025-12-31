@@ -2,6 +2,7 @@ import { FileAdapter } from '@/config/adapters/base';
 import { UserConfig, UserConfigOptions } from '@/config/base';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import { mergeWithDefaults } from '@/config/utils';
+import { SpecnovaConfigError } from '@/errors/ConfigError';
 
 export const defaultAdapterName = 'default';
 
@@ -38,6 +39,6 @@ export class StarterAdapter extends FileAdapter<UserConfig> {
     return finalConfig;
   }
   async generate() {
-    throw new Error('Adapter: generate is not implemented');
+    throw new SpecnovaConfigError((l) => l.adapter.generateNotImplemented());
   }
 }

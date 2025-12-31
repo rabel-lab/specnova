@@ -26,6 +26,44 @@ type RootTranslation = {
 	errors: {
 		snapshot: {
 			meta: {
+				/**
+				 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​n​o​t​ ​f​o​u​n​d​.
+				 */
+				notFound: string
+				/**
+				 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​i​s​ ​n​o​t​ ​l​o​c​k​e​d​.
+				 */
+				notLocked: string
+				/**
+				 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​i​s​ ​n​o​t​ ​u​n​l​o​c​k​e​d​.
+				 */
+				notUnlocked: string
+				/**
+				 * I​n​v​a​l​i​d​ ​d​i​g​e​s​t​e​r​ ​k​e​y​.
+				 */
+				invalidDigest: string
+				/**
+				 * T​h​e​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​ ​d​o​e​s​ ​n​o​t​ ​m​a​t​c​h​.
+				 */
+				missmatch: string
+				/**
+				 * F​a​i​l​e​d​ ​t​o​ ​c​r​e​a​t​e​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​.
+				 */
+				failedToCreate: string
+				/**
+				 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​.
+				 */
+				failedToLoad: string
+			}
+			source: {
+				/**
+				 * S​o​u​r​c​e​ ​n​o​t​ ​f​o​u​n​d​.
+				 */
+				notFound: string
+				/**
+				 * S​p​e​c​n​o​v​a​ ​s​o​u​r​c​e​ ​m​u​s​t​ ​b​e​ ​l​o​a​d​e​d​ ​f​r​o​m​ ​a​ ​m​e​t​a​ ​f​i​l​e​.
+				 */
+				internalFailedToLoad: string
 			}
 			/**
 			 * F​a​i​l​e​d​ ​t​o​ ​s​a​v​e​ ​{​0​}​{​0​}​.
@@ -65,6 +103,12 @@ type RootTranslation = {
 			 * @param {string} name
 			 */
 			failedToExecute: RequiredParams<'element' | 'name'>
+			refractor: {
+				/**
+				 * N​o​ ​r​e​f​r​a​c​t​o​r​ ​f​o​u​n​d​.
+				 */
+				noRefractorFound: string
+			}
 		}
 		unimplimented: {
 			/**
@@ -85,9 +129,21 @@ type RootTranslation = {
 		}
 		config: {
 			/**
-			 * I​n​v​a​l​i​d​ ​a​d​a​p​t​e​r​.
+			 * C​o​n​f​i​g​u​r​a​t​i​o​n​ ​i​s​ ​n​o​t​ ​l​o​a​d​e​d​.
 			 */
-			'invalid-adapter': string
+			notLoaded: string
+			adapter: {
+				/**
+				 * G​e​n​e​r​a​t​i​o​n​ ​i​s​ ​n​o​t​ ​i​m​p​l​e​m​e​n​t​e​d
+				 */
+				generateNotImplemented: string
+			}
+		}
+		extracter: {
+			/**
+			 * N​o​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
+			 */
+			noHandlerFound: string
 		}
 		zod: {
 			/**
@@ -109,6 +165,44 @@ export type TranslationFunctions = {
 	errors: {
 		snapshot: {
 			meta: {
+				/**
+				 * Snapshot meta not found.
+				 */
+				notFound: () => LocalizedString
+				/**
+				 * Snapshot meta is not locked.
+				 */
+				notLocked: () => LocalizedString
+				/**
+				 * Snapshot meta is not unlocked.
+				 */
+				notUnlocked: () => LocalizedString
+				/**
+				 * Invalid digester key.
+				 */
+				invalidDigest: () => LocalizedString
+				/**
+				 * The snapshot meta does not match.
+				 */
+				missmatch: () => LocalizedString
+				/**
+				 * Failed to create snapshot meta.
+				 */
+				failedToCreate: () => LocalizedString
+				/**
+				 * Failed to load snapshot meta.
+				 */
+				failedToLoad: () => LocalizedString
+			}
+			source: {
+				/**
+				 * Source not found.
+				 */
+				notFound: () => LocalizedString
+				/**
+				 * Specnova source must be loaded from a meta file.
+				 */
+				internalFailedToLoad: () => LocalizedString
 			}
 			/**
 			 * Failed to save {0}{0}.
@@ -144,6 +238,12 @@ export type TranslationFunctions = {
 			 * Failed to execute "{name}" command for element "{element}."
 			 */
 			failedToExecute: (arg: { element: string, name: string }) => LocalizedString
+			refractor: {
+				/**
+				 * No refractor found.
+				 */
+				noRefractorFound: () => LocalizedString
+			}
 		}
 		unimplimented: {
 			/**
@@ -163,9 +263,21 @@ export type TranslationFunctions = {
 		}
 		config: {
 			/**
-			 * Invalid adapter.
+			 * Configuration is not loaded.
 			 */
-			'invalid-adapter': () => LocalizedString
+			notLoaded: () => LocalizedString
+			adapter: {
+				/**
+				 * Generation is not implemented
+				 */
+				generateNotImplemented: () => LocalizedString
+			}
+		}
+		extracter: {
+			/**
+			 * No handler found.
+			 */
+			noHandlerFound: () => LocalizedString
 		}
 		zod: {
 			/**

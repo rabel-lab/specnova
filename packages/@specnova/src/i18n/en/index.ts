@@ -7,7 +7,19 @@ const en = {
   },
   errors: {
     snapshot: {
-      meta: {},
+      meta: {
+        notFound: 'Snapshot meta not found.',
+        notLocked: 'Snapshot meta is not locked.',
+        notUnlocked: 'Snapshot meta is not unlocked.',
+        invalidDigest: 'Invalid digester key.',
+        missmatch: 'The snapshot meta does not match.',
+        failedToCreate: 'Failed to create snapshot meta.',
+        failedToLoad: 'Failed to load snapshot meta.',
+      },
+      source: {
+        notFound: 'Source not found.',
+        internalFailedToLoad: 'Specnova source must be loaded from a meta file.',
+      },
       failedToSave: 'Failed to save {0:string}{0:stringArray}.',
     },
     reference: {
@@ -22,6 +34,9 @@ const en = {
       unknownCommand: 'Unknown command.',
       noHandlerFound: 'No handler found.',
       failedToExecute: 'Failed to execute "{name:string}" command for element "{element:string}."',
+      refractor: {
+        noRefractorFound: 'No refractor found.',
+      },
     },
     unimplimented: {
       unknownError: 'Unknown error',
@@ -31,7 +46,13 @@ const en = {
       'invalid-formatter-param': '\{\{i18n_invalid_param\}\}',
     },
     config: {
-      'invalid-adapter': 'Invalid adapter.',
+      notLoaded: 'Configuration is not loaded.',
+      adapter: {
+        generateNotImplemented: 'Generation is not implemented',
+      },
+    },
+    extracter: {
+      noHandlerFound: 'No handler found.',
     },
     zod: {
       fromError: '{0|zodPrettifiedError}',

@@ -12,6 +12,7 @@ export class SpecnovaUnimplementedError extends __SpecnovaErrorImpl<'unimpliment
   }
 }
 
+/* @internal */
 export const unimplimentedErrorCaster = new __ErrorCaster<Error, SpecnovaUnimplementedError>(
   SpecnovaUnimplementedError,
   (error): error is Error => error instanceof Error,

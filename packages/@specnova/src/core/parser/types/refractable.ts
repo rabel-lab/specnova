@@ -1,6 +1,7 @@
 import { defaultSpecnovaGenConfig } from '@/config/default';
 import { ParserCommandHandler, ParserCommandName, ParserCommandOptions } from '@/core/parser/base';
 import { PredicateFunc } from '@/core/predicate';
+import { SpecnovaParserError } from '@/errors/ParserError';
 
 import { Element } from '@swagger-api/apidom-core';
 
@@ -29,6 +30,7 @@ type RefractablePluginShape = (toolbox?: any) => {
 
 /**
  * Create a RefractablePlugin instance.
+ * ApiDom Compatible.
  * @param plugin - RefractablePluginShape
  * @param refractor - Refractable
  * @static defaultOption - Default ParserCommandOptions
@@ -58,7 +60,8 @@ export class RefractablePlugin {
       predicate,
       handler: (element: E, options?: ParserCommandOptions) => {
         const refractorTarget = refractable.Element;
-        if (!isRefractable(refractorTarget)) throw new Error('ParserCommander: no refractor found');
+        if (!isRefractable(refractorTarget))
+          throw new SpecnovaParserError((l) => l.refractor.noRefractorFound());
         const h = refractorTarget.refract(element, {
           plugins: [refractable.plugin(options)],
         }) as E;

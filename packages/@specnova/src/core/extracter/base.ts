@@ -1,4 +1,5 @@
 import { PredicateFunc } from '@/core/predicate';
+import { SpecnovaExtracterError } from '@/errors/ExtracterError';
 
 import { Element } from '@swagger-api/apidom-core';
 
@@ -22,7 +23,7 @@ export abstract class Extracter<T> {
         return h.handler(element);
       }
     }
-    throw new Error('Visitor: no handler found');
+    throw new SpecnovaExtracterError((l) => l.noHandlerFound());
   }
   /**
    * Create a ExtractHandler.

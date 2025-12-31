@@ -3,7 +3,12 @@ import { defineConfig } from 'tsup';
 export default defineConfig([
   // Library
   {
-    entry: ['src/index.ts', 'src/config/index.ts', 'src/config/adapters/index.ts'],
+    entry: [
+      'src/index.ts',
+      'src/config/index.ts',
+      'src/config/adapters/index.ts',
+      'src/errors/index.ts',
+    ],
     format: ['esm', 'cjs'],
     dts: true,
     sourcemap: true,

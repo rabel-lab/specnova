@@ -13,6 +13,7 @@ import {
   buildMetaSourceFiles,
 } from '@/core/snapshot/meta/lib/build';
 import { compareSha256, digestString, sha256StringSchema } from '@/core/snapshot/meta/lib/compare';
+import { SpecnovaSnapshotError } from '@/errors/SnapshotError';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
 import { Semver, semver } from '@/types/semver';
@@ -83,7 +84,7 @@ class SnapshotMetaImpl {
    */
   protected ensureUnlocked() {
     if (this.lock) {
-      throw new Error('Snapshot: meta is not locked');
+      throw new SpecnovaSnapshotError((l) => l.meta.notUnlocked());
     }
   }
 
@@ -93,7 +94,7 @@ class SnapshotMetaImpl {
    */
   protected ensureLocked() {
     if (!this.lock) {
-      throw new Error('Snapshot: meta is locked');
+      throw new SpecnovaSnapshotError((l) => l.meta.notLocked());
     }
   }
 
@@ -122,7 +123,7 @@ class SnapshotMetaImpl {
           };
           break;
         default:
-          throw new Error('Snapshot: invalid digester key');
+          throw new SpecnovaSnapshotError((l) => l.meta.invalidDigest());
       }
     }
   }
@@ -213,7 +214,7 @@ export class SnapshotMeta extends SnapshotMetaImpl {
       super(args.meta);
       // Validate files & sha256
       if (!this.softCompare(this)) {
-        throw new Error('Snapshot: invalid meta');
+        throw new SpecnovaSnapshotError((l) => l.meta.missmatch());
       }
       return;
     } else if ('specnovaSource' in args && 'config' in args) {
@@ -230,7 +231,7 @@ export class SnapshotMeta extends SnapshotMetaImpl {
         },
       });
     } else {
-      throw new Error('Snapshot: invalid meta constructor');
+      throw new SpecnovaSnapshotError((l) => l.meta.failedToCreate());
     }
   }
 
@@ -241,7 +242,7 @@ export class SnapshotMeta extends SnapshotMetaImpl {
     return new this({ meta: parsedMeta });
   }
 
-  static pull(rawVersion: Semver, config: ResolvedSpecnovaConfig): SnapshotMeta {
+  static fromVersion(rawVersion: Semver, config: ResolvedSpecnovaConfig): SnapshotMeta {
     const version = semver.parse(rawVersion);
     const path = buildMetaPath(config, version);
     const metaFile = buildMetaFile();
@@ -251,7 +252,7 @@ export class SnapshotMeta extends SnapshotMetaImpl {
       const meta = converter.fromText<SnapshotMetaData>(text.toString(), 'json');
       return new SnapshotMeta({ meta });
     } catch {
-      throw new Error('Snapshot: failed to load meta');
+      throw new SpecnovaSnapshotError((l) => l.meta.failedToLoad());
     }
   }
 
