@@ -1,6 +1,7 @@
-import SpecnovaErrorImpl from '@/errors/base';
-import { SpecnovaError } from '@/errors/SpecnovaUnimplimentedError';
-import { SpecnovaZodError } from '@/errors/ZodError';
+// tslint:disable:no-console
+import SpecnovaErrorBase from '@/errors/base';
+import { errorCasters } from '@/errors/caster';
+import { SpecnovaError } from '@/errors/UnimplimentedError';
 
 import chalk from 'chalk';
 import { find } from 'node-emoji';
@@ -13,47 +14,34 @@ const writerLevel = {
   warn: find(':rotating_light:')?.emoji,
 } as const;
 
-type LoggerErrorCaster = new (error: unknown) => SpecnovaErrorImpl<any>;
-
-abstract class LoggerCaster<C extends LoggerErrorCaster> {
-  protected abstract caster: C;
-  public abstract try(error: unknown): C;
-}
-
 export class Logger {
-  private errorAdapters = [SpecnovaError, SpecnovaZodError];
-
-  async info(message: string) {
-    console.log(message);
+  async debug(message: string) {
+    console.debug(message);
   }
   async seed(message: string) {
-    console.log(writerLevel.seed, message);
+    console.info(writerLevel.seed, message);
   }
   async config(...args: string[]) {
-    console.log(writerLevel.config, ...args);
+    console.info(writerLevel.config, ...args);
   }
   async success(message: string) {
-    console.log(writerLevel.success, message);
+    console.info(writerLevel.success, message);
   }
   async warn(message: string) {
-    console.log(writerLevel.warn, message);
+    console.warn(writerLevel.warn, message);
   }
   async error(error: Error) {
     console.log(error);
-    let adapterResult;
-    SpecnovaError.predicate(error);
-    //-> apply specnova error if needed
-    for (const key in this.errorAdapters) {
-      const caster = this.errorAdapters[key];
-      if (caster.predicate(error)) {
-        adapterResult = new caster(error);
+    let adapterResult: SpecnovaErrorBase<any, any> | undefined;
+    //-> apply casters
+    for (const caster of errorCasters) {
+      if (caster.isCastable(error)) {
+        adapterResult = caster.cast(error);
       }
     }
-    //-> Fallback to default adapter
     if (!adapterResult) {
       adapterResult = new SpecnovaError(error);
     }
-
     const message = [
       chalk.red(adapterResult.header),
       adapterResult.message,

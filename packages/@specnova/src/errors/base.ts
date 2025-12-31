@@ -12,37 +12,30 @@ export type ErrorTranslation<T extends ErrorTranslationsKeys> = (
   translations: ErrorTranslationsRoot<T>,
 ) => LocalizedString;
 
-/* Specnova Error */
-const ERROR_HANDLER_NAME = 'Specnova';
-
-export type SpecnovaErrorPredicate<T extends Error> = (error: T) => boolean;
-
+/* Clean stack helper */
 function cleanStack(message: string, stack?: string) {
   return stack?.split(message + '\n').pop();
 }
 
-export default abstract class SpecnovaErrorImpl<
+/* Specnova Error namespace */
+const ERROR_HANDLER_NAME = 'Specnova';
+export default abstract class SpecnovaErrorBase<
   T extends ErrorTranslationsKeys,
   BaseError extends Error | never = never,
 > extends Error {
+  //# Public properties
   public readonly name = ERROR_HANDLER_NAME;
   public readonly type: T;
   public readonly header: string;
-  private readonly locale: Locales = detectLocale();
+  public readonly cause?: BaseError;
 
-  protected readonly createHeader = () => {
+  //# Private properties
+  private readonly locale: Locales = detectLocale();
+  private readonly getHeader = () => {
     return L[this.locale].errorsUtils.header({ name: this.name, type: this.type });
   };
 
-  public static readonly predicate: SpecnovaErrorPredicate<Error> = (
-    error: unknown,
-  ): error is typeof this => {
-    if (error instanceof Error) {
-      return error.name === this.name;
-    }
-    return false;
-  };
-
+  //# Constructor
   constructor(type: T, formatter: ErrorTranslation<T>, error?: BaseError) {
     const locale = detectLocale();
     const translations = L[locale].errors[type];
@@ -50,19 +43,21 @@ export default abstract class SpecnovaErrorImpl<
     super(message);
     this.type = type;
     this.locale = locale;
-    this.header = this.createHeader();
-    // Capture stack
-    //# If has error use it
+    this.header = this.getHeader();
+    //-> Capture stack
+    //IF error, use it
     if (error) {
+      this.cause = error;
       this.stack = cleanStack(error.message, error.stack);
     } else if (typeof Error.captureStackTrace === 'function') {
-      //# If not, capture stack
+      //IF captureStackTrace is available, use it
       Error.stackTraceLimit = 5;
       Error.captureStackTrace(this, this.constructor);
       this.stack = cleanStack(this.message, this.stack);
     } else {
-      // If not, create stack
-      this.stack = new Error().stack;
+      //IF not, create stack
+      const newStack = new Error().stack ?? '';
+      this.stack = cleanStack(newStack);
     }
   }
 }

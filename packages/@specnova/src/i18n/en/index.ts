@@ -9,7 +9,7 @@ const en = {
       fromError: '{0|error}',
     },
     typesafe_i18n: {
-      'invalid-formatter-param': '{{{i18n_inv_param}}}',
+      'invalid-formatter-param': '\{\{i18n_invalid_param\}\}',
     },
     config: {
       'invalid-adapter': 'Invalid adapter',
