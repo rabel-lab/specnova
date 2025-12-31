@@ -79,7 +79,7 @@ export class ParserCommander implements ParserCommanderImpl {
             throw e;
           } else {
             throw new SpecnovaParserError(
-              (l) => l.failedToExecute({ element: element, name: cn }),
+              (l) => l.failedToExecute({ element: element.element, name: cn }),
               e instanceof Error ? e : new Error('Unknown error'),
             );
           }

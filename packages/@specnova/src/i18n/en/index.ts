@@ -6,10 +6,17 @@ const en = {
     header: '[{name:string}]{type:string|capitalize}:',
   },
   errors: {
+    reference: {
+      parse: {
+        failedToParse: 'Failed to parse source.',
+        invalidFileExtension: 'Invalid file extension. Supported extensions: {extension:string}.',
+        noResult: 'No result found.',
+      },
+    },
     parser: {
-      unknownCommand: 'Unknown command',
-      noHandlerFound: 'No handler found',
-      failedToExecute: 'Failed to execute "{name|string}" command for element "{element|string}"',
+      unknownCommand: 'Unknown command.',
+      noHandlerFound: 'No handler found.',
+      failedToExecute: 'Failed to execute "{name:string}" command for element "{element:string}."',
     },
     unimplimented: {
       unknownError: 'Unknown error',
@@ -19,7 +26,7 @@ const en = {
       'invalid-formatter-param': '\{\{i18n_invalid_param\}\}',
     },
     config: {
-      'invalid-adapter': 'Invalid adapter',
+      'invalid-adapter': 'Invalid adapter.',
     },
     zod: {
       fromError: '{0|zodPrettifiedError}',

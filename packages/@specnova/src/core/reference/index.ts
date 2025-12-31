@@ -1,6 +1,7 @@
 import { getResolvedSpecnovaConfig } from '@/config/resolved';
 import { infoExtracter } from '@/core/extracter';
 import logger from '@/core/logger';
+import { SpecnovaReferenceError } from '@/errors/ReferenceError';
 import { SpecnovaSource } from '@/types';
 import { strictSnapshotFileEnum } from '@/types/files';
 
@@ -128,15 +129,15 @@ export async function parseSource(source: string): Promise<SpecnovaSource> {
   let parsed: ParseResultElement | null;
   try {
     parsed = await parser(source);
-  } catch (error) {
-    //!TODO - Handle errors better
-    console.error('❌ Failed to parse spec source', error);
-    throw error;
+  } catch (e) {
+    throw new SpecnovaReferenceError(
+      (l) => l.parse.failedToParse(),
+      e instanceof Error ? e : new Error('Unknown error'),
+    );
   }
 
   if (parsed.errors.length > 0 || !parsed.result) {
-    //!TODO - Handle errors better
-    throw new Error('❌ Failed to parse spec');
+    throw new SpecnovaReferenceError((l) => l.parse.noResult());
   }
   //# Compute
   const isExternal = source.startsWith('http://') || source.startsWith('https://');
@@ -147,14 +148,14 @@ export async function parseSource(source: string): Promise<SpecnovaSource> {
 
   //# Validate
   if (!extension.success) {
-    //!TODO - Handle errors better
-    throw new Error(`❌ Snapshot: invalid file extension, ${extension}`);
+    throw new SpecnovaReferenceError((l) =>
+      l.parse.invalidFileExtension({ extension: strictSnapshotFileEnum.options.toString() }),
+    );
   }
   if (!parsed.result) {
-    //!TODO - Handle errors better
-    throw new Error('❌ Failed to parse spec');
+    throw new SpecnovaReferenceError((l) => l.parse.noResult());
   } else {
-    logger.success('Parsed spec');
+    logger.success('Parsed spec.');
   }
   //# Extract info
   const info = infoExtracter.extract(parsed.result);

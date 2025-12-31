@@ -22,21 +22,38 @@ type RootTranslation = {
 		header: RequiredParams<'name' | 'type|capitalize'>
 	}
 	errors: {
+		reference: {
+			parse: {
+				/**
+				 * F​a​i​l​e​d​ ​t​o​ ​p​a​r​s​e​ ​s​o​u​r​c​e​.
+				 */
+				failedToParse: string
+				/**
+				 * I​n​v​a​l​i​d​ ​f​i​l​e​ ​e​x​t​e​n​s​i​o​n​.​ ​S​u​p​p​o​r​t​e​d​ ​e​x​t​e​n​s​i​o​n​s​:​ ​{​e​x​t​e​n​s​i​o​n​}​.
+				 * @param {string} extension
+				 */
+				invalidFileExtension: RequiredParams<'extension'>
+				/**
+				 * N​o​ ​r​e​s​u​l​t​ ​f​o​u​n​d​.
+				 */
+				noResult: string
+			}
+		}
 		parser: {
 			/**
-			 * U​n​k​n​o​w​n​ ​c​o​m​m​a​n​d
+			 * U​n​k​n​o​w​n​ ​c​o​m​m​a​n​d​.
 			 */
 			unknownCommand: string
 			/**
-			 * N​o​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d
+			 * N​o​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
 			 */
 			noHandlerFound: string
 			/**
-			 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​"​{​n​a​m​e​|​s​t​r​i​n​g​}​"​ ​c​o​m​m​a​n​d​ ​f​o​r​ ​e​l​e​m​e​n​t​ ​"​{​e​l​e​m​e​n​t​|​s​t​r​i​n​g​}​"
-			 * @param {unknown} element
-			 * @param {unknown} name
+			 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​"​{​n​a​m​e​}​"​ ​c​o​m​m​a​n​d​ ​f​o​r​ ​e​l​e​m​e​n​t​ ​"​{​e​l​e​m​e​n​t​}​.​"
+			 * @param {string} element
+			 * @param {string} name
 			 */
-			failedToExecute: RequiredParams<'element|string' | 'name|string'>
+			failedToExecute: RequiredParams<'element' | 'name'>
 		}
 		unimplimented: {
 			/**
@@ -57,7 +74,7 @@ type RootTranslation = {
 		}
 		config: {
 			/**
-			 * I​n​v​a​l​i​d​ ​a​d​a​p​t​e​r
+			 * I​n​v​a​l​i​d​ ​a​d​a​p​t​e​r​.
 			 */
 			'invalid-adapter': string
 		}
@@ -79,19 +96,35 @@ export type TranslationFunctions = {
 		header: (arg: { name: string, type: string }) => LocalizedString
 	}
 	errors: {
+		reference: {
+			parse: {
+				/**
+				 * Failed to parse source.
+				 */
+				failedToParse: () => LocalizedString
+				/**
+				 * Invalid file extension. Supported extensions: {extension}.
+				 */
+				invalidFileExtension: (arg: { extension: string }) => LocalizedString
+				/**
+				 * No result found.
+				 */
+				noResult: () => LocalizedString
+			}
+		}
 		parser: {
 			/**
-			 * Unknown command
+			 * Unknown command.
 			 */
 			unknownCommand: () => LocalizedString
 			/**
-			 * No handler found
+			 * No handler found.
 			 */
 			noHandlerFound: () => LocalizedString
 			/**
-			 * Failed to execute "{name|string}" command for element "{element|string}"
+			 * Failed to execute "{name}" command for element "{element}."
 			 */
-			failedToExecute: (arg: { element: unknown, name: unknown }) => LocalizedString
+			failedToExecute: (arg: { element: string, name: string }) => LocalizedString
 		}
 		unimplimented: {
 			/**
@@ -111,7 +144,7 @@ export type TranslationFunctions = {
 		}
 		config: {
 			/**
-			 * Invalid adapter
+			 * Invalid adapter.
 			 */
 			'invalid-adapter': () => LocalizedString
 		}
@@ -127,6 +160,5 @@ export type TranslationFunctions = {
 export type Formatters = {
 	capitalize: (value: string) => unknown
 	error: (value: unknown) => unknown
-	string: (value: unknown) => unknown
 	zodPrettifiedError: (value: unknown) => unknown
 }
