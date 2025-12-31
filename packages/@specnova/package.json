@@ -27,6 +27,10 @@
     "./adapters": {
       "import": "./dist/lib/config/adapters/index.js",
       "require": "./dist/lib/config/adapters/index.cjs"
+    },
+    "./errors": {
+      "import": "./dist/lib/errors/index.js",
+      "require": "./dist/lib/errors/index.cjs"
     }
   },
   "specnova": {

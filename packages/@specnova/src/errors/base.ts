@@ -2,7 +2,7 @@ import L from '@/i18n/i18n-node';
 import { BaseLocale, Locales } from '@/i18n/i18n-types';
 import { detectLocale } from '@/i18n/i18n-util';
 
-import { LocalizedString } from 'typesafe-i18n';
+import type { LocalizedString } from 'typesafe-i18n';
 
 /* Extact types */
 type I18nErrorsTranslations = (typeof L)[BaseLocale]['errors'];
@@ -23,7 +23,7 @@ function cleanStack(message: string, stack?: string) {
 const ERROR_HANDLER_NAME = 'Specnova';
 
 /** @internal */
-export default abstract class __SpecnovaErrorImpl<
+export abstract class __SpecnovaErrorImpl<
   T extends ErrorTranslationsKeys,
   BaseError extends Error | never = never,
 > extends Error {

@@ -1,8 +1,7 @@
 /* Allow console.log for logger only */
 /* eslint-disable no-console */
-import __SpecnovaErrorImpl from '@/errors/base';
+import { __SpecnovaErrorImpl } from '@/errors/base';
 import { errorCasters } from '@/errors/caster';
-import { SpecnovaUnimplementedError } from '@/errors/UnimplimentedError';
 
 import chalk from 'chalk';
 import { find } from 'node-emoji';
@@ -32,7 +31,6 @@ export class Logger {
     console.warn(writerLevel.warn, message);
   }
   async error(error: Error | unknown) {
-    console.log(error);
     let adapterResult: __SpecnovaErrorImpl<any, any> | undefined;
     //-> apply casters
     for (const caster of errorCasters) {
@@ -42,7 +40,9 @@ export class Logger {
     }
     //-> if no adapter found, throw unkown error
     if (!adapterResult) {
-      adapterResult = new SpecnovaUnimplementedError();
+      console.log('not found');
+      return;
+      // adapterResult = new SpecnovaUnimplementedError();
     }
     const message = [
       chalk.red(adapterResult.header),

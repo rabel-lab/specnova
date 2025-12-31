@@ -1,7 +1,7 @@
 // This file required `PNPM run dev` to generate
-import type { BaseTranslation } from '@/i18n/i18n-types';
+import { BaseTranslation } from '@/i18n/i18n-types';
 
-const en = {
+const en: BaseTranslation = {
   errorsUtils: {
     header: '[{name:string}]{type:string|capitalize}:',
   },
@@ -58,6 +58,6 @@ const en = {
       fromError: '{0|zodPrettifiedError}',
     },
   },
-} satisfies BaseTranslation;
+};
 
 export default en;

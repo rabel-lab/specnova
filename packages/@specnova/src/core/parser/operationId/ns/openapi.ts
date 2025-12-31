@@ -1,8 +1,10 @@
 import { operationIdNormalizer } from '@/core/parser/operationId/lib/utils';
 import { RefractablePlugin } from '@/core/parser/types/refractable';
 
-import { OpenApi3_1Element } from '@swagger-api/apidom-ns-openapi-3-1';
-import { refractorPluginNormalizeOperationIds } from '@swagger-api/apidom-ns-openapi-3-1';
+import {
+  OpenApi3_1Element,
+  refractorPluginNormalizeOperationIds,
+} from '@swagger-api/apidom-ns-openapi-3-1';
 
 /**
  * Create a RefractablePlugin.

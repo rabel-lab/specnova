@@ -1,14 +1,13 @@
 import { HeyApiPlugin, heyApiPluginName } from '@/adapters/@hey-api/type';
 
 import { FileAdapter } from '@rabel-lab/specnova/adapters';
-import type { ResolvedSpecnovaConfig, SpecnovaConfig } from '@rabel-lab/specnova/config';
-import { mergeWithDefaults } from '@rabel-lab/specnova/config';
-import { SpecnovaConfig } from '@rabel-lab/specnova/config';
+import type { ResolvedSpecnovaConfig } from '@rabel-lab/specnova/config';
+import { mergeWithDefaults, SpecnovaConfig } from '@rabel-lab/specnova/config';
 function isHeyApiPlugin(plugin: unknown): plugin is HeyApiPlugin['Config'] {
   return typeof plugin === 'object' && plugin !== null && (plugin as any).name === heyApiPluginName;
 }
 
-import { UserConfig as HeyApiUserConfig } from '@hey-api/openapi-ts';
+import type { UserConfig as HeyApiUserConfig } from '@hey-api/openapi-ts';
 
 export class HeyApiAdapater extends FileAdapter<HeyApiUserConfig> {
   name = heyApiPluginName;
@@ -32,6 +31,6 @@ export class HeyApiAdapater extends FileAdapter<HeyApiUserConfig> {
     return mergeWithDefaults(externalConfig, resolvedConfig);
   }
   async generate() {
-    throw new SpecnovaError();
+    //!IMPORTANT - throw not implemented error
   }
 }

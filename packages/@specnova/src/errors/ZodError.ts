@@ -1,4 +1,4 @@
-import __SpecnovaErrorImpl from '@/errors/base';
+import { __SpecnovaErrorImpl } from '@/errors/base';
 import { __ErrorCaster } from '@/errors/caster/base';
 
 import { ZodError } from 'zod';
