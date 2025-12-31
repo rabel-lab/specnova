@@ -7,6 +7,7 @@ import logger from '@/core/logger';
 import parserCommander from '@/core/parser';
 import { parseSource } from '@/core/reference';
 import { SnapshotMeta } from '@/core/snapshot/meta/base';
+import { SpecnovaSnapshotError } from '@/errors/SnapshotError';
 import { NpmPackage } from '@/npm/base';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
@@ -158,8 +159,10 @@ export class Snapshot {
       });
       return true;
     } catch (e) {
-      console.error('❌ Failed to save source', e);
-      return false;
+      throw new SpecnovaSnapshotError(
+        (l) => l.failedToSave('source'),
+        e instanceof Error ? e : new Error('Unknown error'),
+      );
     }
   }
   /**
@@ -192,8 +195,10 @@ export class Snapshot {
       });
       return true;
     } catch (e) {
-      console.error('❌ Failed to save normalized', e);
-      return false;
+      throw new SpecnovaSnapshotError(
+        (l) => l.failedToSave('normalized'),
+        e instanceof Error ? e : new Error('Unknown error'),
+      );
     }
   }
   /**

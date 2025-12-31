@@ -6,10 +6,15 @@ const en = {
     header: '[{name:string}]{type:string|capitalize}:',
   },
   errors: {
+    snapshot: {
+      meta: {},
+      failedToSave: 'Failed to save {0:string}{0:stringArray}.',
+    },
     reference: {
       parse: {
         failedToParse: 'Failed to parse source.',
-        invalidFileExtension: 'Invalid file extension. Supported extensions: {extension:string}.',
+        invalidFileExtension:
+          'Invalid file extension. Supported extensions: {extension:stringArray}.',
         noResult: 'No result found.',
       },
     },
@@ -20,7 +25,7 @@ const en = {
     },
     unimplimented: {
       unknownError: 'Unknown error',
-      fromError: '{0|error}',
+      fromError: '{0:error|error}',
     },
     typesafe_i18n: {
       'invalid-formatter-param': '\{\{i18n_invalid_param\}\}',

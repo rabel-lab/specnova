@@ -2,6 +2,8 @@
 /* eslint-disable */
 import type { BaseTranslation as BaseTranslationType, LocalizedString, RequiredParams } from 'typesafe-i18n'
 
+import type { error, stringArray } from './custom-types'
+
 export type BaseTranslation = BaseTranslationType
 export type BaseLocale = 'en'
 
@@ -22,6 +24,15 @@ type RootTranslation = {
 		header: RequiredParams<'name' | 'type|capitalize'>
 	}
 	errors: {
+		snapshot: {
+			meta: {
+			}
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​s​a​v​e​ ​{​0​}​{​0​}​.
+			 * @param {string | stringArray} 0
+			 */
+			failedToSave: RequiredParams<'0' | '0'>
+		}
 		reference: {
 			parse: {
 				/**
@@ -30,7 +41,7 @@ type RootTranslation = {
 				failedToParse: string
 				/**
 				 * I​n​v​a​l​i​d​ ​f​i​l​e​ ​e​x​t​e​n​s​i​o​n​.​ ​S​u​p​p​o​r​t​e​d​ ​e​x​t​e​n​s​i​o​n​s​:​ ​{​e​x​t​e​n​s​i​o​n​}​.
-				 * @param {string} extension
+				 * @param {stringArray} extension
 				 */
 				invalidFileExtension: RequiredParams<'extension'>
 				/**
@@ -62,7 +73,7 @@ type RootTranslation = {
 			unknownError: string
 			/**
 			 * {​0​|​e​r​r​o​r​}
-			 * @param {unknown} 0
+			 * @param {error} 0
 			 */
 			fromError: RequiredParams<'0|error'>
 		}
@@ -96,6 +107,14 @@ export type TranslationFunctions = {
 		header: (arg: { name: string, type: string }) => LocalizedString
 	}
 	errors: {
+		snapshot: {
+			meta: {
+			}
+			/**
+			 * Failed to save {0}{0}.
+			 */
+			failedToSave: (arg0: string | stringArray) => LocalizedString
+		}
 		reference: {
 			parse: {
 				/**
@@ -105,7 +124,7 @@ export type TranslationFunctions = {
 				/**
 				 * Invalid file extension. Supported extensions: {extension}.
 				 */
-				invalidFileExtension: (arg: { extension: string }) => LocalizedString
+				invalidFileExtension: (arg: { extension: stringArray }) => LocalizedString
 				/**
 				 * No result found.
 				 */
@@ -134,7 +153,7 @@ export type TranslationFunctions = {
 			/**
 			 * {0|error}
 			 */
-			fromError: (arg0: unknown) => LocalizedString
+			fromError: (arg0: error) => LocalizedString
 		}
 		typesafe_i18n: {
 			/**
@@ -159,6 +178,6 @@ export type TranslationFunctions = {
 
 export type Formatters = {
 	capitalize: (value: string) => unknown
-	error: (value: unknown) => unknown
+	error: (value: error) => unknown
 	zodPrettifiedError: (value: unknown) => unknown
 }

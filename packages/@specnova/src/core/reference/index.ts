@@ -149,7 +149,7 @@ export async function parseSource(source: string): Promise<SpecnovaSource> {
   //# Validate
   if (!extension.success) {
     throw new SpecnovaReferenceError((l) =>
-      l.parse.invalidFileExtension({ extension: strictSnapshotFileEnum.options.toString() }),
+      l.parse.invalidFileExtension({ extension: strictSnapshotFileEnum.options }),
     );
   }
   if (!parsed.result) {
