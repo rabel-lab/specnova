@@ -1,7 +1,8 @@
-// tslint:disable:no-console
-import SpecnovaErrorBase from '@/errors/base';
+/* Allow console.log for logger only */
+/* eslint-disable no-console */
+import __SpecnovaErrorImpl from '@/errors/base';
 import { errorCasters } from '@/errors/caster';
-import { SpecnovaError } from '@/errors/UnimplimentedError';
+import { SpecnovaUnimplementedError } from '@/errors/UnimplimentedError';
 
 import chalk from 'chalk';
 import { find } from 'node-emoji';
@@ -30,17 +31,18 @@ export class Logger {
   async warn(message: string) {
     console.warn(writerLevel.warn, message);
   }
-  async error(error: Error) {
+  async error(error: Error | unknown) {
     console.log(error);
-    let adapterResult: SpecnovaErrorBase<any, any> | undefined;
+    let adapterResult: __SpecnovaErrorImpl<any, any> | undefined;
     //-> apply casters
     for (const caster of errorCasters) {
       if (caster.isCastable(error)) {
         adapterResult = caster.cast(error);
       }
     }
+    //-> if no adapter found, throw unkown error
     if (!adapterResult) {
-      adapterResult = new SpecnovaError(error);
+      adapterResult = new SpecnovaUnimplementedError();
     }
     const message = [
       chalk.red(adapterResult.header),

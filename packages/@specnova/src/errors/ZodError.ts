@@ -1,19 +1,15 @@
-import SpecnovaErrorBase from '@/errors/base';
-import { ErrorCaster } from '@/errors/caster/base';
+import __SpecnovaErrorImpl from '@/errors/base';
+import { __ErrorCaster } from '@/errors/caster/base';
 
 import { ZodError } from 'zod';
 
-export class SpecnovaZodError extends SpecnovaErrorBase<'zod', ZodError> {
+export class SpecnovaZodError extends __SpecnovaErrorImpl<'zod', ZodError> {
   constructor(error?: Error) {
     super('zod', (l) => l.fromError(error));
   }
 }
 
-export const ZodErrorCaster: ErrorCaster<ZodError, SpecnovaZodError> = {
-  cast(error) {
-    return new SpecnovaZodError(error);
-  },
-  isCastable(error): error is ZodError {
-    return error instanceof ZodError && error.name === 'ZodError';
-  },
-};
+export const zodErrorCaster = new __ErrorCaster<ZodError, SpecnovaZodError>(
+  SpecnovaZodError,
+  (error): error is ZodError => error instanceof ZodError,
+);

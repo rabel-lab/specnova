@@ -4,6 +4,7 @@ import { hasNormalize, mergeWithDefaults } from '@/config/utils';
 import logger from '@/core/logger';
 import { ParserConfig } from '@/core/parser/config';
 import { PredicateFunc } from '@/core/predicate';
+import { SpecnovaParserError } from '@/errors/ParserError';
 
 import { Element } from '@swagger-api/apidom-core';
 
@@ -42,7 +43,7 @@ export class ParserCommander implements ParserCommanderImpl {
       if (h.name in this.handlers) {
         this.handlers[h.name].push(h);
       } else {
-        throw new Error('ParserCommander: unknown command');
+        throw new SpecnovaParserError((l) => l.unknownCommand());
       }
     }
   }
@@ -52,7 +53,7 @@ export class ParserCommander implements ParserCommanderImpl {
         return h.handler(element, options) as T;
       }
     }
-    throw new Error('ParserCommander: no handler found');
+    throw new SpecnovaParserError((l) => l.noHandlerFound());
   }
   sort<T extends Element>(element: T, options?: ParserCommandOptions): T {
     for (const h of this.handlers.sort) {
@@ -60,7 +61,7 @@ export class ParserCommander implements ParserCommanderImpl {
         return h.handler(element, options) as T;
       }
     }
-    throw new Error('ParserCommander: no handler found');
+    throw new SpecnovaParserError((l) => l.noHandlerFound());
   }
   byConfig<T extends Element>(element: T, config?: SpecnovaConfig): T {
     const mergedConfig = mergeWithDefaults(defaultSpecnovaGenConfig, config);
@@ -74,10 +75,14 @@ export class ParserCommander implements ParserCommanderImpl {
         try {
           normalizedElement = this[cn](normalizedElement, mergedConfig.normalized);
         } catch (e) {
-          console.error(
-            `ParserCommander: failed to execute "${cn}" command for element "${normalizedElement.element}"\n`,
-            e,
-          );
+          if (e instanceof SpecnovaParserError) {
+            throw e;
+          } else {
+            throw new SpecnovaParserError(
+              (l) => l.failedToExecute({ element: element, name: cn }),
+              e instanceof Error ? e : new Error('Unknown error'),
+            );
+          }
         }
       }
       return normalizedElement;

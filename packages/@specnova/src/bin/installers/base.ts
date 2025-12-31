@@ -1,3 +1,5 @@
+import logger from '@/core/logger';
+
 import { Command } from 'commander';
 import fs from 'fs';
 
@@ -112,7 +114,7 @@ export function defineCliInstaller<O extends CLIOption, A extends CLIArgument>(
           }
         }
       } catch (e) {
-        console.error(e);
+        logger.error(e);
         process.exit(1);
       }
     });

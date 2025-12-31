@@ -22,7 +22,27 @@ type RootTranslation = {
 		header: RequiredParams<'name' | 'type|capitalize'>
 	}
 	errors: {
-		'default': {
+		parser: {
+			/**
+			 * U​n​k​n​o​w​n​ ​c​o​m​m​a​n​d
+			 */
+			unknownCommand: string
+			/**
+			 * N​o​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d
+			 */
+			noHandlerFound: string
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​"​{​n​a​m​e​|​s​t​r​i​n​g​}​"​ ​c​o​m​m​a​n​d​ ​f​o​r​ ​e​l​e​m​e​n​t​ ​"​{​e​l​e​m​e​n​t​|​s​t​r​i​n​g​}​"
+			 * @param {unknown} element
+			 * @param {unknown} name
+			 */
+			failedToExecute: RequiredParams<'element|string' | 'name|string'>
+		}
+		unimplimented: {
+			/**
+			 * U​n​k​n​o​w​n​ ​e​r​r​o​r
+			 */
+			unknownError: string
 			/**
 			 * {​0​|​e​r​r​o​r​}
 			 * @param {unknown} 0
@@ -31,7 +51,7 @@ type RootTranslation = {
 		}
 		typesafe_i18n: {
 			/**
-			 * {​{​{​i​1​8​n​_​i​n​v​_​p​a​r​a​m​}​}​}
+			 * {​{​i​1​8​n​_​i​n​v​a​l​i​d​_​p​a​r​a​m​}​}
 			 */
 			'invalid-formatter-param': string
 		}
@@ -59,7 +79,25 @@ export type TranslationFunctions = {
 		header: (arg: { name: string, type: string }) => LocalizedString
 	}
 	errors: {
-		'default': {
+		parser: {
+			/**
+			 * Unknown command
+			 */
+			unknownCommand: () => LocalizedString
+			/**
+			 * No handler found
+			 */
+			noHandlerFound: () => LocalizedString
+			/**
+			 * Failed to execute "{name|string}" command for element "{element|string}"
+			 */
+			failedToExecute: (arg: { element: unknown, name: unknown }) => LocalizedString
+		}
+		unimplimented: {
+			/**
+			 * Unknown error
+			 */
+			unknownError: () => LocalizedString
 			/**
 			 * {0|error}
 			 */
@@ -67,7 +105,7 @@ export type TranslationFunctions = {
 		}
 		typesafe_i18n: {
 			/**
-			 * {{{i18n_inv_param}}}
+			 * {{i18n_invalid_param}}
 			 */
 			'invalid-formatter-param': (arg0: number | string | boolean) => LocalizedString
 		}
@@ -89,5 +127,6 @@ export type TranslationFunctions = {
 export type Formatters = {
 	capitalize: (value: string) => unknown
 	error: (value: unknown) => unknown
+	string: (value: unknown) => unknown
 	zodPrettifiedError: (value: unknown) => unknown
 }

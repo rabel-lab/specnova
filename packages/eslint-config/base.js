@@ -51,5 +51,7 @@ export default defineConfig({
     // prettier
     'prettier/prettier': 'error',
     ...prettierConfig.rules.recommended,
+    // console
+    'no-console': 'error',
   },
 });

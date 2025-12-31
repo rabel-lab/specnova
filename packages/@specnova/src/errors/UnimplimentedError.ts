@@ -1,17 +1,18 @@
-import SpecnovaErrorBase from '@/errors/base';
-import { ErrorCaster } from '@/errors/caster/base';
+import __SpecnovaErrorImpl from '@/errors/base';
+import { __ErrorCaster } from '@/errors/caster/base';
 
-export class SpecnovaError extends SpecnovaErrorBase<'default'> {
-  constructor(error: Error) {
-    super('default', (l) => l.fromError(error));
+export class SpecnovaUnimplementedError extends __SpecnovaErrorImpl<'unimplimented'> {
+  constructor(error?: Error) {
+    if (error) {
+      super('unimplimented', (l) => l.fromError(error));
+      return;
+    } else {
+      super('unimplimented', (l) => l.unknownError());
+    }
   }
 }
 
-export const unimplimentedError: ErrorCaster<Error, SpecnovaError> = {
-  cast(error) {
-    return new SpecnovaError(error);
-  },
-  isCastable(error): error is Error {
-    return error instanceof Error;
-  },
-};
+export const unimplimentedErrorCaster = new __ErrorCaster<Error, SpecnovaUnimplementedError>(
+  SpecnovaUnimplementedError,
+  (error): error is Error => error instanceof Error,
+);
