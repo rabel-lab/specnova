@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "name": "@specnova/example-heyapi",
+  "private": true,
+  "description": "Example HeyAPI adapter for SpecNova",
+  "scripts": {
+    "format": "prettier --write 'src/**/*.ts'",
+    "lint": "eslint --fix 'src/**/*.ts'"
+  },
+  "dependencies": {
+    "@hey-api/openapi-ts": "^0.88.0",
+    "@rabel-lab/specnova": "workspace:*"
+  },
+  "devDependencies": {
+    "@internal/specnova-eslint-config": "workspace:*",
+    "@types/node": "^20.19.25",
+    "tsup": "^8.5.1",
+    "turbo": "^2.6.3",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.19.0"
+}

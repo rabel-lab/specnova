@@ -3,7 +3,7 @@ import { StarterAdapter } from '@/config/adapters/starterAdapter';
 import { defaultSpecnovaGenConfig } from '@/config/default';
 import { Env, loadSafeEnvConfig } from '@/config/env';
 import { ResolvedSpecnovaConfig, SpecnovaConfig } from '@/config/type';
-import { SpecnovaConfigError } from '@/errors/ConfigError';
+import { SpecnovaConfigError } from '@/errors/definitions/ConfigError';
 
 export type UserConfigOptions = {
   adapter?: BaseAdapter;

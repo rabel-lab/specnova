@@ -40,7 +40,7 @@ const en: BaseTranslation = {
     },
     unimplimented: {
       unknownError: 'Unknown error',
-      fromError: '{0:error|error}',
+      fromError: '{0:error|printError}',
     },
     typesafe_i18n: {
       'invalid-formatter-param': '\{\{i18n_invalid_param\}\}',
@@ -55,7 +55,7 @@ const en: BaseTranslation = {
       noHandlerFound: 'No handler found.',
     },
     zod: {
-      fromError: '{0|zodPrettifiedError}',
+      fromError: '{0:zodError|printZodError}',
     },
   },
 };

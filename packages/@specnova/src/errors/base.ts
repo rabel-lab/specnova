@@ -22,16 +22,13 @@ function cleanStack(message: string, stack?: string) {
 /* Specnova Error namespace */
 const ERROR_HANDLER_NAME = 'Specnova';
 
-/** @internal */
-export abstract class __SpecnovaErrorImpl<
-  T extends ErrorTranslationsKeys,
-  BaseError extends Error | never = never,
-> extends Error {
+/* @internal */
+export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> extends Error {
   //# Public properties
   public readonly name = ERROR_HANDLER_NAME;
   public readonly type: T;
   public readonly header: string;
-  public readonly cause?: BaseError;
+  public readonly cause?: Error;
 
   //# Private properties
   private readonly locale: Locales = detectLocale();
@@ -40,7 +37,7 @@ export abstract class __SpecnovaErrorImpl<
   };
 
   //# Constructor
-  constructor(type: T, formatter: __ErrorTranslation<T>, error?: BaseError) {
+  constructor(type: T, formatter: __ErrorTranslation<T>, error?: Error) {
     const locale = detectLocale();
     const translations = L[locale].errors[type];
     const message = formatter(translations);

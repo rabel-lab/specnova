@@ -13,7 +13,7 @@ import {
   buildMetaSourceFiles,
 } from '@/core/snapshot/meta/lib/build';
 import { compareSha256, digestString, sha256StringSchema } from '@/core/snapshot/meta/lib/compare';
-import { SpecnovaSnapshotError } from '@/errors/SnapshotError';
+import { SpecnovaSnapshotError } from '@/errors/definitions/SnapshotError';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
 import { Semver, semver } from '@/types/semver';

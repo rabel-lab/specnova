@@ -1,5 +1,5 @@
 import { PredicateFunc } from '@/core/predicate';
-import { SpecnovaExtracterError } from '@/errors/ExtracterError';
+import { SpecnovaExtracterError } from '@/errors/definitions/ExtracterError';
 
 import { Element } from '@swagger-api/apidom-core';
 

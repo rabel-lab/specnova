@@ -4,7 +4,7 @@ import { hasNormalize, mergeWithDefaults } from '@/config/utils';
 import logger from '@/core/logger';
 import { ParserConfig } from '@/core/parser/config';
 import { PredicateFunc } from '@/core/predicate';
-import { SpecnovaParserError } from '@/errors/ParserError';
+import { SpecnovaParserError } from '@/errors/definitions/ParserError';
 
 import { Element } from '@swagger-api/apidom-core';
 

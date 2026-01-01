@@ -3,8 +3,8 @@ import { __ErrorCaster } from '@/errors/caster/base';
 
 import { ZodError } from 'zod';
 
-export class SpecnovaZodError extends __SpecnovaErrorImpl<'zod', ZodError> {
-  constructor(error?: Error) {
+export class SpecnovaZodError extends __SpecnovaErrorImpl<'zod'> {
+  constructor(error: ZodError) {
     super('zod', (l) => l.fromError(error));
   }
 }

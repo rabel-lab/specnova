@@ -7,7 +7,7 @@ import logger from '@/core/logger';
 import parserCommander from '@/core/parser';
 import { parseSource } from '@/core/reference';
 import { SnapshotMeta } from '@/core/snapshot/meta/base';
-import { SpecnovaSnapshotError } from '@/errors/SnapshotError';
+import { SpecnovaSnapshotError } from '@/errors/definitions/SnapshotError';
 import { NpmPackage } from '@/npm/base';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';

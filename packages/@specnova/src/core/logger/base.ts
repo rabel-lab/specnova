@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 import { __SpecnovaErrorImpl } from '@/errors/base';
 import { errorCasters } from '@/errors/caster';
+import { SpecnovaUnimplementedError } from '@/errors/definitions/UnimplimentedError';
 
 import chalk from 'chalk';
 import { find } from 'node-emoji';
@@ -31,7 +32,7 @@ export class Logger {
     console.warn(writerLevel.warn, message);
   }
   async error(error: Error | unknown) {
-    let adapterResult: __SpecnovaErrorImpl<any, any> | undefined;
+    let adapterResult: __SpecnovaErrorImpl<any> | null = null;
     //-> apply casters
     for (const caster of errorCasters) {
       if (caster.isCastable(error)) {
@@ -40,9 +41,8 @@ export class Logger {
     }
     //-> if no adapter found, throw unkown error
     if (!adapterResult) {
-      console.log('not found');
+      adapterResult = new SpecnovaUnimplementedError();
       return;
-      // adapterResult = new SpecnovaUnimplementedError();
     }
     const message = [
       chalk.red(adapterResult.header),

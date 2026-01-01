@@ -2,7 +2,7 @@ import { FileAdapter } from '@/config/adapters/base';
 import { UserConfig, UserConfigOptions } from '@/config/base';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import { mergeWithDefaults } from '@/config/utils';
-import { SpecnovaConfigError } from '@/errors/ConfigError';
+import { SpecnovaConfigError } from '@/errors/definitions/ConfigError';
 
 export const defaultAdapterName = 'default';
 

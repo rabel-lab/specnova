@@ -1,7 +1,7 @@
 import { defaultSpecnovaGenConfig } from '@/config/default';
 import { ParserCommandHandler, ParserCommandName, ParserCommandOptions } from '@/core/parser/base';
 import { PredicateFunc } from '@/core/predicate';
-import { SpecnovaParserError } from '@/errors/ParserError';
+import { SpecnovaParserError } from '@/errors/definitions/ParserError';
 
 import { Element } from '@swagger-api/apidom-core';
 

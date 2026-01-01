@@ -2,7 +2,7 @@
 /* eslint-disable */
 import type { BaseTranslation as BaseTranslationType, LocalizedString, RequiredParams } from 'typesafe-i18n'
 
-import type { error, stringArray } from './custom-types'
+import type { error, stringArray, zodError } from './custom-types'
 
 export type BaseTranslation = BaseTranslationType
 export type BaseLocale = 'en'
@@ -116,10 +116,10 @@ type RootTranslation = {
 			 */
 			unknownError: string
 			/**
-			 * {​0​|​e​r​r​o​r​}
+			 * {​0​|​p​r​i​n​t​E​r​r​o​r​}
 			 * @param {error} 0
 			 */
-			fromError: RequiredParams<'0|error'>
+			fromError: RequiredParams<'0|printError'>
 		}
 		typesafe_i18n: {
 			/**
@@ -147,10 +147,10 @@ type RootTranslation = {
 		}
 		zod: {
 			/**
-			 * {​0​|​z​o​d​P​r​e​t​t​i​f​i​e​d​E​r​r​o​r​}
-			 * @param {unknown} 0
+			 * {​0​|​p​r​i​n​t​Z​o​d​E​r​r​o​r​}
+			 * @param {zodError} 0
 			 */
-			fromError: RequiredParams<'0|zodPrettifiedError'>
+			fromError: RequiredParams<'0|printZodError'>
 		}
 	}
 }
@@ -251,7 +251,7 @@ export type TranslationFunctions = {
 			 */
 			unknownError: () => LocalizedString
 			/**
-			 * {0|error}
+			 * {0|printError}
 			 */
 			fromError: (arg0: error) => LocalizedString
 		}
@@ -281,15 +281,15 @@ export type TranslationFunctions = {
 		}
 		zod: {
 			/**
-			 * {0|zodPrettifiedError}
+			 * {0|printZodError}
 			 */
-			fromError: (arg0: unknown) => LocalizedString
+			fromError: (arg0: zodError) => LocalizedString
 		}
 	}
 }
 
 export type Formatters = {
 	capitalize: (value: string) => unknown
-	error: (value: error) => unknown
-	zodPrettifiedError: (value: unknown) => unknown
+	printError: (value: error) => unknown
+	printZodError: (value: zodError) => unknown
 }
