@@ -1,6 +1,6 @@
 import { getResolvedSpecnovaConfig } from '@/config/resolved';
 import { infoExtracter } from '@/core/extracter';
-import logger from '@/core/logger';
+import logger from '@/logger';
 import { SpecnovaReferenceError } from '@/errors/definitions/ReferenceError';
 import { SpecnovaSource } from '@/types';
 import { strictSnapshotFileEnum } from '@/types/files';

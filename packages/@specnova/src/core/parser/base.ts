@@ -1,7 +1,7 @@
 import { defaultSpecnovaGenConfig } from '@/config/default';
 import { SpecnovaConfig } from '@/config/type';
 import { hasNormalize, mergeWithDefaults } from '@/config/utils';
-import logger from '@/core/logger';
+import logger from '@/logger';
 import { ParserConfig } from '@/core/parser/config';
 import { PredicateFunc } from '@/core/predicate';
 import { SpecnovaParserError } from '@/errors/definitions/ParserError';

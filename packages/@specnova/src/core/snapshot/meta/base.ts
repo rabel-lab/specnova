@@ -1,6 +1,6 @@
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import converter from '@/core/converter';
-import logger from '@/core/logger';
+import logger from '@/logger';
 import {
   snapshotConfigSchema,
   SnapshotFileSlots,

@@ -3,7 +3,7 @@ import { getUserConfig } from '@/config/resolved';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import { hasNormalize } from '@/config/utils';
 import converter from '@/core/converter';
-import logger from '@/core/logger';
+import logger from '@/logger';
 import parserCommander from '@/core/parser';
 import { parseSource } from '@/core/reference';
 import { SnapshotMeta } from '@/core/snapshot/meta/base';

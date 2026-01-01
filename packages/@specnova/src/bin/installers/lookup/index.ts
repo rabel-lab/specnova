@@ -1,6 +1,6 @@
 import { defineCliInstaller } from '@/bin/installers/base';
 import { Snapshot } from '@/core';
-import logger from '@/core/logger';
+import logger from '@/logger';
 
 export default defineCliInstaller({
   name: 'lookup',

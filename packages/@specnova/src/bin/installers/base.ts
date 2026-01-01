@@ -1,4 +1,4 @@
-import logger from '@/core/logger';
+import logger from '@/logger';
 
 import { Command } from 'commander';
 import fs from 'fs';
