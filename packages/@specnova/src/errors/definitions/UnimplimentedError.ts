@@ -2,12 +2,12 @@ import { __SpecnovaErrorImpl } from '@/errors/base';
 import { __ErrorCaster } from '@/errors/caster/base';
 
 export class SpecnovaUnimplementedError extends __SpecnovaErrorImpl<'unimplimented'> {
-  constructor(error?: Error) {
-    if (error) {
-      super('unimplimented', (l) => l.fromError(error));
+  constructor(error?: Error | unknown, casterName?: string) {
+    if (error instanceof Error) {
+      super('unimplimented', (l) => l.fromError(error), error, casterName);
       return;
     } else {
-      super('unimplimented', (l) => l.unknownError());
+      super('unimplimented', (l) => l.unknownError(), undefined, casterName);
     }
   }
 }

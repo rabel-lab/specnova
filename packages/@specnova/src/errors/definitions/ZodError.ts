@@ -5,12 +5,12 @@ import { ZodError } from 'zod';
 
 export class SpecnovaZodError extends __SpecnovaErrorImpl<'zod'> {
   constructor(error: ZodError) {
-    super('zod', (l) => l.fromError(error));
+    super('zod', (l) => l.fromError(error), error, 'zod');
   }
 }
 
 /* @internal */
 export const zodErrorCaster = new __ErrorCaster<ZodError, SpecnovaZodError>(
   SpecnovaZodError,
-  (error): error is ZodError => error instanceof ZodError,
+  (error): error is ZodError => error instanceof ZodError && error.name === 'ZodError',
 );

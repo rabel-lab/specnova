@@ -37,13 +37,11 @@ export class Logger {
     for (const caster of errorCasters) {
       if (caster.isCastable(error)) {
         adapterResult = caster.cast(error);
+        break;
       }
     }
     //-> if no adapter found, throw unkown error
-    if (!adapterResult) {
-      adapterResult = new SpecnovaUnimplementedError();
-      return;
-    }
+    adapterResult ??= new SpecnovaUnimplementedError(error);
     const message = [
       chalk.red(adapterResult.header),
       adapterResult.message,

@@ -29,6 +29,7 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
   public readonly type: T;
   public readonly header: string;
   public readonly cause?: Error;
+  public readonly casterName?: string;
 
   //# Private properties
   private readonly locale: Locales = detectLocale();
@@ -37,7 +38,7 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
   };
 
   //# Constructor
-  constructor(type: T, formatter: __ErrorTranslation<T>, error?: Error) {
+  constructor(type: T, formatter: __ErrorTranslation<T>, error?: Error, casterName?: string) {
     const locale = detectLocale();
     const translations = L[locale].errors[type];
     const message = formatter(translations);
@@ -45,6 +46,7 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
     this.type = type;
     this.locale = locale;
     this.header = this.getHeader();
+    this.casterName = casterName;
     //-> Capture stack
     //IF error, use it
     if (error) {
