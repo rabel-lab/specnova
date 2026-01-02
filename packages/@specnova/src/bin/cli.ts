@@ -6,6 +6,7 @@ import installInit from '@/bin/installers/init';
 import installLookup from '@/bin/installers/lookup';
 import installPull from '@/bin/installers/pull';
 import installSet from '@/bin/installers/set';
+import logger from '@/logger';
 import { NpmPackage } from '@/npm';
 
 import { Command } from 'commander';
@@ -21,4 +22,11 @@ installLookup(program);
 installGenerate(program);
 installSet(program);
 
-program.parse(process.argv);
+// start process
+try {
+  program.parse(process.argv);
+} catch (e) {
+  // handle error
+  logger.error(e);
+  process.exit(1);
+}

@@ -4,6 +4,6 @@ export default defineCliInstaller({
   name: 'set',
   description: 'Set the branch target to a semver version.',
   async action() {
-    logger.info('🚧 Coming soon');
+    logger.debug('🚧 Coming soon');
   },
 });

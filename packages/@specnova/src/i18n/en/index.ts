@@ -57,6 +57,9 @@ const en: BaseTranslation = {
     zod: {
       fromError: '{0:zodError|printZodError}',
     },
+    cli: {
+      fromError: '{0:commanderError|printCommanderError}',
+    },
   },
 };
 

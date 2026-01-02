@@ -1,4 +1,5 @@
 import { __ErrorCasters } from '@/errors/caster/base';
+import { cliErrorCaster } from '@/errors/definitions/CliError';
 import { unimplimentedErrorCaster } from '@/errors/definitions/UnimplimentedError';
 import { zodErrorCaster } from '@/errors/definitions/ZodError';
 
@@ -8,4 +9,8 @@ import { zodErrorCaster } from '@/errors/definitions/ZodError';
  * ...
  * last: default
  */
-export const errorCasters: __ErrorCasters = [zodErrorCaster, unimplimentedErrorCaster] as const;
+export const errorCasters: __ErrorCasters = [
+  zodErrorCaster,
+  cliErrorCaster,
+  unimplimentedErrorCaster,
+] as const;

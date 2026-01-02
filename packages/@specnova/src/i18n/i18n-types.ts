@@ -2,7 +2,7 @@
 /* eslint-disable */
 import type { BaseTranslation as BaseTranslationType, LocalizedString, RequiredParams } from 'typesafe-i18n'
 
-import type { error, stringArray, zodError } from './custom-types'
+import type { commanderError, error, stringArray, zodError } from './custom-types'
 
 export type BaseTranslation = BaseTranslationType
 export type BaseLocale = 'en'
@@ -152,6 +152,13 @@ type RootTranslation = {
 			 */
 			fromError: RequiredParams<'0|printZodError'>
 		}
+		cli: {
+			/**
+			 * {​0​|​p​r​i​n​t​C​o​m​m​a​n​d​e​r​E​r​r​o​r​}
+			 * @param {commanderError} 0
+			 */
+			fromError: RequiredParams<'0|printCommanderError'>
+		}
 	}
 }
 
@@ -285,11 +292,18 @@ export type TranslationFunctions = {
 			 */
 			fromError: (arg0: zodError) => LocalizedString
 		}
+		cli: {
+			/**
+			 * {0|printCommanderError}
+			 */
+			fromError: (arg0: commanderError) => LocalizedString
+		}
 	}
 }
 
 export type Formatters = {
 	capitalize: (value: string) => unknown
+	printCommanderError: (value: commanderError) => unknown
 	printError: (value: error) => unknown
 	printZodError: (value: zodError) => unknown
 }
