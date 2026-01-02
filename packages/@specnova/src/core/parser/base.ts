@@ -3,6 +3,7 @@ import { SpecnovaConfig } from '@/config/type';
 import { hasNormalize, mergeWithDefaults } from '@/config/utils';
 import { ParserConfig } from '@/core/parser/config';
 import { PredicateFunc } from '@/core/predicate';
+import { catchError } from '@/errors/catch';
 import { SpecnovaParserError } from '@/errors/definitions/ParserError';
 import logger from '@/logger';
 
@@ -54,7 +55,7 @@ export class ParserCommander implements ParserCommanderImpl {
       }
     }
     // WARN: No handler found
-    throw new SpecnovaParserError((l) => l.noHandlerFound(), { nonFatal: true });
+    throw new SpecnovaParserError((l) => l.noHandlerFound(), { fatal: false });
   }
   sort<T extends Element>(element: T, options?: ParserCommandOptions) {
     for (const h of this.handlers.sort) {
@@ -63,7 +64,7 @@ export class ParserCommander implements ParserCommanderImpl {
       }
     }
     // WARN: No handler found
-    throw new SpecnovaParserError((l) => l.noHandlerFound(), { nonFatal: true });
+    throw new SpecnovaParserError((l) => l.noHandlerFound(), { fatal: false });
   }
   byConfig<T extends Element>(element: T, config?: SpecnovaConfig): T {
     const mergedConfig = mergeWithDefaults(defaultSpecnovaGenConfig, config);
@@ -78,7 +79,7 @@ export class ParserCommander implements ParserCommanderImpl {
           normalizedElement = this[cn](normalizedElement, mergedConfig.normalized) as T;
         } catch (e) {
           if (e instanceof SpecnovaParserError) {
-            throw e;
+            catchError(e, { throw: true });
           } else {
             throw new SpecnovaParserError(
               (l) => l.failedToExecute({ element: element.element, name: cn }),

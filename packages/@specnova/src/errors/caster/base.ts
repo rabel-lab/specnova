@@ -2,23 +2,29 @@ import { __SpecnovaErrorImpl, __SpecnovaErrorOptions } from '@/errors/base';
 
 type ErrorConstructor<In extends Error, Out extends __SpecnovaErrorImpl<any>> = new (
   error: In,
-  options: __SpecnovaErrorOptions,
+  options?: __SpecnovaErrorOptions,
 ) => Out;
 
-/* @internal */
-export class __ErrorCaster<In extends Error, Out extends __SpecnovaErrorImpl<any>> {
-  constructor(
-    private readonly caster: ErrorConstructor<In, Out>,
-    private readonly guard: (e: unknown) => e is In,
-  ) {}
-  name = this.caster.name;
-  isCastable(error: unknown): error is In {
-    return this.guard(error);
-  }
-  cast(error: In): Out {
-    return new this.caster(error, { error: error, casterName: this.name });
-  }
+interface ErrorCaster<In extends Error, Out> {
+  readonly name: string;
+  isCastable(error: unknown): error is In;
+  cast(error: In): Out;
+}
+
+export function createErrorCaster<In extends Error, Out extends __SpecnovaErrorImpl<any>>(
+  caster: ErrorConstructor<In, Out>,
+  guard: (e?: unknown) => e is In,
+) {
+  return {
+    name: caster.name,
+    cast(error: In): Out {
+      return new caster(error, { error, casterName: caster.name });
+    },
+    isCastable(error?: unknown): error is In {
+      return guard(error);
+    },
+  } satisfies ErrorCaster<In, Out>;
 }
 
 /* @internal */
-export type __ErrorCasters = ReadonlyArray<__ErrorCaster<any, __SpecnovaErrorImpl<any>>>;
+export type __ErrorCasters = ReadonlyArray<ErrorCaster<any, __SpecnovaErrorImpl<any>>>;

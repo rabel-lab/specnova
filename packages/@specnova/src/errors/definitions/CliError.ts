@@ -1,5 +1,5 @@
 import { __ErrorTranslation, __SpecnovaErrorImpl, __SpecnovaErrorOptions } from '@/errors/base';
-import { __ErrorCaster } from '@/errors/caster/base';
+import { createErrorCaster } from '@/errors/caster/base';
 
 import { CommanderError } from 'commander';
 
@@ -20,7 +20,7 @@ export class SpecnovaCliError<
 }
 
 /* @internal */
-export const cliErrorCaster = new __ErrorCaster<CommanderError, SpecnovaCliError>(
+export const cliErrorCaster = createErrorCaster(
   SpecnovaCliError,
   (error): error is CommanderError =>
     error instanceof CommanderError && error.name === 'CommanderError',

@@ -17,7 +17,7 @@ export type __ErrorTranslation<T extends ErrorTranslationsKeys> = (
 export type __SpecnovaErrorOptions = {
   error?: Error | unknown;
   casterName?: string;
-  nonFatal?: boolean;
+  fatal?: boolean;
 };
 
 /* Clean stack helper */
@@ -36,6 +36,7 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
   public readonly header: string;
   public readonly cause?: Error;
   public readonly casterName?: string;
+  public readonly fatal: boolean = true;
 
   //# Private properties
   private readonly locale: Locales = detectLocale();
@@ -53,6 +54,7 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
     this.locale = locale;
     this.header = this.getHeader();
     this.casterName = options.casterName;
+    this.fatal = options.fatal ?? true;
     //-> Capture stack
     //IF error, use it
     if (options.error && options.error instanceof Error) {

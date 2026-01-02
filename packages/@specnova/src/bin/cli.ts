@@ -6,7 +6,7 @@ import installInit from '@/bin/installers/init';
 import installLookup from '@/bin/installers/lookup';
 import installPull from '@/bin/installers/pull';
 import installSet from '@/bin/installers/set';
-import logger from '@/logger';
+import { catchError } from '@/errors/catch';
 import { NpmPackage } from '@/npm';
 
 import { Command } from 'commander';
@@ -26,6 +26,5 @@ installSet(program);
 try {
   await program.parseAsync(process.argv);
 } catch (err) {
-  logger.error(err);
-  process.exit(1);
+  catchError(err, { exit: 1 });
 }
