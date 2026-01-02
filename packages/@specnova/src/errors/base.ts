@@ -14,6 +14,12 @@ export type __ErrorTranslation<T extends ErrorTranslationsKeys> = (
   translations: ErrorTranslationsRoot<T>,
 ) => LocalizedString;
 
+export type __SpecnovaErrorOptions = {
+  error?: Error | unknown;
+  casterName?: string;
+  nonFatal?: boolean;
+};
+
 /* Clean stack helper */
 function cleanStack(message: string, stack?: string) {
   return stack?.split(message + '\n').pop();
@@ -38,7 +44,7 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
   };
 
   //# Constructor
-  constructor(type: T, formatter: __ErrorTranslation<T>, error?: Error, casterName?: string) {
+  constructor(type: T, formatter: __ErrorTranslation<T>, options: __SpecnovaErrorOptions = {}) {
     const locale = detectLocale();
     const translations = L[locale].errors[type];
     const message = formatter(translations);
@@ -46,12 +52,12 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
     this.type = type;
     this.locale = locale;
     this.header = this.getHeader();
-    this.casterName = casterName;
+    this.casterName = options.casterName;
     //-> Capture stack
     //IF error, use it
-    if (error) {
-      this.cause = error;
-      this.stack = cleanStack(error.message, error.stack);
+    if (options.error && options.error instanceof Error) {
+      this.cause = options.error;
+      this.stack = cleanStack(options.error.message, options.error.stack);
     } else if (typeof Error.captureStackTrace === 'function') {
       //IF captureStackTrace is available, use it
       Error.stackTraceLimit = 5;
@@ -62,5 +68,6 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
       const newStack = new Error().stack ?? '';
       this.stack = cleanStack(newStack);
     }
+    return this;
   }
 }

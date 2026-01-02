@@ -1,8 +1,8 @@
-import { __SpecnovaErrorImpl } from '@/errors/base';
+import { __SpecnovaErrorImpl, __SpecnovaErrorOptions } from '@/errors/base';
 
 type ErrorConstructor<In extends Error, Out extends __SpecnovaErrorImpl<any>> = new (
   error: In,
-  casterName?: string,
+  options: __SpecnovaErrorOptions,
 ) => Out;
 
 /* @internal */
@@ -16,7 +16,7 @@ export class __ErrorCaster<In extends Error, Out extends __SpecnovaErrorImpl<any
     return this.guard(error);
   }
   cast(error: In): Out {
-    return new this.caster(error, this.name);
+    return new this.caster(error, { error: error, casterName: this.name });
   }
 }
 

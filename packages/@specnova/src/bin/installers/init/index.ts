@@ -6,8 +6,8 @@ export default defineCliInstaller({
   description: 'Start a new snapshot branch.',
   async action() {
     const snapshot = await new Snapshot().loadSource();
-    snapshot.prepareAllAndCommit();
-    snapshot.setMain();
+    await snapshot.prepareAllAndCommit();
+    await snapshot.setMain();
     return (await snapshot.getSpecnovaSource()).info.version;
   },
 });

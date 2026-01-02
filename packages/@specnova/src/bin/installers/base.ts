@@ -1,5 +1,3 @@
-import logger from '@/logger';
-
 import { Command } from 'commander';
 import fs from 'fs';
 
@@ -105,17 +103,12 @@ export function defineCliInstaller<O extends CLIOption, A extends CLIArgument>(
     }
     // End command
     cmd.action(async (...args: [string, CLIOptionResult<O>]) => {
-      try {
-        const result = await installer.action(...args);
-        if (typeof result === 'boolean' || typeof result === 'string') {
-          if (process.env.GITHUB_OUTPUT) {
-            // Write to GitHub Actions output
-            fs.appendFileSync(process.env.GITHUB_OUTPUT, `${installer.name}=${result}\n`);
-          }
+      const result = await Promise.all([installer.action(...args)]);
+      if (typeof result === 'boolean' || typeof result === 'string') {
+        if (process.env.GITHUB_OUTPUT) {
+          // Write to GitHub Actions output
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `${installer.name}=${result}\n`);
         }
-      } catch (e) {
-        logger.error(e);
-        process.exit(1);
       }
     });
   };

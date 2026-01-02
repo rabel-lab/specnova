@@ -3,11 +3,11 @@ import { getUserConfig } from '@/config/resolved';
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import { hasNormalize } from '@/config/utils';
 import converter from '@/core/converter';
-import logger from '@/logger';
 import parserCommander from '@/core/parser';
 import { parseSource } from '@/core/reference';
 import { SnapshotMeta } from '@/core/snapshot/meta/base';
 import { SpecnovaSnapshotError } from '@/errors/definitions/SnapshotError';
+import logger from '@/logger';
 import { NpmPackage } from '@/npm/base';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
@@ -159,10 +159,7 @@ export class Snapshot {
       });
       return true;
     } catch (e) {
-      throw new SpecnovaSnapshotError(
-        (l) => l.failedToSave('source'),
-        e instanceof Error ? e : new Error('Unknown error'),
-      );
+      throw new SpecnovaSnapshotError((l) => l.failedToSave('source'), { error: e });
     }
   }
   /**
@@ -195,10 +192,7 @@ export class Snapshot {
       });
       return true;
     } catch (e) {
-      throw new SpecnovaSnapshotError(
-        (l) => l.failedToSave('normalized'),
-        e instanceof Error ? e : new Error('Unknown error'),
-      );
+      throw new SpecnovaSnapshotError((l) => l.failedToSave('normalized'), { error: e });
     }
   }
   /**
@@ -206,11 +200,11 @@ export class Snapshot {
    * @returns - { source, normalized }
    */
   async prepareAll() {
-    return Promise.all([this.prepareSource(), this.prepareNormalized()]).then(
-      ([source, normalized]) => {
-        return { source, normalized };
-      },
-    );
+    const [source, normalized] = await Promise.all([
+      this.prepareSource(),
+      this.prepareNormalized(),
+    ]);
+    return { source, normalized };
   }
   /**
    * Commit changes to the snapshot folder.
@@ -228,7 +222,7 @@ export class Snapshot {
   async prepareAllAndCommit() {
     const result = await this.prepareAll();
     if (result.source && result.normalized) {
-      return this.commit();
+      return await this.commit();
     }
   }
   /**

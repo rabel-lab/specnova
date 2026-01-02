@@ -1,7 +1,7 @@
 import { getResolvedSpecnovaConfig } from '@/config/resolved';
 import { infoExtracter } from '@/core/extracter';
-import logger from '@/logger';
 import { SpecnovaReferenceError } from '@/errors/definitions/ReferenceError';
+import logger from '@/logger';
 import { SpecnovaSource } from '@/types';
 import { strictSnapshotFileEnum } from '@/types/files';
 
@@ -130,10 +130,7 @@ export async function parseSource(source: string): Promise<SpecnovaSource> {
   try {
     parsed = await parser(source);
   } catch (e) {
-    throw new SpecnovaReferenceError(
-      (l) => l.parse.failedToParse(),
-      e instanceof Error ? e : new Error('Unknown error'),
-    );
+    throw new SpecnovaReferenceError((l) => l.parse.failedToParse(), { error: e });
   }
 
   if (parsed.errors.length > 0 || !parsed.result) {

@@ -24,9 +24,8 @@ installSet(program);
 
 // start process
 try {
-  program.parse(process.argv);
-} catch (e) {
-  // handle error
-  logger.error(e);
+  await program.parseAsync(process.argv);
+} catch (err) {
+  logger.error(err);
   process.exit(1);
 }

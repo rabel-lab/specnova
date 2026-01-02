@@ -1,10 +1,10 @@
 import { defaultSpecnovaGenConfig } from '@/config/default';
 import { SpecnovaConfig } from '@/config/type';
 import { hasNormalize, mergeWithDefaults } from '@/config/utils';
-import logger from '@/logger';
 import { ParserConfig } from '@/core/parser/config';
 import { PredicateFunc } from '@/core/predicate';
 import { SpecnovaParserError } from '@/errors/definitions/ParserError';
+import logger from '@/logger';
 
 import { Element } from '@swagger-api/apidom-core';
 
@@ -47,21 +47,23 @@ export class ParserCommander implements ParserCommanderImpl {
       }
     }
   }
-  operationId<T extends Element>(element: T, options?: ParserCommandOptions): T {
+  operationId<T extends Element>(element: T, options?: ParserCommandOptions) {
     for (const h of this.handlers.operationId) {
       if (h.predicate(element)) {
-        return h.handler(element, options) as T;
+        return h.handler(element, options);
       }
     }
-    throw new SpecnovaParserError((l) => l.noHandlerFound());
+    // WARN: No handler found
+    throw new SpecnovaParserError((l) => l.noHandlerFound(), { nonFatal: true });
   }
-  sort<T extends Element>(element: T, options?: ParserCommandOptions): T {
+  sort<T extends Element>(element: T, options?: ParserCommandOptions) {
     for (const h of this.handlers.sort) {
       if (h.predicate(element)) {
-        return h.handler(element, options) as T;
+        return h.handler(element, options);
       }
     }
-    throw new SpecnovaParserError((l) => l.noHandlerFound());
+    // WARN: No handler found
+    throw new SpecnovaParserError((l) => l.noHandlerFound(), { nonFatal: true });
   }
   byConfig<T extends Element>(element: T, config?: SpecnovaConfig): T {
     const mergedConfig = mergeWithDefaults(defaultSpecnovaGenConfig, config);
@@ -73,14 +75,14 @@ export class ParserCommander implements ParserCommanderImpl {
       let normalizedElement = element;
       for (const cn of key as ParserCommandName[]) {
         try {
-          normalizedElement = this[cn](normalizedElement, mergedConfig.normalized);
+          normalizedElement = this[cn](normalizedElement, mergedConfig.normalized) as T;
         } catch (e) {
           if (e instanceof SpecnovaParserError) {
             throw e;
           } else {
             throw new SpecnovaParserError(
               (l) => l.failedToExecute({ element: element.element, name: cn }),
-              e instanceof Error ? e : new Error('Unknown error'),
+              { error: e },
             );
           }
         }

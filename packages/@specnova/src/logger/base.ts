@@ -16,32 +16,40 @@ const writerLevel = {
 } as const;
 
 export class Logger {
-  async debug(message: string) {
-    console.debug(message);
+  async debug(...args: any[]) {
+    console.debug(...args);
   }
-  async seed(message: string) {
-    console.info(writerLevel.seed, message);
+  async seed(...args: any[]) {
+    console.info(writerLevel.seed, ...args);
   }
-  async config(...args: string[]) {
+  async config(...args: any[]) {
     console.info(writerLevel.config, ...args);
   }
-  async success(message: string) {
-    console.info(writerLevel.success, message);
+  async success(...args: any[]) {
+    console.info(writerLevel.success, ...args);
   }
-  async warn(message: string) {
-    console.warn(writerLevel.warn, message);
+  async warn(...args: any[]) {
+    console.warn(writerLevel.warn, ...args);
   }
   async error(error: Error | unknown) {
     let adapterResult: __SpecnovaErrorImpl<any> | null = null;
-    //-> apply casters
-    for (const caster of errorCasters) {
-      if (caster.isCastable(error)) {
-        adapterResult = caster.cast(error);
-        break;
+    //-> if instance of SpecnovaError, use it
+    console.log('ERROR CALLED');
+    if (error instanceof __SpecnovaErrorImpl) {
+      console.log('FOUND ERROR');
+      adapterResult = error;
+    } else {
+      //-> apply casters
+      console.log('APPLY CASTERS');
+      for (const caster of errorCasters) {
+        if (caster.isCastable(error)) {
+          adapterResult = caster.cast(error);
+          break;
+        }
       }
+      //-> if no adapter found, throw unkown error
+      adapterResult ||= adapterResult ??= new SpecnovaUnimplementedError(error);
     }
-    //-> if no adapter found, throw unkown error
-    adapterResult ??= new SpecnovaUnimplementedError(error);
     const message = [
       chalk.red(adapterResult.header),
       adapterResult.message,

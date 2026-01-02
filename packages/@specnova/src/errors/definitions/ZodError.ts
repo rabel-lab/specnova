@@ -1,11 +1,11 @@
-import { __SpecnovaErrorImpl } from '@/errors/base';
+import { __SpecnovaErrorImpl, __SpecnovaErrorOptions } from '@/errors/base';
 import { __ErrorCaster } from '@/errors/caster/base';
 
 import { ZodError } from 'zod';
 
 export class SpecnovaZodError extends __SpecnovaErrorImpl<'zod'> {
-  constructor(error: ZodError) {
-    super('zod', (l) => l.fromError(error), error, 'zod');
+  constructor(error: ZodError, options?: __SpecnovaErrorOptions) {
+    super('zod', (l) => l.fromError(error), options);
   }
 }
 
