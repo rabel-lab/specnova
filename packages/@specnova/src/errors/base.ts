@@ -4,8 +4,8 @@ import { detectLocale } from '@/i18n/i18n-util';
 import { createTranslation, I18nTranslations, Translator } from '@/translator';
 
 /* Extact types */
-type I18nErrorsTranslations = I18nTranslations<'errors'>;
-type ErrorTranslationsKeys = keyof I18nErrorsTranslations;
+type ErrorsTranslations = I18nTranslations<'errors'>;
+type ErrorTranslationsKeys = keyof ErrorsTranslations;
 
 /* @internal */
 export type ErrorTranslator<TK extends ErrorTranslationsKeys> = Translator<'errors', TK>;

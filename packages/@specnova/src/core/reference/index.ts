@@ -124,7 +124,7 @@ async function buildParse(): Promise<typeof emptyParse> {
  */
 export async function parseSource(source: string): Promise<SpecnovaSource> {
   const parser = await buildParse();
-  logger.config('Extracting OpenAPI spec from:', source);
+  logger.config((l) => l.extracting(source));
   //# Parse
   let parsed: ParseResultElement | null;
   try {
@@ -152,7 +152,7 @@ export async function parseSource(source: string): Promise<SpecnovaSource> {
   if (!parsed.result) {
     throw new SpecnovaReferenceError((l) => l.parse.noResult());
   } else {
-    logger.success('Parsed spec.');
+    logger.success((l) => l.core.reference.parse());
   }
   //# Extract info
   const info = infoExtracter.extract(parsed.result);

@@ -69,7 +69,7 @@ export class ParserCommander implements ParserCommanderImpl {
   byConfig<T extends Element>(element: T, config?: SpecnovaConfig): T {
     const mergedConfig = mergeWithDefaults(defaultSpecnovaGenConfig, config);
     if (!mergedConfig.normalized || !hasNormalize(mergedConfig)) {
-      logger.success('No normalization settings found');
+      logger.success((l) => l.core.parser.noNormalization());
       return element;
     } else {
       const key = Object.keys(mergedConfig.normalized);

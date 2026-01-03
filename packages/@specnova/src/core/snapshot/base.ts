@@ -170,7 +170,7 @@ export class Snapshot {
     const config = await this.getFullConfig();
     //# Check if normalization is needed
     if (!hasNormalize(config)) {
-      logger.success('No normalization settings found');
+      logger.success((l) => l.core.parser.noNormalization());
       return true;
     }
     //# Get normalized file location

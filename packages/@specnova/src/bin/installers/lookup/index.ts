@@ -12,10 +12,10 @@ export default defineCliInstaller({
     const sourceVersion = sourceSnapshot.info.version;
 
     if (branchVersion === sourceVersion) {
-      logger.success('Local patch is up to date.');
+      logger.success((l) => l.cli.lookup.upToDate());
       return false;
     }
-    logger.warn(`Update available: ${branchVersion} → ${sourceVersion}`);
+    logger.success((l) => l.cli.lookup.updateAvailable(branchVersion, sourceVersion));
     return true;
   },
 });

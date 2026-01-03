@@ -2,9 +2,33 @@
 import { BaseTranslation } from '@/i18n/i18n-types';
 
 const en: BaseTranslation = {
-  errorsUtils: {
-    header: '[{name:string}]{type:string|capitalize}:',
+  // Logger
+  logger: {
+    seed: {},
+    config: {
+      extracting: 'Extracting OpenAPI spec from: {0:string}.',
+    },
+    success: {
+      cli: {
+        lookup: {
+          upToDate: 'Local patch is up to date.',
+          updateAvailable: 'Update available: {0:string} → {1:string}.',
+        },
+      },
+      snapshot: {
+        submit: 'Applied changes to {0:string}.',
+      },
+      core: {
+        parser: {
+          noNormalization: 'No normalization settings found.',
+        },
+        reference: {
+          parse: 'Parsed spec.',
+        },
+      },
+    },
   },
+  // Errors
   errors: {
     snapshot: {
       meta: {
@@ -60,6 +84,9 @@ const en: BaseTranslation = {
     cli: {
       fromError: '{0:commanderError|printCommanderError}',
     },
+  },
+  errorsUtils: {
+    header: '[{name:string}]{type:string|capitalize}:',
   },
 };
 

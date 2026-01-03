@@ -15,13 +15,53 @@ export type Translation = RootTranslation
 export type Translations = RootTranslation
 
 type RootTranslation = {
-	errorsUtils: {
-		/**
-		 * [​{​n​a​m​e​}​]​{​t​y​p​e​|​c​a​p​i​t​a​l​i​z​e​}​:
-		 * @param {string} name
-		 * @param {string} type
-		 */
-		header: RequiredParams<'name' | 'type|capitalize'>
+	logger: {
+		seed: {
+		}
+		config: {
+			/**
+			 * E​x​t​r​a​c​t​i​n​g​ ​O​p​e​n​A​P​I​ ​s​p​e​c​ ​f​r​o​m​:​ ​{​0​}​.
+			 * @param {string} 0
+			 */
+			extracting: RequiredParams<'0'>
+		}
+		success: {
+			cli: {
+				lookup: {
+					/**
+					 * L​o​c​a​l​ ​p​a​t​c​h​ ​i​s​ ​u​p​ ​t​o​ ​d​a​t​e​.
+					 */
+					upToDate: string
+					/**
+					 * U​p​d​a​t​e​ ​a​v​a​i​l​a​b​l​e​:​ ​{​0​}​ ​→​ ​{​1​}​.
+					 * @param {string} 0
+					 * @param {string} 1
+					 */
+					updateAvailable: RequiredParams<'0' | '1'>
+				}
+			}
+			snapshot: {
+				/**
+				 * A​p​p​l​i​e​d​ ​c​h​a​n​g​e​s​ ​t​o​ ​{​0​}​.
+				 * @param {string} 0
+				 */
+				submit: RequiredParams<'0'>
+			}
+			core: {
+				parser: {
+					/**
+					 * N​o​ ​n​o​r​m​a​l​i​z​a​t​i​o​n​ ​s​e​t​t​i​n​g​s​ ​f​o​u​n​d​.
+					 */
+					noNormalization: string
+				}
+				reference: {
+					/**
+					 * P​a​r​s​e​d​ ​s​p​e​c​.
+					 */
+					parse: string
+				}
+			}
+		}
 	}
 	errors: {
 		snapshot: {
@@ -160,14 +200,60 @@ type RootTranslation = {
 			fromError: RequiredParams<'0|printCommanderError'>
 		}
 	}
+	errorsUtils: {
+		/**
+		 * [​{​n​a​m​e​}​]​{​t​y​p​e​|​c​a​p​i​t​a​l​i​z​e​}​:
+		 * @param {string} name
+		 * @param {string} type
+		 */
+		header: RequiredParams<'name' | 'type|capitalize'>
+	}
 }
 
 export type TranslationFunctions = {
-	errorsUtils: {
-		/**
-		 * [{name}]{type|capitalize}:
-		 */
-		header: (arg: { name: string, type: string }) => LocalizedString
+	logger: {
+		seed: {
+		}
+		config: {
+			/**
+			 * Extracting OpenAPI spec from: {0}.
+			 */
+			extracting: (arg0: string) => LocalizedString
+		}
+		success: {
+			cli: {
+				lookup: {
+					/**
+					 * Local patch is up to date.
+					 */
+					upToDate: () => LocalizedString
+					/**
+					 * Update available: {0} → {1}.
+					 */
+					updateAvailable: (arg0: string, arg1: string) => LocalizedString
+				}
+			}
+			snapshot: {
+				/**
+				 * Applied changes to {0}.
+				 */
+				submit: (arg0: string) => LocalizedString
+			}
+			core: {
+				parser: {
+					/**
+					 * No normalization settings found.
+					 */
+					noNormalization: () => LocalizedString
+				}
+				reference: {
+					/**
+					 * Parsed spec.
+					 */
+					parse: () => LocalizedString
+				}
+			}
+		}
 	}
 	errors: {
 		snapshot: {
@@ -298,6 +384,12 @@ export type TranslationFunctions = {
 			 */
 			fromError: (arg0: commanderError) => LocalizedString
 		}
+	}
+	errorsUtils: {
+		/**
+		 * [{name}]{type|capitalize}:
+		 */
+		header: (arg: { name: string, type: string }) => LocalizedString
 	}
 }
 

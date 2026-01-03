@@ -1,6 +1,5 @@
 import { ResolvedSpecnovaConfig } from '@/config/type';
 import converter from '@/core/converter';
-import logger from '@/logger';
 import {
   snapshotConfigSchema,
   SnapshotFileSlots,
@@ -14,6 +13,7 @@ import {
 } from '@/core/snapshot/meta/lib/build';
 import { compareSha256, digestString, sha256StringSchema } from '@/core/snapshot/meta/lib/compare';
 import { SpecnovaSnapshotError } from '@/errors/definitions/SnapshotError';
+import logger from '@/logger';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
 import { Semver, semver } from '@/types/semver';
@@ -175,7 +175,7 @@ class SnapshotMetaImpl {
         }),
       );
       //# if successful, apply & clear
-      logger.success(`Applied changes to ${this.editData.path}`);
+      logger.success((l) => l.snapshot.submit(this.editData.path));
       this.apply();
       this.clear();
     } catch (e) {
