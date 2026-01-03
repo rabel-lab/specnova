@@ -1,9 +1,10 @@
 /* Allow console.log for logger only */
 /* eslint-disable no-console */
 
-import { catchError } from '@/errors/catch';
+import { __SpecnovaErrorImpl } from '@/errors/base';
 import { createTranslation, I18nTranslations, Translator } from '@/translator';
 
+import chalk from 'chalk';
 import { find } from 'node-emoji';
 
 /* Extact types */
@@ -13,6 +14,10 @@ type LoggerTranslationsKeys = keyof LoggerTranslations;
 /* @internal */
 export type LoggerTranslator<TK extends LoggerTranslationsKeys> = Translator<'logger', TK>;
 
+type ErrorMessageOptions = {
+  verbose?: boolean;
+};
+
 const writerLevel = {
   seed: find(':seedling:')?.emoji,
   config: find(':wrench:')?.emoji,
@@ -20,6 +25,12 @@ const writerLevel = {
   error: find(':x:')?.emoji,
   warn: find(':rotating_light:')?.emoji,
 } as const;
+
+const padding = 21;
+
+function withPadding(message: string) {
+  return message.padStart(padding);
+}
 
 function formatMessage<TK extends LoggerTranslationsKeys>(
   key: TK,
@@ -29,6 +40,15 @@ function formatMessage<TK extends LoggerTranslationsKeys>(
   return formatter(translations);
 }
 
+function formatError(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
+  const col = error.fatal ? chalk.red : chalk.yellow;
+  let message = [col(error.header), withPadding(error.message)];
+  if (options?.verbose && error.stack) {
+    message.push(chalk.dim(withPadding(error.stack)));
+  }
+  return message.join('\n');
+}
+
 export class Logger {
   constructor() {}
   async debug(...args: any[]) {
@@ -36,27 +56,22 @@ export class Logger {
   }
   async seed(formatter: LoggerTranslator<'seed'>) {
     const message = formatMessage('seed', formatter);
-    console.info(message);
+    console.info(writerLevel.seed, message);
   }
   async config(formatter: LoggerTranslator<'config'>) {
     const message = formatMessage('config', formatter);
-    console.info(message);
+    console.info(writerLevel.config, message);
   }
   async success(formatter: LoggerTranslator<'success'>) {
     const message = formatMessage('success', formatter);
-    console.info(message);
+    console.info(writerLevel.success, message);
   }
-  async warn(...args: any[]) {
-    console.warn(writerLevel.warn, ...args);
+  async warn(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
+    const message = formatError(error, options);
+    console.warn(writerLevel.warn, message);
   }
-  async error(...args: any[]) {
-    const error = args[0];
-    if (error instanceof Error) {
-      //-> recurse & disperse
-      catchError(error);
-    } else {
-      //-> print error
-      console.error(...args);
-    }
+  async error(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
+    const message = formatError(error, options);
+    console.error(writerLevel.error, message);
   }
 }
