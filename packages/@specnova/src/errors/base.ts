@@ -1,14 +1,14 @@
 import L from '@/i18n/i18n-node';
 import { Locales } from '@/i18n/i18n-types';
 import { detectLocale } from '@/i18n/i18n-util';
-import { __ErrorTranslation, createTranslation, I18nTranslations } from '@/translator';
+import { createTranslation, I18nTranslations, Translator } from '@/translator';
 
 /* Extact types */
 type I18nErrorsTranslations = I18nTranslations<'errors'>;
 type ErrorTranslationsKeys = keyof I18nErrorsTranslations;
 
 /* @internal */
-export type ErrorTranslator<TK extends ErrorTranslationsKeys> = __ErrorTranslation<'errors', TK>;
+export type ErrorTranslator<TK extends ErrorTranslationsKeys> = Translator<'errors', TK>;
 
 /* @internal */
 export type __SpecnovaErrorOptions = {

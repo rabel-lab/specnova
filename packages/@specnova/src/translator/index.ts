@@ -7,24 +7,25 @@ import { LocalizedString } from 'typesafe-i18n';
 /* Extact types */
 type I18nKeys = keyof (typeof L)[BaseLocale];
 export type I18nTranslations<K extends I18nKeys> = Readonly<(typeof L)[BaseLocale][K]>;
-export type ErrorTranslationsKeys<K extends I18nKeys> = keyof I18nTranslations<K>;
+export type I18nTranslationKey<K extends I18nKeys> = keyof I18nTranslations<K>;
 
-type ErrorTranslationRoot<
+type TranslationRoot<
   K extends I18nKeys,
-  TK extends ErrorTranslationsKeys<K>,
+  TK extends I18nTranslationKey<K>,
 > = I18nTranslations<K>[TK];
 
-/* @internal */
-export type __ErrorTranslation<K extends I18nKeys, TK extends ErrorTranslationsKeys<K>> = (
-  l: ErrorTranslationRoot<K, TK>,
-) => LocalizedString;
-
-type Translations<K extends I18nKeys, TK extends ErrorTranslationsKeys<K>> = {
+type Translations<K extends I18nKeys, TK extends I18nTranslationKey<K>> = {
   locale: Locales;
-  translations: ErrorTranslationRoot<K, TK>;
+  translations: TranslationRoot<K, TK>;
 };
 
-export function createTranslation<K extends I18nKeys, TK extends ErrorTranslationsKeys<K>>(
+/* @internal */
+export type Translator<K extends I18nKeys, TK extends I18nTranslationKey<K>> = (
+  l: TranslationRoot<K, TK>,
+) => LocalizedString;
+
+/* @internal */
+export function createTranslation<K extends I18nKeys, TK extends I18nTranslationKey<K>>(
   root: K,
   type: TK,
 ): Translations<K, TK> {
