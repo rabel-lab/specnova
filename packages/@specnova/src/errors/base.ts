@@ -1,19 +1,16 @@
 import L from '@/i18n/i18n-node';
-import { BaseLocale, Locales } from '@/i18n/i18n-types';
+import { Locales } from '@/i18n/i18n-types';
 import { detectLocale } from '@/i18n/i18n-util';
-
-import type { LocalizedString } from 'typesafe-i18n';
+import { __ErrorTranslation, createTranslation, I18nTranslations } from '@/translator';
 
 /* Extact types */
-type I18nErrorsTranslations = (typeof L)[BaseLocale]['errors'];
+type I18nErrorsTranslations = I18nTranslations<'errors'>;
 type ErrorTranslationsKeys = keyof I18nErrorsTranslations;
-type ErrorTranslationsRoot<T extends ErrorTranslationsKeys> = I18nErrorsTranslations[T];
 
 /* @internal */
-export type __ErrorTranslation<T extends ErrorTranslationsKeys> = (
-  translations: ErrorTranslationsRoot<T>,
-) => LocalizedString;
+export type ErrorTranslator<TK extends ErrorTranslationsKeys> = __ErrorTranslation<'errors', TK>;
 
+/* @internal */
 export type __SpecnovaErrorOptions = {
   error?: Error | unknown;
   casterName?: string;
@@ -29,10 +26,10 @@ function cleanStack(message: string, stack?: string) {
 const ERROR_HANDLER_NAME = 'Specnova';
 
 /* @internal */
-export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> extends Error {
+export abstract class __SpecnovaErrorImpl<TK extends ErrorTranslationsKeys> extends Error {
   //# Public properties
   public readonly name = ERROR_HANDLER_NAME;
-  public readonly type: T;
+  public readonly type: TK;
   public readonly header: string;
   public readonly cause?: Error;
   public readonly casterName?: string;
@@ -45,9 +42,8 @@ export abstract class __SpecnovaErrorImpl<T extends ErrorTranslationsKeys> exten
   };
 
   //# Constructor
-  constructor(type: T, formatter: __ErrorTranslation<T>, options: __SpecnovaErrorOptions = {}) {
-    const locale = detectLocale();
-    const translations = L[locale].errors[type];
+  constructor(type: TK, formatter: ErrorTranslator<TK>, options: __SpecnovaErrorOptions = {}) {
+    const { translations, locale } = createTranslation('errors', type);
     const message = formatter(translations);
     super(message);
     this.type = type;

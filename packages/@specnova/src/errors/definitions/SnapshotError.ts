@@ -1,6 +1,6 @@
-import { __ErrorTranslation, __SpecnovaErrorImpl, __SpecnovaErrorOptions } from '@/errors/base';
+import { __SpecnovaErrorImpl, __SpecnovaErrorOptions, ErrorTranslator } from '@/errors/base';
 export class SpecnovaSnapshotError extends __SpecnovaErrorImpl<'snapshot'> {
-  constructor(l: __ErrorTranslation<'snapshot'>, options?: __SpecnovaErrorOptions) {
+  constructor(l: ErrorTranslator<'snapshot'>, options?: __SpecnovaErrorOptions) {
     super('snapshot', l, options);
   }
 }

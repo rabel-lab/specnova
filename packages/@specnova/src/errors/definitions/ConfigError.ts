@@ -1,6 +1,6 @@
-import { __ErrorTranslation, __SpecnovaErrorImpl, __SpecnovaErrorOptions } from '@/errors/base';
+import { __SpecnovaErrorImpl, __SpecnovaErrorOptions, ErrorTranslator } from '@/errors/base';
 export class SpecnovaConfigError extends __SpecnovaErrorImpl<'config'> {
-  constructor(l: __ErrorTranslation<'config'>, options?: __SpecnovaErrorOptions) {
+  constructor(l: ErrorTranslator<'config'>, options?: __SpecnovaErrorOptions) {
     super('config', l, options);
   }
 }
