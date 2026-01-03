@@ -20,10 +20,9 @@ type RootTranslation = {
 		}
 		config: {
 			/**
-			 * E​x​t​r​a​c​t​i​n​g​ ​O​p​e​n​A​P​I​ ​s​p​e​c​ ​f​r​o​m​:​ ​{​0​}​.
-			 * @param {string} 0
+			 * E​x​t​r​a​c​t​i​n​g​ ​O​p​e​n​A​P​I​ ​s​p​e​c​ ​f​r​o​m​ ​s​o​u​r​c​e​.
 			 */
-			extracting: RequiredParams<'0'>
+			extracting: string
 		}
 		success: {
 			cli: {
@@ -134,9 +133,10 @@ type RootTranslation = {
 			 */
 			unknownCommand: string
 			/**
-			 * N​o​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
+			 * N​o​ ​{​0​}​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
+			 * @param {string} 0
 			 */
-			noHandlerFound: string
+			noHandlerFound: RequiredParams<'0'>
 			/**
 			 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​"​{​n​a​m​e​}​"​ ​c​o​m​m​a​n​d​ ​f​o​r​ ​e​l​e​m​e​n​t​ ​"​{​e​l​e​m​e​n​t​}​.​"
 			 * @param {string} element
@@ -216,9 +216,9 @@ export type TranslationFunctions = {
 		}
 		config: {
 			/**
-			 * Extracting OpenAPI spec from: {0}.
+			 * Extracting OpenAPI spec from source.
 			 */
-			extracting: (arg0: string) => LocalizedString
+			extracting: () => LocalizedString
 		}
 		success: {
 			cli: {
@@ -324,9 +324,9 @@ export type TranslationFunctions = {
 			 */
 			unknownCommand: () => LocalizedString
 			/**
-			 * No handler found.
+			 * No {0} handler found.
 			 */
-			noHandlerFound: () => LocalizedString
+			noHandlerFound: (arg0: string) => LocalizedString
 			/**
 			 * Failed to execute "{name}" command for element "{element}."
 			 */

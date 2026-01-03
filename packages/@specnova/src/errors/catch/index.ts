@@ -3,18 +3,10 @@ import { errorCasters } from '@/errors/caster';
 import { unimplimentedErrorCaster } from '@/errors/definitions';
 import logger from '@/logger';
 
-import chalk from 'chalk';
-
 type CatchErrorOptions = {
   throw?: boolean;
   exit?: 1;
 };
-
-function getMessage(e: __SpecnovaErrorImpl<any>) {
-  const col = e.fatal ? chalk.red : chalk.yellow;
-  const message = [col(e.header), e.message, chalk.dim(e.stack)];
-  return message.join('\n');
-}
 
 export function castError(e: unknown) {
   //->IF, instance of SpecnovaError, use it
@@ -39,7 +31,6 @@ export function castError(e: unknown) {
 
 export function catchError(e: unknown, options?: CatchErrorOptions) {
   const err = castError(e);
-  const message = getMessage(err);
   //-> IF, fatal error
   if (err.fatal) {
     //-> IF, throw error
@@ -47,13 +38,13 @@ export function catchError(e: unknown, options?: CatchErrorOptions) {
       throw err;
     }
     //-> Else, Continue
-    logger.error(message);
+    logger.error(err);
     if (options?.exit) {
       process.exitCode = options.exit;
     }
   } else {
     //-> IF, non-fatal error
-    logger.warn(message);
+    logger.warn(err);
   }
 }
 

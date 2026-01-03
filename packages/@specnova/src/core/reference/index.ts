@@ -124,7 +124,7 @@ async function buildParse(): Promise<typeof emptyParse> {
  */
 export async function parseSource(source: string): Promise<SpecnovaSource> {
   const parser = await buildParse();
-  logger.config((l) => l.extracting(source));
+  logger.config((l) => l.extracting());
   //# Parse
   let parsed: ParseResultElement | null;
   try {

@@ -55,7 +55,7 @@ export class ParserCommander implements ParserCommanderImpl {
       }
     }
     // WARN: No handler found
-    throw new SpecnovaParserError((l) => l.noHandlerFound(), { fatal: false });
+    throw new SpecnovaParserError((l) => l.noHandlerFound('operationId'), { fatal: false });
   }
   sort<T extends Element>(element: T, options?: ParserCommandOptions) {
     for (const h of this.handlers.sort) {
@@ -64,7 +64,7 @@ export class ParserCommander implements ParserCommanderImpl {
       }
     }
     // WARN: No handler found
-    throw new SpecnovaParserError((l) => l.noHandlerFound(), { fatal: false });
+    throw new SpecnovaParserError((l) => l.noHandlerFound('sort'), { fatal: false });
   }
   byConfig<T extends Element>(element: T, config?: SpecnovaConfig): T {
     const mergedConfig = mergeWithDefaults(defaultSpecnovaGenConfig, config);

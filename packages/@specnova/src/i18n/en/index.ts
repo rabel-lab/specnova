@@ -6,7 +6,7 @@ const en: BaseTranslation = {
   logger: {
     seed: {},
     config: {
-      extracting: 'Extracting OpenAPI spec from: {0:string}.',
+      extracting: 'Extracting OpenAPI spec from source.',
     },
     success: {
       cli: {
@@ -56,7 +56,7 @@ const en: BaseTranslation = {
     },
     parser: {
       unknownCommand: 'Unknown command.',
-      noHandlerFound: 'No handler found.',
+      noHandlerFound: 'No {0:string} handler found.',
       failedToExecute: 'Failed to execute "{name:string}" command for element "{element:string}."',
       refractor: {
         noRefractorFound: 'No refractor found.',
