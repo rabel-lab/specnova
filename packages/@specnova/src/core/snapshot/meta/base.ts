@@ -35,8 +35,8 @@ export const snapshotMetaDataSchema = z.object({
   }),
   origin: z.object({
     source: z.url(),
-    createdAt: z.date(),
-    updatedAt: z.date(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
   }),
   sha256: z.partialRecord(
     snapshotFileSlotsEnum.exclude(['meta']),
