@@ -10,6 +10,9 @@ const en: BaseTranslation = {
     },
     success: {
       cli: {
+        init: {
+          setupAlreadyExists: 'Setup already exists in package.json.',
+        },
         lookup: {
           upToDate: 'Local patch is up to date.',
           updateAvailable: 'Update available: {0:string} → {1:string}.',
@@ -73,6 +76,11 @@ const en: BaseTranslation = {
       notLoaded: 'Configuration is not loaded.',
       adapter: {
         generateNotImplemented: 'Generation is not implemented',
+      },
+      npm: {
+        package: {
+          missingOrInvalid: '[specnova] is missing or invalid in package.json.',
+        },
       },
     },
     extracter: {

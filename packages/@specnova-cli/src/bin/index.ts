@@ -6,11 +6,13 @@ import installInit from '@/bin/installers/init';
 import installLookup from '@/bin/installers/lookup';
 import installPull from '@/bin/installers/pull';
 import installSet from '@/bin/installers/set';
-import { catchError } from '@/errors/catch';
 
 import { Command } from 'commander';
 
+import { catchError } from '@rabel-lab/specnova/errors';
+
 const program = new Command();
+
 program.name('specnova').description('SpecNova CLI');
 
 // Installers

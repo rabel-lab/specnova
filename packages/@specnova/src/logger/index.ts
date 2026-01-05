@@ -1,3 +1,4 @@
 import { Logger } from '@/logger/base';
-const logger = new Logger();
+export const logger = new Logger();
+//!TODO: Remove default export
 export default logger;

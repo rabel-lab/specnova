@@ -1,20 +1,15 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig([
-  // Library
+  // CLI
   {
-    entry: [
-      'src/index.ts',
-      'src/config/index.ts',
-      'src/config/adapters/index.ts',
-      'src/errors/index.ts',
-    ],
-    format: ['esm', 'cjs'],
-    dts: true,
+    entry: ['src/bin/index.ts'],
+    format: ['esm'],
     sourcemap: true,
-    clean: true,
-    splitting: false,
-    outDir: 'dist/lib',
+    shims: true,
+    clean: false,
+    outDir: 'dist/bin',
+    external: ['@rabel-lab/specnova'],
     target: 'es2022',
   },
   // Dev-only build
@@ -24,6 +19,7 @@ export default defineConfig([
     sourcemap: true,
     clean: false,
     outDir: 'dist/dev',
+    external: ['@rabel-lab/specnova'],
     target: 'es2022',
   },
 ]);

@@ -18,9 +18,9 @@ export type __SpecnovaErrorOptions = {
 };
 
 /* Clean stack helper */
-function cleanStack(message: string, stack?: string) {
+/*function cleanStack(message: string, stack?: string) {
   return stack?.split(message + '\n').pop();
-}
+}*/
 
 /* Specnova Error namespace */
 const ERROR_HANDLER_NAME = 'Specnova';
@@ -55,16 +55,15 @@ export abstract class __SpecnovaErrorImpl<TK extends ErrorTranslationsKeys> exte
     //IF error, use it
     if (options.error && options.error instanceof Error) {
       this.cause = options.error;
-      this.stack = cleanStack(options.error.message, options.error.stack);
+      this.stack = options.error.stack;
     } else if (typeof Error.captureStackTrace === 'function') {
       //IF captureStackTrace is available, use it
       Error.stackTraceLimit = 5;
       Error.captureStackTrace(this, this.constructor);
-      this.stack = cleanStack(this.message, this.stack);
     } else {
       //IF not, create stack
       const newStack = new Error().stack ?? '';
-      this.stack = cleanStack(newStack);
+      this.stack = newStack;
     }
     return this;
   }

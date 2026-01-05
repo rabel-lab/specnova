@@ -26,6 +26,12 @@ type RootTranslation = {
 		}
 		success: {
 			cli: {
+				init: {
+					/**
+					 * S​e​t​u​p​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​ ​i​n​ ​p​a​c​k​a​g​e​.​j​s​o​n​.
+					 */
+					setupAlreadyExists: string
+				}
 				lookup: {
 					/**
 					 * L​o​c​a​l​ ​p​a​t​c​h​ ​i​s​ ​u​p​ ​t​o​ ​d​a​t​e​.
@@ -178,6 +184,14 @@ type RootTranslation = {
 				 */
 				generateNotImplemented: string
 			}
+			npm: {
+				'package': {
+					/**
+					 * [​s​p​e​c​n​o​v​a​]​ ​i​s​ ​m​i​s​s​i​n​g​ ​o​r​ ​i​n​v​a​l​i​d​ ​i​n​ ​p​a​c​k​a​g​e​.​j​s​o​n​.
+					 */
+					missingOrInvalid: string
+				}
+			}
 		}
 		extracter: {
 			/**
@@ -222,6 +236,12 @@ export type TranslationFunctions = {
 		}
 		success: {
 			cli: {
+				init: {
+					/**
+					 * Setup already exists in package.json.
+					 */
+					setupAlreadyExists: () => LocalizedString
+				}
 				lookup: {
 					/**
 					 * Local patch is up to date.
@@ -364,6 +384,14 @@ export type TranslationFunctions = {
 				 * Generation is not implemented
 				 */
 				generateNotImplemented: () => LocalizedString
+			}
+			npm: {
+				'package': {
+					/**
+					 * [specnova] is missing or invalid in package.json.
+					 */
+					missingOrInvalid: () => LocalizedString
+				}
 			}
 		}
 		extracter: {

@@ -1,0 +1,50 @@
+{
+  "type": "module",
+  "name": "@rabel-lab/specnova-cli",
+  "private": false,
+  "version": "0.0.1",
+  "description": "Cli for SpecNova",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist/bin"
+  ],
+  "bin": {
+    "specnova": "dist/bin/index.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/bin/index.js",
+      "require": "./dist/bin/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "format": "prettier --write 'src/**/*.ts'",
+    "lint": "eslint --fix 'src/**/*.ts'",
+    "clean": "rm -rf dist",
+    "play": "pnpm build && node dist/dev/playground.dev.config.js"
+  },
+  "devDependencies": {
+    "@inquirer/type": "^4.0.2",
+    "@internal/specnova-eslint-config": "workspace:*",
+    "@rabel-lab/specnova": "workspace:*",
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^20.19.25",
+    "tsup": "^8.5.1",
+    "turbo": "^2.6.3",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.1.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.6.2",
+    "cli-spinners": "^3.3.0",
+    "commander": "^11.1.0",
+    "node-emoji": "^2.2.0"
+  },
+  "packageManager": "pnpm@10.19.0"
+}

@@ -4,6 +4,7 @@ import { unimplimentedErrorCaster } from '@/errors/definitions';
 import logger from '@/logger';
 
 type CatchErrorOptions = {
+  safe?: boolean;
   throw?: boolean;
   exit?: 1;
 };
@@ -29,17 +30,28 @@ export function castError(e: unknown) {
   }
 }
 
+function handleSafeError(e: __SpecnovaErrorImpl<any>) {
+  logger.warn(e);
+  return e;
+}
+
 export function catchError(e: unknown, options?: CatchErrorOptions) {
   const err = castError(e);
-  //-> IF, fatal error
-  if (err.fatal) {
-    //-> IF, throw error
+  if (options?.safe) {
+    //-> IF, safe error
+    logger.debug();
+    handleSafeError(err);
+    return;
+  } else if (err.fatal) {
+    //-> IF, fatal error
     if (options?.throw) {
+      //->IF, throw fatal error
       throw err;
     }
     //-> Else, Continue
     logger.error(err);
     if (options?.exit) {
+      //->IF, exit code
       process.exitCode = options.exit;
     }
   } else {

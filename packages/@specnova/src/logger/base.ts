@@ -32,7 +32,7 @@ function withPadding(message: string) {
   return message.padStart(padding);
 }
 
-function formatMessage<TK extends LoggerTranslationsKeys>(
+function formatTranslation<TK extends LoggerTranslationsKeys>(
   key: TK,
   formatter: LoggerTranslator<TK>,
 ) {
@@ -51,19 +51,20 @@ function formatError(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOpti
 
 export class Logger {
   constructor() {}
+
   async debug(...args: any[]) {
     console.debug(...args);
   }
   async seed(formatter: LoggerTranslator<'seed'>) {
-    const message = formatMessage('seed', formatter);
+    const message = formatTranslation('seed', formatter);
     console.info(writerLevel.seed, message);
   }
   async config(formatter: LoggerTranslator<'config'>) {
-    const message = formatMessage('config', formatter);
+    const message = formatTranslation('config', formatter);
     console.info(writerLevel.config, message);
   }
   async success(formatter: LoggerTranslator<'success'>) {
-    const message = formatMessage('success', formatter);
+    const message = formatTranslation('success', formatter);
     console.info(writerLevel.success, message);
   }
   async warn(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {

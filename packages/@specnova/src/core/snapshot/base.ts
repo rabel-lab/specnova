@@ -8,7 +8,7 @@ import { parseSource } from '@/core/reference';
 import { SnapshotMeta } from '@/core/snapshot/meta/base';
 import { SpecnovaSnapshotError } from '@/errors/definitions/SnapshotError';
 import logger from '@/logger';
-import { NpmPackage } from '@/npm/base';
+import { Package } from '@/npm/base';
 import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
 import { Semver, semver } from '@/types/semver';
@@ -18,7 +18,7 @@ import { join as pathJoin } from 'path';
 export class Snapshot {
   //# initialize
   private userConfig: Promise<UserConfig> = getUserConfig();
-  private packageHandler: NpmPackage = new NpmPackage();
+  private packageHandler: Package = new Package();
   private sourceUrl: string = '';
 
   //= OpenAPI source
@@ -111,7 +111,7 @@ export class Snapshot {
    * @returns - this
    */
   async loadBranch(): Promise<this> {
-    const specnovaPkg = await this.packageHandler.getPackageSpecnova();
+    const specnovaPkg = await this.packageHandler.getSpecnova();
     return await this.doLoadFromMeta(specnovaPkg.branch.target);
   }
   /**
@@ -120,7 +120,7 @@ export class Snapshot {
    * @returns - this
    */
   async loadSource(): Promise<this> {
-    const { source } = await this.packageHandler.getPackageSpecnova();
+    const { source } = await this.packageHandler.getSpecnova();
     return await this.doLoad(source);
   }
   /**
@@ -232,7 +232,7 @@ export class Snapshot {
   async setMain() {
     const { path, files } = this.ensureMeta().get();
     const metaPath = pathJoin(path, files.names.meta);
-    this.packageHandler.editPackage({
+    this.packageHandler.edit({
       branch: {
         target: metaPath,
       },
