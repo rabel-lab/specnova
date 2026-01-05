@@ -1,4 +1,4 @@
-import { logger, Package, SpecnovaPackage } from '@rabel-lab/specnova';
+import { Package, SpecnovaPackage } from '@rabel-lab/specnova';
 import { catchError } from '@rabel-lab/specnova/errors';
 
 export async function inquireInit() {
@@ -15,7 +15,8 @@ export async function inquireInit() {
   } catch (e) {
     //-> IF, no specnova config
     // Notify & continue for further
-    logger.debug('WE ARE IN CATCH ERROR', e);
+    catchError(e, { safe: true });
+    catchError(e, { safe: true });
     catchError(e, { safe: true });
   }
   //-> Apply result

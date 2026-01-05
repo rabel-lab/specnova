@@ -79,7 +79,7 @@ const en: BaseTranslation = {
       },
       npm: {
         package: {
-          missingOrInvalid: '[specnova] is missing or invalid in package.json.',
+          missingOrInvalid: 'Setting is missing or invalid in package.json.',
         },
       },
     },
@@ -94,7 +94,7 @@ const en: BaseTranslation = {
     },
   },
   errorsUtils: {
-    header: '[{name:string}]{type:string|capitalize}:',
+    header: '[{name:string}]{type:string|capitalize}',
   },
 };
 

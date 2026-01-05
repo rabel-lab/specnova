@@ -1,11 +1,12 @@
-/* Allow console.log for logger only */
-/* eslint-disable no-console */
+/* Allow pinoConsole.log for logger only */
 
+import { loadSafeEnvConfig } from '@/config/env';
 import { __SpecnovaErrorImpl } from '@/errors/base';
 import { createTranslation, I18nTranslations, Translator } from '@/translator';
 
 import chalk from 'chalk';
 import { find } from 'node-emoji';
+import pino from 'pino';
 
 /* Extact types */
 type LoggerTranslations = I18nTranslations<'logger'>;
@@ -16,6 +17,7 @@ export type LoggerTranslator<TK extends LoggerTranslationsKeys> = Translator<'lo
 
 type ErrorMessageOptions = {
   verbose?: boolean;
+  fatal?: boolean;
 };
 
 const writerLevel = {
@@ -32,47 +34,97 @@ function withPadding(message: string) {
   return message.padStart(padding);
 }
 
+function withEmoji(key: keyof typeof writerLevel) {
+  return writerLevel[key];
+}
+
 function formatTranslation<TK extends LoggerTranslationsKeys>(
   key: TK,
   formatter: LoggerTranslator<TK>,
 ) {
+  const emoji = withEmoji(key);
   const { translations } = createTranslation('logger', key);
-  return formatter(translations);
+  return `${emoji}${formatter(translations)}`;
 }
 
 function formatError(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
-  const col = error.fatal ? chalk.red : chalk.yellow;
-  let message = [col(error.header), withPadding(error.message)];
+  const emoji = withEmoji(options?.fatal ? 'error' : 'warn');
+  const col = options?.fatal ? chalk.red : chalk.yellow;
+  const header = `${emoji}${error.header}`;
+  let message = [col(header), chalk.black(withPadding(error.message))];
   if (options?.verbose && error.stack) {
     message.push(chalk.dim(withPadding(error.stack)));
   }
-  return message.join('\n');
+  return message.join(' - ');
+}
+
+async function createLogger() {
+  const env = await loadSafeEnvConfig();
+  const isDevelopment = env.NODE_ENV === 'development';
+  const isTest = process.env.NODE_ENV === 'test';
+  return pino({
+    level: process.env.LOG_LEVEL || (isDevelopment ? 'debug' : 'info'),
+    serializers: {
+      err: (error: __SpecnovaErrorImpl<any>) => {
+        return {
+          type: error.type,
+          error: !error.cause
+            ? {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
+            : undefined,
+          cause: error.cause
+            ? {
+                name: error.cause.name,
+                caster: error.casterName,
+                message: error.cause.message,
+                stack: error.cause.stack,
+              }
+            : undefined,
+        };
+      },
+    },
+    transport: isDevelopment
+      ? {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            ignore: 'pid,hostname',
+            translateTime: 'HH:MM:ss:ms',
+          },
+        }
+      : undefined,
+    // Disable in tests
+    enabled: !isTest,
+  });
 }
 
 export class Logger {
+  logger = createLogger();
   constructor() {}
 
-  async debug(...args: any[]) {
-    console.debug(...args);
-  }
   async seed(formatter: LoggerTranslator<'seed'>) {
-    const message = formatTranslation('seed', formatter);
-    console.info(writerLevel.seed, message);
+    (await this.logger).info(formatTranslation('seed', formatter));
   }
   async config(formatter: LoggerTranslator<'config'>) {
-    const message = formatTranslation('config', formatter);
-    console.info(writerLevel.config, message);
+    (await this.logger).info(formatTranslation('config', formatter));
   }
   async success(formatter: LoggerTranslator<'success'>) {
-    const message = formatTranslation('success', formatter);
-    console.info(writerLevel.success, message);
+    (await this.logger).info(formatTranslation('success', formatter));
   }
   async warn(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
-    const message = formatError(error, options);
-    console.warn(writerLevel.warn, message);
+    if (options?.verbose) {
+      (await this.logger).warn({ err: error }, formatError(error, { ...options, fatal: false }));
+    } else {
+      (await this.logger).warn(formatError(error, { ...options, fatal: false, verbose: false }));
+    }
   }
   async error(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
-    const message = formatError(error, options);
-    console.error(writerLevel.error, message);
+    (await this.logger).error(
+      { err: error },
+      formatError(error, { fatal: error.fatal, ...options }),
+    );
   }
 }

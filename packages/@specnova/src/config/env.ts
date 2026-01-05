@@ -2,9 +2,10 @@ import { mergeWithDefaults } from '@/config/utils';
 import { configFileSchema, relativePathSchema } from '@/types/files';
 
 import { loadDotenv } from 'c12';
-import * as z from 'zod/mini';
+import * as z from 'zod';
 
 const envConfigSchema = z.object({
+  NODE_ENV: z.string(),
   SPECNOVA_CONFIG_PATH: relativePathSchema,
   SPECNOVA_CONFIG_FILE: configFileSchema,
 });
@@ -12,6 +13,7 @@ const envConfigSchema = z.object({
 export type Env = z.infer<typeof envConfigSchema>;
 
 const defaultEnv: Env = {
+  NODE_ENV: process.env.NODE_ENV ?? '',
   SPECNOVA_CONFIG_PATH: process.cwd(),
   SPECNOVA_CONFIG_FILE: 'specnova.config',
 };

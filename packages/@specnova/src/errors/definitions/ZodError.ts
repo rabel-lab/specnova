@@ -11,7 +11,6 @@ export class SpecnovaZodError extends __SpecnovaErrorImpl<'zod'> {
 }
 
 /* @internal */
-export const zodErrorCaster = createErrorCaster(
-  SpecnovaZodError,
-  (error): error is ZodError => error instanceof ZodError && error.name === 'ZodError',
-);
+export const zodErrorCaster = createErrorCaster(SpecnovaZodError, (error): error is ZodError => {
+  return error instanceof ZodError && error.name === 'ZodError';
+});

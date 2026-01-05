@@ -1,4 +1,4 @@
-import { __SpecnovaErrorImpl } from '@/errors/base';
+import { isSpecnovaError } from '@/errors/base';
 import { errorCasters } from '@/errors/caster';
 import { unimplimentedErrorCaster } from '@/errors/definitions';
 import logger from '@/logger';
@@ -11,7 +11,7 @@ type CatchErrorOptions = {
 
 export function castError(e: unknown) {
   //->IF, instance of SpecnovaError, use it
-  if (e instanceof __SpecnovaErrorImpl) {
+  if (isSpecnovaError(e)) {
     return e;
   } else {
     //->ELSE, find a caster
@@ -30,17 +30,11 @@ export function castError(e: unknown) {
   }
 }
 
-function handleSafeError(e: __SpecnovaErrorImpl<any>) {
-  logger.warn(e);
-  return e;
-}
-
 export function catchError(e: unknown, options?: CatchErrorOptions) {
   const err = castError(e);
   if (options?.safe) {
     //-> IF, safe error
-    logger.debug();
-    handleSafeError(err);
+    logger.warn(err);
     return;
   } else if (err.fatal) {
     //-> IF, fatal error

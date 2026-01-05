@@ -187,7 +187,7 @@ type RootTranslation = {
 			npm: {
 				'package': {
 					/**
-					 * [​s​p​e​c​n​o​v​a​]​ ​i​s​ ​m​i​s​s​i​n​g​ ​o​r​ ​i​n​v​a​l​i​d​ ​i​n​ ​p​a​c​k​a​g​e​.​j​s​o​n​.
+					 * S​e​t​t​i​n​g​ ​i​s​ ​m​i​s​s​i​n​g​ ​o​r​ ​i​n​v​a​l​i​d​ ​i​n​ ​p​a​c​k​a​g​e​.​j​s​o​n​.
 					 */
 					missingOrInvalid: string
 				}
@@ -216,7 +216,7 @@ type RootTranslation = {
 	}
 	errorsUtils: {
 		/**
-		 * [​{​n​a​m​e​}​]​{​t​y​p​e​|​c​a​p​i​t​a​l​i​z​e​}​:
+		 * [​{​n​a​m​e​}​]​{​t​y​p​e​|​c​a​p​i​t​a​l​i​z​e​}
 		 * @param {string} name
 		 * @param {string} type
 		 */
@@ -388,7 +388,7 @@ export type TranslationFunctions = {
 			npm: {
 				'package': {
 					/**
-					 * [specnova] is missing or invalid in package.json.
+					 * Setting is missing or invalid in package.json.
 					 */
 					missingOrInvalid: () => LocalizedString
 				}
@@ -415,7 +415,7 @@ export type TranslationFunctions = {
 	}
 	errorsUtils: {
 		/**
-		 * [{name}]{type|capitalize}:
+		 * [{name}]{type|capitalize}
 		 */
 		header: (arg: { name: string, type: string }) => LocalizedString
 	}
