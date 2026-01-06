@@ -7,8 +7,11 @@ export default defineCliInstaller({
   name: 'init',
   description: 'Start a new snapshot branch.',
   async action() {
-    let specnova = await inquireInit();
-    logger.success((l) => l.cli.init.setupAlreadyExists());
-    return '';
+    let { prev, next } = await inquireInit();
+    if (prev?.source) {
+      await logger.success((l) => l.cli.init.changedSource(prev.source, next.source));
+    } else {
+      await logger.success((l) => l.cli.init.newSource(next.source));
+    }
   },
 });

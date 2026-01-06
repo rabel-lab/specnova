@@ -46,6 +46,7 @@ export class Package {
     });
     writeFileSync(Package.PKG_PATH, converter.fromJson(pkg, true), 'utf8');
     this.packageJson = pkg;
+    return pkg.specnova;
   }
 
   async getSpecnova() {

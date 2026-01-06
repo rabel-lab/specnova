@@ -11,7 +11,8 @@ const en: BaseTranslation = {
     success: {
       cli: {
         init: {
-          setupAlreadyExists: 'Setup already exists in package.json.',
+          changedSource: 'Source changed: {0:string} → {1:string}.',
+          newSource: 'Source started at: {0:string}.',
         },
         lookup: {
           upToDate: 'Local patch is up to date.',

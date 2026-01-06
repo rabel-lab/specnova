@@ -15,25 +15,32 @@ async function trySpecnova(pkg: Package) {
     //-> IF, no specnova config
     // Notify & continue for further
     await catchError(e, { safe: true });
-    return null;
   }
+  return null;
 }
 
 const DEMO_URL =
   'https://raw.githubusercontent.com/OAI/learn.openapis.org/refs/heads/main/examples/v3.0/api-with-examples.json';
 
-export async function inquireInit() {
+export async function inquireInit(): Promise<{
+  prev: SpecnovaPackage | null;
+  next: SpecnovaPackage;
+}> {
   //-> Check if we have a specnova config
   const pkg = new Package();
-  const hasSpecnova = await trySpecnova(pkg);
+  const prev = await trySpecnova(pkg);
   // -> await reading input
   await new Promise((resolve) => setTimeout(resolve, 50));
   const specnova: Partial<SpecnovaPackage> = {
     source: await input({
       message: 'What is your openapi source url?',
-      default: hasSpecnova?.source ?? DEMO_URL,
+      default: prev?.source ?? DEMO_URL,
     }),
   };
   logger.debug(specnova);
-  await pkg.edit(specnova);
+  const next = await pkg.edit(specnova);
+  return {
+    prev,
+    next,
+  };
 }

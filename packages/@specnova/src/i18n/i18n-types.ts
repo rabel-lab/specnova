@@ -28,9 +28,16 @@ type RootTranslation = {
 			cli: {
 				init: {
 					/**
-					 * S​e​t​u​p​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​ ​i​n​ ​p​a​c​k​a​g​e​.​j​s​o​n​.
+					 * S​o​u​r​c​e​ ​c​h​a​n​g​e​d​:​ ​{​0​}​ ​→​ ​{​1​}​.
+					 * @param {string} 0
+					 * @param {string} 1
 					 */
-					setupAlreadyExists: string
+					changedSource: RequiredParams<'0' | '1'>
+					/**
+					 * S​o​u​r​c​e​ ​s​t​a​r​t​e​d​ ​a​t​:​ ​{​0​}​.
+					 * @param {string} 0
+					 */
+					newSource: RequiredParams<'0'>
 				}
 				lookup: {
 					/**
@@ -238,9 +245,13 @@ export type TranslationFunctions = {
 			cli: {
 				init: {
 					/**
-					 * Setup already exists in package.json.
+					 * Source changed: {0} → {1}.
 					 */
-					setupAlreadyExists: () => LocalizedString
+					changedSource: (arg0: string, arg1: string) => LocalizedString
+					/**
+					 * Source started at: {0}.
+					 */
+					newSource: (arg0: string) => LocalizedString
 				}
 				lookup: {
 					/**
