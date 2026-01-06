@@ -30,11 +30,11 @@ export function castError(e: unknown) {
   }
 }
 
-export function catchError(e: unknown, options?: CatchErrorOptions) {
+export async function catchError(e: unknown, options?: CatchErrorOptions) {
   const err = castError(e);
   if (options?.safe) {
     //-> IF, safe error
-    logger.warn(err);
+    await logger.warn(err);
     return;
   } else if (err.fatal) {
     //-> IF, fatal error
@@ -43,14 +43,14 @@ export function catchError(e: unknown, options?: CatchErrorOptions) {
       throw err;
     }
     //-> Else, Continue
-    logger.error(err);
+    await logger.error(err);
     if (options?.exit) {
       //->IF, exit code
       process.exitCode = options.exit;
     }
   } else {
     //-> IF, non-fatal error
-    logger.warn(err);
+    await logger.warn(err);
   }
 }
 

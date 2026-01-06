@@ -1,9 +1,8 @@
-import { Package, SpecnovaPackage } from '@rabel-lab/specnova';
+import { input } from '@inquirer/prompts';
+import { logger, Package, SpecnovaPackage } from '@rabel-lab/specnova';
 import { catchError } from '@rabel-lab/specnova/errors';
 
-export async function inquireInit() {
-  //-> Check if we have a specnova config
-  const pkg = new Package();
+async function trySpecnova(pkg: Package) {
   let specnova: SpecnovaPackage | null = null;
   try {
     const trySpecnova = await pkg.getSpecnova();
@@ -15,12 +14,26 @@ export async function inquireInit() {
   } catch (e) {
     //-> IF, no specnova config
     // Notify & continue for further
-    catchError(e, { safe: true });
-    catchError(e, { safe: true });
-    catchError(e, { safe: true });
+    await catchError(e, { safe: true });
+    return null;
   }
-  //-> Apply result
-  /* await pkg.edit({
-    source: await input({ message: 'What is your openapi source url?' }),
-  });*/
+}
+
+const DEMO_URL =
+  'https://raw.githubusercontent.com/OAI/learn.openapis.org/refs/heads/main/examples/v3.0/api-with-examples.json';
+
+export async function inquireInit() {
+  //-> Check if we have a specnova config
+  const pkg = new Package();
+  const hasSpecnova = await trySpecnova(pkg);
+  // -> await reading input
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  const specnova: Partial<SpecnovaPackage> = {
+    source: await input({
+      message: 'What is your openapi source url?',
+      default: hasSpecnova?.source ?? DEMO_URL,
+    }),
+  };
+  logger.debug(specnova);
+  await pkg.edit(specnova);
 }

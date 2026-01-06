@@ -7,10 +7,14 @@ import { resolve as path } from 'path';
 import { z } from 'zod';
 
 const specNovaPackageSchema = z.object({
-  source: z.httpUrl().prefault('<OpenAPI source>'),
-  branch: z.object({
-    target: z.string().prefault(''),
-  }),
+  source: z.httpUrl(),
+  branch: z
+    .object({
+      target: z.string(),
+    })
+    .catch({
+      target: '',
+    }),
 });
 
 export type SpecnovaPackage = z.infer<typeof specNovaPackageSchema>;

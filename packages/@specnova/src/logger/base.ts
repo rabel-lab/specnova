@@ -51,11 +51,11 @@ function formatError(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOpti
   const emoji = withEmoji(options?.fatal ? 'error' : 'warn');
   const col = options?.fatal ? chalk.red : chalk.yellow;
   const header = `${emoji}${error.header}`;
-  let message = [col(header), chalk.black(withPadding(error.message))];
+  let message = [col(header), chalk.black(error.message)];
   if (options?.verbose && error.stack) {
     message.push(chalk.dim(withPadding(error.stack)));
   }
-  return message.join(' - ');
+  return message.join(' → ');
 }
 
 async function createLogger() {
@@ -104,7 +104,14 @@ async function createLogger() {
 export class Logger {
   logger = createLogger();
   constructor() {}
-
+  async debug(...args: any[]) {
+    const length = args.length;
+    if (length === 1) {
+      (await this.logger).debug(args[0]);
+    } else {
+      (await this.logger).debug(args);
+    }
+  }
   async seed(formatter: LoggerTranslator<'seed'>) {
     (await this.logger).info(formatTranslation('seed', formatter));
   }
