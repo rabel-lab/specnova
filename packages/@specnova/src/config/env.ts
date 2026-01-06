@@ -5,6 +5,7 @@ import { loadDotenv } from 'c12';
 import * as z from 'zod';
 
 const envConfigSchema = z.object({
+  LOG_LEVEL: z.string(),
   NODE_ENV: z.string(),
   SPECNOVA_CONFIG_PATH: relativePathSchema,
   SPECNOVA_CONFIG_FILE: configFileSchema,
@@ -13,6 +14,7 @@ const envConfigSchema = z.object({
 export type Env = z.infer<typeof envConfigSchema>;
 
 const defaultEnv: Env = {
+  LOG_LEVEL: process.env.LOG_LEVEL ?? '',
   NODE_ENV: process.env.NODE_ENV ?? '',
   SPECNOVA_CONFIG_PATH: process.cwd(),
   SPECNOVA_CONFIG_FILE: 'specnova.config',

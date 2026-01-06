@@ -61,9 +61,11 @@ function formatError(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOpti
 async function createLogger() {
   const env = await loadSafeEnvConfig();
   const isDevelopment = env.NODE_ENV === 'development';
-  const isTest = process.env.NODE_ENV === 'test';
+  const isTest = env.NODE_ENV === 'test';
+  const logLevel = env.LOG_LEVEL || (isDevelopment ? 'debug' : 'info');
+
   return pino({
-    level: process.env.LOG_LEVEL || (isDevelopment ? 'debug' : 'info'),
+    level: logLevel,
     serializers: {
       err: (error: __SpecnovaErrorImpl<any>) => {
         return {
