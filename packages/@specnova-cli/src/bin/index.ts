@@ -4,7 +4,6 @@ import installFetch from '@/bin/installers/fetch';
 import installGenerate from '@/bin/installers/generate';
 import installInit from '@/bin/installers/init';
 import installLookup from '@/bin/installers/lookup';
-import installPull from '@/bin/installers/pull';
 import installSet from '@/bin/installers/set';
 
 import { Command } from 'commander';
@@ -18,7 +17,6 @@ program.name('specnova').description('SpecNova CLI');
 // Installers
 installInit(program);
 installFetch(program);
-installPull(program);
 installLookup(program);
 installGenerate(program);
 installSet(program);

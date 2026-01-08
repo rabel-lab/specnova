@@ -5,7 +5,7 @@ import { Snapshot } from '@rabel-lab/specnova';
 
 export default defineCliInstaller({
   name: 'lookup',
-  description: 'Lookup the spec origin.',
+  description: 'Lookup information on the source and target branch.',
   async action() {
     const snapshot = new Snapshot();
     const test = await snapshot.loadBranch();

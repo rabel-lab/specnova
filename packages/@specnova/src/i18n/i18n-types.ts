@@ -189,11 +189,19 @@ export type NamespaceErrorsTranslation = {
 		 * @param {commanderError} 0
 		 */
 		fromError: RequiredParams<'0|printCommanderError'>
-		init: {
+		permission: {
 			/**
 			 * B​r​a​n​c​h​ ​o​v​e​r​w​r​i​t​e​ ​i​s​ ​n​o​t​ ​a​l​l​o​w​e​d​.
 			 */
 			cantOverwrite: string
+		}
+		missing: {
+			/**
+			 * N​o​ ​b​r​a​n​{​{​c​h​|​c​h​e​s​}​}​ ​f​o​u​n​d​.
+			 */
+			branch: string
+		}
+		init: {
 		}
 	}
 }
@@ -462,11 +470,19 @@ export type TranslationFunctions = {
 			 * {0|printCommanderError}
 			 */
 			fromError: (arg0: commanderError) => LocalizedString
-			init: {
+			permission: {
 				/**
 				 * Branch overwrite is not allowed.
 				 */
 				cantOverwrite: () => LocalizedString
+			}
+			missing: {
+				/**
+				 * No bran{{ch|ches}} found.
+				 */
+				branch: (arg0: number | string | boolean) => LocalizedString
+			}
+			init: {
 			}
 		}
 	}

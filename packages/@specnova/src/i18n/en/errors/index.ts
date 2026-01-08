@@ -65,9 +65,13 @@ const en_errors: BaseTranslation = {
   },
   cli: {
     fromError: '{0:commanderError|printCommanderError}',
-    init: {
+    permission: {
       cantOverwrite: 'Branch overwrite is not allowed.',
     },
+    missing: {
+      branch: 'No bran{{ch|ches}} found.',
+    },
+    init: {},
   },
 };
 
