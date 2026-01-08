@@ -7,8 +7,17 @@ import { loadedFormatters, loadedLocales, locales } from './i18n-util'
 
 import en from './en'
 
+import en_errors from './en/errors'
+import en_logger from './en/logger'
+import en_tasks from './en/tasks'
+
 const localeTranslations = {
-	en,
+	en: {
+		...en,
+		errors: en_errors,
+		logger: en_logger,
+		tasks: en_tasks
+	},
 }
 
 export const loadLocale = (locale: Locales): void => {

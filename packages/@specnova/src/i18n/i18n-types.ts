@@ -4,233 +4,22 @@ import type { BaseTranslation as BaseTranslationType, LocalizedString, RequiredP
 
 import type { commanderError, error, stringArray, zodError } from './custom-types'
 
-export type BaseTranslation = BaseTranslationType
+export type BaseTranslation = BaseTranslationType & DisallowNamespaces
 export type BaseLocale = 'en'
 
 export type Locales =
 	| 'en'
 
-export type Translation = RootTranslation
+export type Translation = RootTranslation & DisallowNamespaces
 
-export type Translations = RootTranslation
+export type Translations = RootTranslation &
+{
+	errors: NamespaceErrorsTranslation,
+	logger: NamespaceLoggerTranslation,
+	tasks: NamespaceTasksTranslation
+}
 
 type RootTranslation = {
-	logger: {
-		seed: {
-		}
-		config: {
-			/**
-			 * E​x​t​r​a​c​t​i​n​g​ ​O​p​e​n​A​P​I​ ​s​p​e​c​ ​f​r​o​m​ ​s​o​u​r​c​e​.
-			 */
-			extracting: string
-		}
-		success: {
-			cli: {
-				init: {
-					/**
-					 * S​o​u​r​c​e​ ​c​h​a​n​g​e​d​:​ ​{​0​}​ ​→​ ​{​1​}​.
-					 * @param {string} 0
-					 * @param {string} 1
-					 */
-					changedSource: RequiredParams<'0' | '1'>
-					/**
-					 * S​o​u​r​c​e​ ​s​t​a​r​t​e​d​ ​a​t​:​ ​{​0​}​.
-					 * @param {string} 0
-					 */
-					newSource: RequiredParams<'0'>
-				}
-				lookup: {
-					/**
-					 * L​o​c​a​l​ ​p​a​t​c​h​ ​i​s​ ​u​p​ ​t​o​ ​d​a​t​e​.
-					 */
-					upToDate: string
-					/**
-					 * U​p​d​a​t​e​ ​a​v​a​i​l​a​b​l​e​:​ ​{​0​}​ ​→​ ​{​1​}​.
-					 * @param {string} 0
-					 * @param {string} 1
-					 */
-					updateAvailable: RequiredParams<'0' | '1'>
-				}
-			}
-			snapshot: {
-				/**
-				 * A​p​p​l​i​e​d​ ​c​h​a​n​g​e​s​ ​t​o​ ​{​0​}​.
-				 * @param {string} 0
-				 */
-				submit: RequiredParams<'0'>
-			}
-			core: {
-				parser: {
-					/**
-					 * N​o​ ​n​o​r​m​a​l​i​z​a​t​i​o​n​ ​s​e​t​t​i​n​g​s​ ​f​o​u​n​d​.
-					 */
-					noNormalization: string
-				}
-				reference: {
-					/**
-					 * P​a​r​s​e​d​ ​s​p​e​c​.
-					 */
-					parse: string
-				}
-			}
-		}
-	}
-	errors: {
-		snapshot: {
-			meta: {
-				/**
-				 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​n​o​t​ ​f​o​u​n​d​.
-				 */
-				notFound: string
-				/**
-				 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​i​s​ ​n​o​t​ ​l​o​c​k​e​d​.
-				 */
-				notLocked: string
-				/**
-				 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​i​s​ ​n​o​t​ ​u​n​l​o​c​k​e​d​.
-				 */
-				notUnlocked: string
-				/**
-				 * I​n​v​a​l​i​d​ ​d​i​g​e​s​t​e​r​ ​k​e​y​.
-				 */
-				invalidDigest: string
-				/**
-				 * T​h​e​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​ ​d​o​e​s​ ​n​o​t​ ​m​a​t​c​h​.
-				 */
-				missmatch: string
-				/**
-				 * F​a​i​l​e​d​ ​t​o​ ​c​r​e​a​t​e​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​.
-				 */
-				failedToCreate: string
-				/**
-				 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​.
-				 */
-				failedToLoad: string
-			}
-			source: {
-				/**
-				 * S​o​u​r​c​e​ ​n​o​t​ ​f​o​u​n​d​.
-				 */
-				notFound: string
-				/**
-				 * I​n​v​a​l​i​d​ ​u​r​l​.
-				 */
-				invalidUrl: string
-				/**
-				 * S​p​e​c​n​o​v​a​ ​s​o​u​r​c​e​ ​m​u​s​t​ ​b​e​ ​l​o​a​d​e​d​ ​f​r​o​m​ ​a​ ​m​e​t​a​ ​f​i​l​e​.
-				 */
-				internalFailedToLoad: string
-			}
-			/**
-			 * F​a​i​l​e​d​ ​t​o​ ​s​a​v​e​ ​{​0​}​{​0​}​.
-			 * @param {string | stringArray} 0
-			 */
-			failedToSave: RequiredParams<'0' | '0'>
-		}
-		reference: {
-			parse: {
-				/**
-				 * F​a​i​l​e​d​ ​t​o​ ​p​a​r​s​e​ ​s​o​u​r​c​e​.
-				 */
-				failedToParse: string
-				/**
-				 * I​n​v​a​l​i​d​ ​f​i​l​e​ ​e​x​t​e​n​s​i​o​n​.​ ​S​u​p​p​o​r​t​e​d​ ​e​x​t​e​n​s​i​o​n​s​:​ ​{​e​x​t​e​n​s​i​o​n​}​.
-				 * @param {stringArray} extension
-				 */
-				invalidFileExtension: RequiredParams<'extension'>
-				/**
-				 * N​o​ ​r​e​s​u​l​t​ ​f​o​u​n​d​.
-				 */
-				noResult: string
-			}
-		}
-		parser: {
-			/**
-			 * U​n​k​n​o​w​n​ ​c​o​m​m​a​n​d​.
-			 */
-			unknownCommand: string
-			/**
-			 * N​o​ ​{​0​}​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
-			 * @param {string} 0
-			 */
-			noHandlerFound: RequiredParams<'0'>
-			/**
-			 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​"​{​n​a​m​e​}​"​ ​c​o​m​m​a​n​d​ ​f​o​r​ ​e​l​e​m​e​n​t​ ​"​{​e​l​e​m​e​n​t​}​.​"
-			 * @param {string} element
-			 * @param {string} name
-			 */
-			failedToExecute: RequiredParams<'element' | 'name'>
-			refractor: {
-				/**
-				 * N​o​ ​r​e​f​r​a​c​t​o​r​ ​f​o​u​n​d​.
-				 */
-				noRefractorFound: string
-			}
-		}
-		unimplimented: {
-			/**
-			 * U​n​k​n​o​w​n​ ​e​r​r​o​r
-			 */
-			unknownError: string
-			/**
-			 * {​0​|​p​r​i​n​t​E​r​r​o​r​}
-			 * @param {error} 0
-			 */
-			fromError: RequiredParams<'0|printError'>
-		}
-		typesafe_i18n: {
-			/**
-			 * {​{​i​1​8​n​_​i​n​v​a​l​i​d​_​p​a​r​a​m​}​}
-			 */
-			'invalid-formatter-param': string
-		}
-		config: {
-			/**
-			 * C​o​n​f​i​g​u​r​a​t​i​o​n​ ​i​s​ ​n​o​t​ ​l​o​a​d​e​d​.
-			 */
-			notLoaded: string
-			adapter: {
-				/**
-				 * G​e​n​e​r​a​t​i​o​n​ ​i​s​ ​n​o​t​ ​i​m​p​l​e​m​e​n​t​e​d
-				 */
-				generateNotImplemented: string
-			}
-			npm: {
-				'package': {
-					/**
-					 * S​e​t​t​i​n​g​ ​i​s​ ​m​i​s​s​i​n​g​ ​o​r​ ​i​n​v​a​l​i​d​ ​i​n​ ​p​a​c​k​a​g​e​.​j​s​o​n​.
-					 */
-					missingOrInvalid: string
-				}
-			}
-		}
-		extracter: {
-			/**
-			 * N​o​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
-			 */
-			noHandlerFound: string
-		}
-		zod: {
-			/**
-			 * {​0​|​p​r​i​n​t​Z​o​d​E​r​r​o​r​}
-			 * @param {zodError} 0
-			 */
-			fromError: RequiredParams<'0|printZodError'>
-		}
-		cli: {
-			/**
-			 * {​0​|​p​r​i​n​t​C​o​m​m​a​n​d​e​r​E​r​r​o​r​}
-			 * @param {commanderError} 0
-			 */
-			fromError: RequiredParams<'0|printCommanderError'>
-			init: {
-				/**
-				 * B​r​a​n​c​h​ ​o​v​e​r​w​r​i​t​e​ ​i​s​ ​n​o​t​ ​a​l​l​o​w​e​d​.
-				 */
-				cantOverwrite: string
-			}
-		}
-	}
 	errorsUtils: {
 		/**
 		 * [​{​n​a​m​e​}​]​{​t​y​p​e​|​c​a​p​i​t​a​l​i​z​e​}
@@ -241,60 +30,264 @@ type RootTranslation = {
 	}
 }
 
-export type TranslationFunctions = {
-	logger: {
-		seed: {
-		}
-		config: {
+export type NamespaceErrorsTranslation = {
+	snapshot: {
+		meta: {
 			/**
-			 * Extracting OpenAPI spec from source.
+			 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​n​o​t​ ​f​o​u​n​d​.
 			 */
-			extracting: () => LocalizedString
+			notFound: string
+			/**
+			 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​i​s​ ​n​o​t​ ​l​o​c​k​e​d​.
+			 */
+			notLocked: string
+			/**
+			 * S​n​a​p​s​h​o​t​ ​m​e​t​a​ ​i​s​ ​n​o​t​ ​u​n​l​o​c​k​e​d​.
+			 */
+			notUnlocked: string
+			/**
+			 * I​n​v​a​l​i​d​ ​d​i​g​e​s​t​e​r​ ​k​e​y​.
+			 */
+			invalidDigest: string
+			/**
+			 * T​h​e​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​ ​d​o​e​s​ ​n​o​t​ ​m​a​t​c​h​.
+			 */
+			missmatch: string
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​c​r​e​a​t​e​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​.
+			 */
+			failedToCreate: string
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​l​o​a​d​ ​s​n​a​p​s​h​o​t​ ​m​e​t​a​.
+			 */
+			failedToLoad: string
 		}
-		success: {
-			cli: {
-				init: {
-					/**
-					 * Source changed: {0} → {1}.
-					 */
-					changedSource: (arg0: string, arg1: string) => LocalizedString
-					/**
-					 * Source started at: {0}.
-					 */
-					newSource: (arg0: string) => LocalizedString
-				}
-				lookup: {
-					/**
-					 * Local patch is up to date.
-					 */
-					upToDate: () => LocalizedString
-					/**
-					 * Update available: {0} → {1}.
-					 */
-					updateAvailable: (arg0: string, arg1: string) => LocalizedString
-				}
-			}
-			snapshot: {
+		source: {
+			/**
+			 * S​o​u​r​c​e​ ​n​o​t​ ​f​o​u​n​d​.
+			 */
+			notFound: string
+			/**
+			 * I​n​v​a​l​i​d​ ​u​r​l​.
+			 */
+			invalidUrl: string
+			/**
+			 * S​p​e​c​n​o​v​a​ ​s​o​u​r​c​e​ ​m​u​s​t​ ​b​e​ ​l​o​a​d​e​d​ ​f​r​o​m​ ​a​ ​m​e​t​a​ ​f​i​l​e​.
+			 */
+			internalFailedToLoad: string
+		}
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​s​a​v​e​ ​{​0​}​{​0​}​.
+		 * @param {string | stringArray} 0
+		 */
+		failedToSave: RequiredParams<'0' | '0'>
+	}
+	reference: {
+		parse: {
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​p​a​r​s​e​ ​s​o​u​r​c​e​.
+			 */
+			failedToParse: string
+			/**
+			 * I​n​v​a​l​i​d​ ​f​i​l​e​ ​e​x​t​e​n​s​i​o​n​.​ ​S​u​p​p​o​r​t​e​d​ ​e​x​t​e​n​s​i​o​n​s​:​ ​{​e​x​t​e​n​s​i​o​n​}​.
+			 * @param {stringArray} extension
+			 */
+			invalidFileExtension: RequiredParams<'extension'>
+			/**
+			 * N​o​ ​r​e​s​u​l​t​ ​f​o​u​n​d​.
+			 */
+			noResult: string
+		}
+	}
+	parser: {
+		/**
+		 * U​n​k​n​o​w​n​ ​c​o​m​m​a​n​d​.
+		 */
+		unknownCommand: string
+		/**
+		 * N​o​ ​{​0​}​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
+		 * @param {string} 0
+		 */
+		noHandlerFound: RequiredParams<'0'>
+		/**
+		 * F​a​i​l​e​d​ ​t​o​ ​e​x​e​c​u​t​e​ ​"​{​n​a​m​e​}​"​ ​c​o​m​m​a​n​d​ ​f​o​r​ ​e​l​e​m​e​n​t​ ​"​{​e​l​e​m​e​n​t​}​.​"
+		 * @param {string} element
+		 * @param {string} name
+		 */
+		failedToExecute: RequiredParams<'element' | 'name'>
+		refractor: {
+			/**
+			 * N​o​ ​r​e​f​r​a​c​t​o​r​ ​f​o​u​n​d​.
+			 */
+			noRefractorFound: string
+		}
+	}
+	unimplimented: {
+		/**
+		 * U​n​k​n​o​w​n​ ​e​r​r​o​r
+		 */
+		unknownError: string
+		/**
+		 * {​0​|​p​r​i​n​t​E​r​r​o​r​}
+		 * @param {error} 0
+		 */
+		fromError: RequiredParams<'0|printError'>
+	}
+	typesafe_i18n: {
+		/**
+		 * {​{​i​1​8​n​_​i​n​v​a​l​i​d​_​p​a​r​a​m​}​}
+		 */
+		'invalid-formatter-param': string
+	}
+	config: {
+		/**
+		 * C​o​n​f​i​g​u​r​a​t​i​o​n​ ​i​s​ ​n​o​t​ ​l​o​a​d​e​d​.
+		 */
+		notLoaded: string
+		adapter: {
+			/**
+			 * G​e​n​e​r​a​t​i​o​n​ ​i​s​ ​n​o​t​ ​i​m​p​l​e​m​e​n​t​e​d
+			 */
+			generateNotImplemented: string
+		}
+		npm: {
+			'package': {
 				/**
-				 * Applied changes to {0}.
+				 * S​e​t​t​i​n​g​ ​i​s​ ​m​i​s​s​i​n​g​ ​o​r​ ​i​n​v​a​l​i​d​ ​i​n​ ​p​a​c​k​a​g​e​.​j​s​o​n​.
 				 */
-				submit: (arg0: string) => LocalizedString
-			}
-			core: {
-				parser: {
-					/**
-					 * No normalization settings found.
-					 */
-					noNormalization: () => LocalizedString
-				}
-				reference: {
-					/**
-					 * Parsed spec.
-					 */
-					parse: () => LocalizedString
-				}
+				missingOrInvalid: string
 			}
 		}
+	}
+	extracter: {
+		/**
+		 * N​o​ ​h​a​n​d​l​e​r​ ​f​o​u​n​d​.
+		 */
+		noHandlerFound: string
+	}
+	zod: {
+		/**
+		 * {​0​|​p​r​i​n​t​Z​o​d​E​r​r​o​r​}
+		 * @param {zodError} 0
+		 */
+		fromError: RequiredParams<'0|printZodError'>
+	}
+	cli: {
+		/**
+		 * {​0​|​p​r​i​n​t​C​o​m​m​a​n​d​e​r​E​r​r​o​r​}
+		 * @param {commanderError} 0
+		 */
+		fromError: RequiredParams<'0|printCommanderError'>
+		init: {
+			/**
+			 * B​r​a​n​c​h​ ​o​v​e​r​w​r​i​t​e​ ​i​s​ ​n​o​t​ ​a​l​l​o​w​e​d​.
+			 */
+			cantOverwrite: string
+		}
+	}
+}
+
+export type NamespaceLoggerTranslation = {
+	seed: {
+	}
+	config: {
+		/**
+		 * E​x​t​r​a​c​t​i​n​g​ ​O​p​e​n​A​P​I​ ​s​p​e​c​ ​f​r​o​m​ ​s​o​u​r​c​e​.
+		 */
+		extracting: string
+	}
+	success: {
+		cli: {
+			init: {
+				/**
+				 * S​o​u​r​c​e​ ​c​h​a​n​g​e​d​:​ ​{​0​}​ ​→​ ​{​1​}​.
+				 * @param {string} 0
+				 * @param {string} 1
+				 */
+				changedSource: RequiredParams<'0' | '1'>
+				/**
+				 * S​o​u​r​c​e​ ​s​t​a​r​t​e​d​ ​a​t​:​ ​{​0​}​.
+				 * @param {string} 0
+				 */
+				newSource: RequiredParams<'0'>
+			}
+			lookup: {
+				/**
+				 * L​o​c​a​l​ ​p​a​t​c​h​ ​i​s​ ​u​p​ ​t​o​ ​d​a​t​e​.
+				 */
+				upToDate: string
+				/**
+				 * U​p​d​a​t​e​ ​a​v​a​i​l​a​b​l​e​:​ ​{​0​}​ ​→​ ​{​1​}​.
+				 * @param {string} 0
+				 * @param {string} 1
+				 */
+				updateAvailable: RequiredParams<'0' | '1'>
+			}
+		}
+		snapshot: {
+			/**
+			 * A​p​p​l​i​e​d​ ​c​h​a​n​g​e​s​ ​t​o​ ​{​0​}​.
+			 * @param {string} 0
+			 */
+			submit: RequiredParams<'0'>
+		}
+		core: {
+			parser: {
+				/**
+				 * N​o​ ​n​o​r​m​a​l​i​z​a​t​i​o​n​ ​s​e​t​t​i​n​g​s​ ​f​o​u​n​d​.
+				 */
+				noNormalization: string
+			}
+			reference: {
+				/**
+				 * P​a​r​s​e​d​ ​s​p​e​c​.
+				 */
+				parse: string
+			}
+		}
+	}
+}
+
+export type NamespaceTasksTranslation = {
+	allow: {
+		/**
+		 * D​o​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​o​v​e​r​w​r​i​t​e​ ​y​o​u​r​ ​c​u​r​r​e​n​t​ ​s​e​t​t​i​n​g​s​?
+		 */
+		overwriteSettings: string
+	}
+}
+
+export type Namespaces =
+	| 'errors'
+	| 'logger'
+	| 'tasks'
+
+type DisallowNamespaces = {
+	/**
+	 * reserved for 'errors'-namespace\
+	 * you need to use the `./errors/index.ts` file instead
+	 */
+	errors?: "[typesafe-i18n] reserved for 'errors'-namespace. You need to use the `./errors/index.ts` file instead."
+
+	/**
+	 * reserved for 'logger'-namespace\
+	 * you need to use the `./logger/index.ts` file instead
+	 */
+	logger?: "[typesafe-i18n] reserved for 'logger'-namespace. You need to use the `./logger/index.ts` file instead."
+
+	/**
+	 * reserved for 'tasks'-namespace\
+	 * you need to use the `./tasks/index.ts` file instead
+	 */
+	tasks?: "[typesafe-i18n] reserved for 'tasks'-namespace. You need to use the `./tasks/index.ts` file instead."
+}
+
+export type TranslationFunctions = {
+	errorsUtils: {
+		/**
+		 * [{name}]{type|capitalize}
+		 */
+		header: (arg: { name: string, type: string }) => LocalizedString
 	}
 	errors: {
 		snapshot: {
@@ -444,11 +437,67 @@ export type TranslationFunctions = {
 			}
 		}
 	}
-	errorsUtils: {
-		/**
-		 * [{name}]{type|capitalize}
-		 */
-		header: (arg: { name: string, type: string }) => LocalizedString
+	logger: {
+		seed: {
+		}
+		config: {
+			/**
+			 * Extracting OpenAPI spec from source.
+			 */
+			extracting: () => LocalizedString
+		}
+		success: {
+			cli: {
+				init: {
+					/**
+					 * Source changed: {0} → {1}.
+					 */
+					changedSource: (arg0: string, arg1: string) => LocalizedString
+					/**
+					 * Source started at: {0}.
+					 */
+					newSource: (arg0: string) => LocalizedString
+				}
+				lookup: {
+					/**
+					 * Local patch is up to date.
+					 */
+					upToDate: () => LocalizedString
+					/**
+					 * Update available: {0} → {1}.
+					 */
+					updateAvailable: (arg0: string, arg1: string) => LocalizedString
+				}
+			}
+			snapshot: {
+				/**
+				 * Applied changes to {0}.
+				 */
+				submit: (arg0: string) => LocalizedString
+			}
+			core: {
+				parser: {
+					/**
+					 * No normalization settings found.
+					 */
+					noNormalization: () => LocalizedString
+				}
+				reference: {
+					/**
+					 * Parsed spec.
+					 */
+					parse: () => LocalizedString
+				}
+			}
+		}
+	}
+	tasks: {
+		allow: {
+			/**
+			 * Do you want to overwrite your current settings?
+			 */
+			overwriteSettings: () => LocalizedString
+		}
 	}
 }
 

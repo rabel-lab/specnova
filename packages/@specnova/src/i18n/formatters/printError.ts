@@ -1,9 +1,7 @@
 import { FormatterFunc } from '@/i18n/formatters';
 
-import { CommanderError } from 'commander';
-
-const printCommanderError: FormatterFunc<'printCommanderError'> = (error: CommanderError) => {
-  return `${error.message}`;
+const error: FormatterFunc<'printError'> = (error: Error) => {
+  return error.message;
 };
 
-export default printCommanderError;
+export default error;
