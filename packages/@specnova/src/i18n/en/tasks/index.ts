@@ -5,6 +5,12 @@ const en_tasks: BaseTranslation = {
   allow: {
     overwriteSettings: 'Do you want to overwrite your current settings?',
   },
+  select: {
+    branches: 'Switching branch to:',
+  },
+  input: {
+    newSource: 'What is the openapi url?',
+  },
 };
 
 export default en_tasks;

@@ -7,7 +7,7 @@ const SAFE_PATH_REGEX =
   /^(?!.*(?:^|\/)\.(?:\/|$))(?!.*\.\.)[\/]?([A-Za-z0-9-_+@.]+\/)*([A-Za-z0-9-_+@.]+)$/;
 const SAFE_FILE_REGEX = /^([A-z0-9-_+\.]+(.{0,7}))$/;
 
-export function resolveRelativeSafePath(path: string) {
+function resolveRelativeSafePath(path: string) {
   const localPath = resolve(process.cwd());
   const resolved = resolve(localPath, path);
   if (!resolved.startsWith(localPath)) {

@@ -160,7 +160,7 @@ export class Logger {
     (await this.getLogger()).trace('mute');
     (await this.getLogger()).level = 'silent';
     // Await to sync the flush
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
   async unmute() {
     (await this.getLogger()).trace('unmute');

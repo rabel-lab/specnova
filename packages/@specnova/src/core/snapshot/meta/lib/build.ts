@@ -9,11 +9,16 @@ import z from 'zod';
 const META_EXT = 'json' satisfies SnapshotFileExtension;
 const META_FILE = `meta.${META_EXT}`;
 
-export function buildMetaPath(config: ResolvedSpecnovaConfig, rawVersion: Semver): string {
-  const version = semver.parse(rawVersion);
+export function buildMetaRootPath(config: ResolvedSpecnovaConfig): string {
   const snapshotConfig = config.snapshot;
   const rootDir =
     typeof snapshotConfig.folder === 'string' ? snapshotConfig.folder : snapshotConfig.folder.root;
+  return `${rootDir}`;
+}
+
+export function buildMetaPath(config: ResolvedSpecnovaConfig, rawVersion: Semver): string {
+  const version = semver.parse(rawVersion);
+  const rootDir = buildMetaRootPath(config);
   return `${rootDir}/${version}`;
 }
 

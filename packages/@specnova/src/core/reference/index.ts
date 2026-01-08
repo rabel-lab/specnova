@@ -105,14 +105,18 @@ function applyDereference(options: ApiDOMReferenceOptions) {
 let memoizedParser: typeof emptyParse | null = null;
 async function buildParse(): Promise<typeof emptyParse> {
   if (memoizedParser) return memoizedParser;
-  const resolvedConfig = await getResolvedSpecnovaConfig();
-  const rootDir =
-    typeof resolvedConfig.snapshot.folder === 'string' ? resolvedConfig.snapshot.folder : '';
-  const localRootDir = path(process.cwd(), rootDir);
-  applyResolve(localRootDir, emptyOptions);
-  applyParse(emptyOptions);
-  applyDereference(emptyOptions);
-  memoizedParser = emptyParse;
+  try {
+    const resolvedConfig = await getResolvedSpecnovaConfig();
+    const rootDir =
+      typeof resolvedConfig.snapshot.folder === 'string' ? resolvedConfig.snapshot.folder : '';
+    const localRootDir = path(process.cwd(), rootDir);
+    applyResolve(localRootDir, emptyOptions);
+    applyParse(emptyOptions);
+    applyDereference(emptyOptions);
+    memoizedParser = emptyParse;
+  } catch (e) {
+    throw new SpecnovaReferenceError((l) => l.parse.failedToBuildParser(), { error: e });
+  }
   return memoizedParser;
 }
 

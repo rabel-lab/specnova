@@ -51,7 +51,7 @@
   "specnova": {
     "source": "https://raw.githubusercontent.com/OAI/learn.openapis.org/refs/heads/main/examples/v3.0/api-with-examples.json",
     "branch": {
-      "target": ""
+      "target": ".snapshots/2.0.0/meta.json"
     }
   }
 }

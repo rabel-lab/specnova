@@ -36,7 +36,7 @@ export class Package {
   constructor() {
     this.packageJson = this.get();
   }
-  async edit(values: Partial<SpecnovaPackage>) {
+  async edit(values: Partial<SpecnovaPackage>): Promise<SpecnovaPackage> {
     const pkg = this.packageJson;
     // Merge values
     pkg.specnova = specNovaPackageSchema.parse({
@@ -46,7 +46,7 @@ export class Package {
     this.packageJson = pkg;
     return pkg.specnova;
   }
-  async getSpecnova() {
+  async getSpecnova(): Promise<SpecnovaPackage> {
     const pkg = this.packageJson;
     const parsedPkg = specNovaPackageSchema.safeParse(pkg.specnova);
     if (parsedPkg.success === false) {

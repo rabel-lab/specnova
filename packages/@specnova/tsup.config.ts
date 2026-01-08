@@ -8,6 +8,7 @@ export default defineConfig([
       'src/config/index.ts',
       'src/config/adapters/index.ts',
       'src/errors/index.ts',
+      'src/tasks/index.ts',
     ],
     format: ['esm', 'cjs'],
     dts: true,

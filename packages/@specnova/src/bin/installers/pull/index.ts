@@ -7,7 +7,7 @@ export default defineCliInstaller({
   async action() {
     const snapshot = await new Snapshot().loadBranch();
     snapshot.prepareAllAndCommit();
-    snapshot.setMain();
+    snapshot.setBranch();
     return (await snapshot.getSpecnovaSource()).info.version;
   },
 });

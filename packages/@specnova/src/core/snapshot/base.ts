@@ -13,6 +13,7 @@ import { SpecnovaSource } from '@/types';
 import { relativePathSchema } from '@/types/files';
 import { Semver, semver } from '@/types/semver';
 
+import { readdir } from 'fs/promises';
 import { join as pathJoin } from 'path';
 import z from 'zod';
 
@@ -47,6 +48,7 @@ export class Snapshot {
   }
   //-> Lazily compute and cache parsed OpenAPI source
   public async getSpecnovaSource() {
+    //!TODO: Remove & use meta instead
     if (this.specnovaSource) return this.specnovaSource;
     this.specnovaSource = await parseSource(this.sourceUrl);
     return this.specnovaSource;
@@ -58,7 +60,7 @@ export class Snapshot {
   //# Constructor
   constructor() {}
   //# Functions
-  //-> Ensure data
+  //-> ENSURING DATA
   private async ensureSpecnovaSource(): Promise<SpecnovaSource> {
     const specnovaSource = await this.getSpecnovaSource();
     if (!specnovaSource) throw new SpecnovaSnapshotError((l) => l.source.notFound());
@@ -68,6 +70,7 @@ export class Snapshot {
     if (!this.meta) throw new SpecnovaSnapshotError((l) => l.meta.notFound());
     return this.meta;
   }
+  //-> LOADING
   /**
    * Load from a source url.
    * @param source - The OpenAPI source.
@@ -77,6 +80,7 @@ export class Snapshot {
     this.clearCache();
     const config = await this.getFullConfig();
     this.sourceUrl = source;
+    logger.debug('doload', { source });
     const specnovaSource = await this.ensureSpecnovaSource();
     // Ccompute the snapshot path and create a new meta.
     let newMeta: SnapshotMeta;
@@ -96,10 +100,10 @@ export class Snapshot {
    * @param filePath - The meta path.
    * @returns - this
    */
-  private async doLoadFromMeta(filePath: string) {
+  private async doLoadFromMeta(newMeta: SnapshotMeta) {
     this.clearCache();
     // -> load meta
-    const newMeta = SnapshotMeta.fromFile(filePath);
+    this.meta = newMeta;
     // -> load source
     const { path, files } = newMeta.get();
     const fullSourcePath = relativePathSchema.parse(pathJoin(path, files.names.source));
@@ -130,7 +134,8 @@ export class Snapshot {
   async loadBranch(): Promise<this> {
     //!TODO: Handle packagehandler failure
     const specnovaPkg = await this.packageHandler.getSpecnova();
-    return await this.doLoadFromMeta(specnovaPkg.branch.target);
+    const meta = SnapshotMeta.fromFile(specnovaPkg.branch.target);
+    return await this.doLoadFromMeta(meta);
   }
   /**
    * Get the main spec version from package.json
@@ -152,11 +157,9 @@ export class Snapshot {
     const parsedVersion = semver.parse(rawVersion);
     const config = await this.getFullConfig();
     const newMeta = SnapshotMeta.fromVersion(parsedVersion, config);
-    const { path, files } = newMeta.get();
-    const source = pathJoin(path, files.names.source);
-    this.meta = newMeta;
-    return this.doLoad(source);
+    return this.doLoadFromMeta(newMeta);
   }
+  //-> PREPARING & COMMITING FILES
   /**
    * Prepare the source to be saved.
    * @returns - true if prepared, false if failed
@@ -244,24 +247,73 @@ export class Snapshot {
       return await this.commit();
     }
   }
-  /**
-   * Set as the main spec version in package.json
-   * @returns - true if saved, false if failed
+  //-> PACKAGE.JSON & Branches
+  /** Get the currently established branch.
+   * @returns - SpecnovaConfig
    */
-  async setMain() {
+  async getBranch() {
+    return this.packageHandler.getSpecnova();
+  }
+  /**
+   * Set this snapshot as the main branch.
+   * @returns - prev: SpecnovaConfig, next: SpecnovaConfig
+   */
+  async setBranch() {
     const { path, files, origin } = this.ensureMeta().get();
     const metaPath = pathJoin(path, files.names.meta);
-    this.packageHandler.edit({
+    const prevSpec = this.packageHandler.getSpecnova();
+    const nextSpec = this.packageHandler.edit({
       source: origin.source,
       branch: {
         target: metaPath,
       },
     });
-    return true;
+    const [prev, next] = await Promise.all([prevSpec, nextSpec]);
+    return {
+      prev,
+      next,
+    };
   }
   /**
+   * Get a list of all the branches.
+   * @returns - The list of branches.
+   */
+  async getBranches() {
+    const config = await this.getFullConfig();
+    const rootDir = SnapshotMeta.getRootDir(config);
+    const relativeRootDir = relativePathSchema.parse(rootDir);
+    try {
+      const entries = await readdir(relativeRootDir, { recursive: false, withFileTypes: true });
+      const rawBranches = entries
+        .filter((dirent) => dirent.isDirectory())
+        .map((dirent) => dirent.name);
+      //-> Check if they have a valid meta
+      const validBranches = rawBranches.filter((dir) => {
+        try {
+          const meta = SnapshotMeta.fromVersion(semver.parse(dir), config);
+          return meta.get().origin.source !== '';
+        } catch {
+          logger.warn(new SpecnovaSnapshotError((l) => l.branch.invalid(dir)));
+          return false;
+        }
+      });
+      return validBranches;
+    } catch (err) {
+      throw err;
+    }
+  }
+  //-> GENERATION
+  /**
    * Generate the selected snapshot to SDK.
-   * @returns - true if generated, false if failed
+   * @returns - true if g  try {
+    const entries = await readdir(dir, { recursive: true, withFileTypes: true });
+    const directories = entries
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+    console.log(directories);
+  } catch (err) {
+    console.error('Error reading directory:', err);
+  }enerated, false if failed
    */
   async generate() {
     const userConfig = await this.getUserConfig();

@@ -76,6 +76,13 @@ export type NamespaceErrorsTranslation = {
 			 */
 			internalFailedToLoad: string
 		}
+		branch: {
+			/**
+			 * I​n​v​a​l​i​d​ ​b​r​a​n​c​h​ ​{​0​}​.
+			 * @param {string} 0
+			 */
+			invalid: RequiredParams<'0'>
+		}
 		/**
 		 * F​a​i​l​e​d​ ​t​o​ ​s​a​v​e​ ​{​0​}​{​0​}​.
 		 * @param {string | stringArray} 0
@@ -84,6 +91,10 @@ export type NamespaceErrorsTranslation = {
 	}
 	reference: {
 		parse: {
+			/**
+			 * F​a​i​l​e​d​ ​t​o​ ​b​u​i​l​d​ ​p​a​r​s​e​r​.
+			 */
+			failedToBuildParser: string
 			/**
 			 * F​a​i​l​e​d​ ​t​o​ ​p​a​r​s​e​ ​s​o​u​r​c​e​.
 			 */
@@ -255,6 +266,18 @@ export type NamespaceTasksTranslation = {
 		 */
 		overwriteSettings: string
 	}
+	select: {
+		/**
+		 * S​w​i​t​c​h​i​n​g​ ​b​r​a​n​c​h​ ​t​o​:
+		 */
+		branches: string
+	}
+	input: {
+		/**
+		 * W​h​a​t​ ​i​s​ ​t​h​e​ ​o​p​e​n​a​p​i​ ​u​r​l​?
+		 */
+		newSource: string
+	}
 }
 
 export type Namespaces =
@@ -335,6 +358,12 @@ export type TranslationFunctions = {
 				 */
 				internalFailedToLoad: () => LocalizedString
 			}
+			branch: {
+				/**
+				 * Invalid branch {0}.
+				 */
+				invalid: (arg0: string) => LocalizedString
+			}
 			/**
 			 * Failed to save {0}{0}.
 			 */
@@ -342,6 +371,10 @@ export type TranslationFunctions = {
 		}
 		reference: {
 			parse: {
+				/**
+				 * Failed to build parser.
+				 */
+				failedToBuildParser: () => LocalizedString
 				/**
 				 * Failed to parse source.
 				 */
@@ -497,6 +530,18 @@ export type TranslationFunctions = {
 			 * Do you want to overwrite your current settings?
 			 */
 			overwriteSettings: () => LocalizedString
+		}
+		select: {
+			/**
+			 * Switching branch to:
+			 */
+			branches: () => LocalizedString
+		}
+		input: {
+			/**
+			 * What is the openapi url?
+			 */
+			newSource: () => LocalizedString
 		}
 	}
 }

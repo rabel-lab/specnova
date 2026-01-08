@@ -17,10 +17,14 @@ const en_errors: BaseTranslation = {
       invalidUrl: 'Invalid url.',
       internalFailedToLoad: 'Specnova source must be loaded from a meta file.',
     },
+    branch: {
+      invalid: 'Invalid branch {0:string}.',
+    },
     failedToSave: 'Failed to save {0:string}{0:stringArray}.',
   },
   reference: {
     parse: {
+      failedToBuildParser: 'Failed to build parser.',
       failedToParse: 'Failed to parse source.',
       invalidFileExtension:
         'Invalid file extension. Supported extensions: {extension:stringArray}.',

@@ -33,5 +33,11 @@
   "packageManager": "pnpm@10.19.0",
   "dependencies": {
     "@changesets/cli": "^2.29.8"
+  },
+  "specnova": {
+    "source": "https://raw.githubusercontent.com/OAI/learn.openapis.org/refs/heads/main/examples/v3.0/api-with-examples.json",
+    "branch": {
+      "target": ".snapshots/2.0.0/meta.json"
+    }
   }
 }

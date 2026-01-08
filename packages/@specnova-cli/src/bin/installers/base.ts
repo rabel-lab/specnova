@@ -1,6 +1,8 @@
 import { Command } from 'commander';
 import fs from 'fs';
 
+import { logger } from '@rabel-lab/specnova';
+
 type CLIOptionName = string;
 
 type WithStringInput = {
@@ -103,6 +105,7 @@ export function defineCliInstaller<O extends CLIOption, A extends CLIArgument>(
     }
     // End command
     cmd.action(async (...args: [string, CLIOptionResult<O>]) => {
+      logger.unmute();
       const result = await Promise.all([installer.action(...args)]);
       if (typeof result === 'boolean' || typeof result === 'string') {
         if (process.env.GITHUB_OUTPUT) {

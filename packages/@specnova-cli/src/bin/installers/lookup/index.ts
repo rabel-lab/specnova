@@ -7,11 +7,13 @@ export default defineCliInstaller({
   name: 'lookup',
   description: 'Lookup the spec origin.',
   async action() {
-    const branchSnapshot = await (await new Snapshot().loadBranch()).getSpecnovaSource();
-    const sourceSnapshot = await (await new Snapshot().loadSource()).getSpecnovaSource();
-    const branchVersion = branchSnapshot.info.version;
-    const sourceVersion = sourceSnapshot.info.version;
-
+    const snapshot = new Snapshot();
+    const test = await snapshot.loadBranch();
+    test.getSpecnovaSource();
+    const branchSnapshot = test.getMeta()?.get();
+    const sourceSnapshot = (await snapshot.loadSource()).getMeta()?.get();
+    const branchVersion = branchSnapshot?.info.version;
+    const sourceVersion = sourceSnapshot?.info.version;
     if (branchVersion === sourceVersion) {
       logger.success((l) => l.cli.lookup.upToDate());
       return false;

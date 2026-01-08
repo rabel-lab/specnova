@@ -9,6 +9,7 @@ import {
   buildMetaFile,
   buildMetaOrigin,
   buildMetaPath,
+  buildMetaRootPath,
   buildMetaSourceFiles,
 } from '@/core/snapshot/meta/lib/build';
 import { compareSha256, digestString, sha256StringSchema } from '@/core/snapshot/meta/lib/compare';
@@ -235,25 +236,41 @@ export class SnapshotMeta extends SnapshotMetaImpl {
     }
   }
 
-  static fromFile(path: string) {
-    const relativePath = relativePathSchema.parse(path);
+  /**
+   * Return a new meta from a full path.
+   * @param fullPath - The full path to the meta file.
+   * @returns - this
+   */
+  static fromFile(fullPath: string) {
+    const relativePath = relativePathSchema.parse(fullPath);
     const text = readFileSync(relativePath, 'utf8');
-    const parsedMeta = snapshotMetaDataSchema.parse(JSON.parse(text));
+    const meta = converter.fromText<SnapshotMetaData>(text.toString(), 'json');
+    const parsedMeta = snapshotMetaDataSchema.parse(meta);
     return new this({ meta: parsedMeta });
   }
 
+  /**
+   * Complete meta path from branch.
+   * @param branch, config
+   * @param config
+   * @returns - this
+   */
+  static fromBranch(branch: string): SnapshotMeta {
+    const metaFile = buildMetaFile();
+    const fullPath = pathJoin(branch, metaFile.file);
+    return this.fromFile(fullPath);
+  }
+
+  /**
+   * Complete meta path from version.
+   * @param rawVersion, config
+   * @param config
+   * @returns - this
+   */
   static fromVersion(rawVersion: Semver, config: ResolvedSpecnovaConfig): SnapshotMeta {
     const version = semver.parse(rawVersion);
-    const path = buildMetaPath(config, version);
-    const metaFile = buildMetaFile();
-    const pathTo = pathJoin(path, metaFile.file);
-    const text = readFileSync(pathTo);
-    try {
-      const meta = converter.fromText<SnapshotMetaData>(text.toString(), 'json');
-      return new SnapshotMeta({ meta });
-    } catch {
-      throw new SpecnovaSnapshotError((l) => l.meta.failedToLoad());
-    }
+    const branch = buildMetaPath(config, version);
+    return this.fromBranch(branch);
   }
 
   /**
@@ -336,5 +353,12 @@ export class SnapshotMeta extends SnapshotMetaImpl {
    */
   async commit() {
     this.submit();
+  }
+  /**
+   * Return root directory of the snapshot.
+   * @returns - The root directory.
+   */
+  static getRootDir(config: ResolvedSpecnovaConfig) {
+    return buildMetaRootPath(config);
   }
 }
