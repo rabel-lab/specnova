@@ -4,7 +4,7 @@ import { Snapshot } from '@rabel-lab/specnova';
 
 export default defineCliInstaller({
   name: 'fetch',
-  description: 'Download the latest version of the Spec origin.',
+  description: 'Snapshot the latest version.',
   async action() {
     const snapshot = await new Snapshot().loadBranch();
     snapshot.prepareAllAndCommit();
