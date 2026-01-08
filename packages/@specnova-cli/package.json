@@ -25,8 +25,7 @@
     "dev": "tsup --watch --onSuccess 'pnpm link'",
     "format": "prettier --write 'src/**/*.ts'",
     "lint": "eslint --fix 'src/**/*.ts'",
-    "clean": "rm -rf dist",
-    "play": "pnpm build && node dist/dev/playground.dev.config.js"
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
     "@inquirer/type": "^4.0.2",
