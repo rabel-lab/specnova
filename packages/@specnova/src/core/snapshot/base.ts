@@ -14,6 +14,7 @@ import { relativePathSchema } from '@/types/files';
 import { Semver, semver } from '@/types/semver';
 
 import { join as pathJoin } from 'path';
+import z from 'zod';
 
 export class Snapshot {
   //# initialize
@@ -50,10 +51,12 @@ export class Snapshot {
     this.specnovaSource = await parseSource(this.sourceUrl);
     return this.specnovaSource;
   }
-
+  //->Get Meta
+  public getMeta() {
+    return this.meta;
+  }
   //# Constructor
   constructor() {}
-
   //# Functions
   //-> Ensure data
   private async ensureSpecnovaSource(): Promise<SpecnovaSource> {
@@ -105,12 +108,27 @@ export class Snapshot {
     this.meta = newMeta;
     return this;
   }
+  /** Verify external url integrity.
+   * Then, load the spec version.
+   * @returns - this
+   */
+  async loadUrl(source: string): Promise<this> {
+    //!TODO: Create a uniform ExternalUrl interface
+    const specnovaSource = z.httpUrl().safeParse(source);
+    if (specnovaSource.success === false) {
+      throw new SpecnovaSnapshotError((l) => l.source.invalidUrl(), {
+        error: specnovaSource.error,
+      });
+    }
+    return await this.doLoad(source);
+  }
   /**
    * Load the spec branch from package.json
    *  Then, load the spec version.
    * @returns - this
    */
   async loadBranch(): Promise<this> {
+    //!TODO: Handle packagehandler failure
     const specnovaPkg = await this.packageHandler.getSpecnova();
     return await this.doLoadFromMeta(specnovaPkg.branch.target);
   }
@@ -120,6 +138,7 @@ export class Snapshot {
    * @returns - this
    */
   async loadSource(): Promise<this> {
+    //!TODO: Handle packagehandler failure
     const { source } = await this.packageHandler.getSpecnova();
     return await this.doLoad(source);
   }
@@ -230,9 +249,10 @@ export class Snapshot {
    * @returns - true if saved, false if failed
    */
   async setMain() {
-    const { path, files } = this.ensureMeta().get();
+    const { path, files, origin } = this.ensureMeta().get();
     const metaPath = pathJoin(path, files.names.meta);
     this.packageHandler.edit({
+      source: origin.source,
       branch: {
         target: metaPath,
       },

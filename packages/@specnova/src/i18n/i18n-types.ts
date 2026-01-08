@@ -113,6 +113,10 @@ type RootTranslation = {
 				 */
 				notFound: string
 				/**
+				 * I​n​v​a​l​i​d​ ​u​r​l​.
+				 */
+				invalidUrl: string
+				/**
 				 * S​p​e​c​n​o​v​a​ ​s​o​u​r​c​e​ ​m​u​s​t​ ​b​e​ ​l​o​a​d​e​d​ ​f​r​o​m​ ​a​ ​m​e​t​a​ ​f​i​l​e​.
 				 */
 				internalFailedToLoad: string
@@ -219,6 +223,12 @@ type RootTranslation = {
 			 * @param {commanderError} 0
 			 */
 			fromError: RequiredParams<'0|printCommanderError'>
+			init: {
+				/**
+				 * B​r​a​n​c​h​ ​o​v​e​r​w​r​i​t​e​ ​i​s​ ​n​o​t​ ​a​l​l​o​w​e​d​.
+				 */
+				cantOverwrite: string
+			}
 		}
 	}
 	errorsUtils: {
@@ -324,6 +334,10 @@ export type TranslationFunctions = {
 				 */
 				notFound: () => LocalizedString
 				/**
+				 * Invalid url.
+				 */
+				invalidUrl: () => LocalizedString
+				/**
 				 * Specnova source must be loaded from a meta file.
 				 */
 				internalFailedToLoad: () => LocalizedString
@@ -422,6 +436,12 @@ export type TranslationFunctions = {
 			 * {0|printCommanderError}
 			 */
 			fromError: (arg0: commanderError) => LocalizedString
+			init: {
+				/**
+				 * Branch overwrite is not allowed.
+				 */
+				cantOverwrite: () => LocalizedString
+			}
 		}
 	}
 	errorsUtils: {

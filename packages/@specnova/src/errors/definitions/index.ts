@@ -1,4 +1,5 @@
 // Errors
+export * from '@/errors/definitions/CliError';
 export * from '@/errors/definitions/ConfigError';
 export * from '@/errors/definitions/ExtracterError';
 export * from '@/errors/definitions/ParserError';

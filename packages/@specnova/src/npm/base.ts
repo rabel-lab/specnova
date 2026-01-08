@@ -24,20 +24,18 @@ type PackageJson = {
   specnova: SpecnovaPackage;
 };
 
+/* @internal */
 export class Package {
   static PKG_PATH = path(process.cwd(), 'package.json');
   private packageJson: PackageJson;
-
   private get(): PackageJson {
     const text = readFileSync(Package.PKG_PATH, 'utf8');
     const pkg = converter.fromText<PackageJson>(text, 'json');
     return { ...pkg };
   }
-
   constructor() {
     this.packageJson = this.get();
   }
-
   async edit(values: Partial<SpecnovaPackage>) {
     const pkg = this.packageJson;
     // Merge values
@@ -48,7 +46,6 @@ export class Package {
     this.packageJson = pkg;
     return pkg.specnova;
   }
-
   async getSpecnova() {
     const pkg = this.packageJson;
     const parsedPkg = specNovaPackageSchema.safeParse(pkg.specnova);

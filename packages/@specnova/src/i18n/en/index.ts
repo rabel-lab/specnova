@@ -46,6 +46,7 @@ const en: BaseTranslation = {
       },
       source: {
         notFound: 'Source not found.',
+        invalidUrl: 'Invalid url.',
         internalFailedToLoad: 'Specnova source must be loaded from a meta file.',
       },
       failedToSave: 'Failed to save {0:string}{0:stringArray}.',
@@ -92,6 +93,9 @@ const en: BaseTranslation = {
     },
     cli: {
       fromError: '{0:commanderError|printCommanderError}',
+      init: {
+        cantOverwrite: 'Branch overwrite is not allowed.',
+      },
     },
   },
   errorsUtils: {

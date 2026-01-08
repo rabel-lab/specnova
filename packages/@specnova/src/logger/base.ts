@@ -63,8 +63,7 @@ async function createLogger() {
   const isDevelopment = env.NODE_ENV === 'development';
   const isTest = env.NODE_ENV === 'test';
   const logLevel = env.LOG_LEVEL || (isDevelopment ? 'debug' : 'info');
-
-  return pino({
+  const logger = pino({
     level: logLevel,
     serializers: {
       err: (error: __SpecnovaErrorImpl<any>) => {
@@ -88,52 +87,83 @@ async function createLogger() {
         };
       },
     },
-    transport: isDevelopment
-      ? {
-          target: 'pino-pretty',
-          options: {
-            colorize: true,
-            ignore: 'pid,hostname',
-            translateTime: 'HH:MM:ss:ms',
-          },
-        }
-      : undefined,
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        ignore: 'pid,hostname',
+        translateTime: 'HH:MM:ss:ms',
+      },
+    },
     // Disable in tests
     enabled: !isTest,
   });
+  return {
+    logger,
+    defaultSettings: {
+      level: logLevel,
+    },
+  };
 }
 
 export class Logger {
-  logger = createLogger();
-  constructor() {}
+  private pino;
+  constructor() {
+    this.pino = createLogger();
+  }
+  private async getLogger() {
+    return (await this.pino).logger;
+  }
+  private async getDefaultSettings() {
+    return (await this.pino).defaultSettings;
+  }
   async debug(...args: any[]) {
     const length = args.length;
     if (length === 1) {
-      (await this.logger).debug(args[0]);
+      (await this.getLogger()).debug(args[0]);
     } else {
-      (await this.logger).debug(args);
+      (await this.getLogger()).debug(args);
     }
   }
   async seed(formatter: LoggerTranslator<'seed'>) {
-    (await this.logger).info(formatTranslation('seed', formatter));
+    (await this.getLogger()).info(formatTranslation('seed', formatter));
   }
   async config(formatter: LoggerTranslator<'config'>) {
-    (await this.logger).info(formatTranslation('config', formatter));
+    (await this.getLogger()).info(formatTranslation('config', formatter));
   }
   async success(formatter: LoggerTranslator<'success'>) {
-    (await this.logger).info(formatTranslation('success', formatter));
+    (await this.getLogger()).info(formatTranslation('success', formatter));
   }
   async warn(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
     if (options?.verbose) {
-      (await this.logger).warn({ err: error }, formatError(error, { ...options, fatal: false }));
+      (await this.getLogger()).warn(
+        { err: error },
+        formatError(error, { ...options, fatal: false }),
+      );
     } else {
-      (await this.logger).warn(formatError(error, { ...options, fatal: false, verbose: false }));
+      (await this.getLogger()).warn(
+        formatError(error, { ...options, fatal: false, verbose: false }),
+      );
     }
   }
   async error(error: __SpecnovaErrorImpl<any>, options?: ErrorMessageOptions) {
-    (await this.logger).error(
-      { err: error },
-      formatError(error, { fatal: error.fatal, ...options }),
-    );
+    if (error.fatal) {
+      (await this.getLogger()).fatal(
+        { err: error },
+        formatError(error, { fatal: error.fatal, ...options }),
+      );
+    } else {
+      (await this.getLogger()).error(formatError(error, { ...options, fatal: error.fatal }));
+    }
+  }
+  async mute() {
+    (await this.getLogger()).trace('mute');
+    (await this.getLogger()).level = 'silent';
+    // Await to sync the flush
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  async unmute() {
+    (await this.getLogger()).trace('unmute');
+    (await this.getLogger()).level = 'info';
   }
 }
